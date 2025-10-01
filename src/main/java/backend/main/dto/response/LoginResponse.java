@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -13,5 +16,11 @@ import lombok.experimental.FieldDefaults;
 public class LoginResponse {
     String candidateId;
     String email;
-    String message;
+    String fullname;
+    String address;
+    LocalDate dateOfBirth;
+    LocalDate createAt;
+    LocalDate udpateAt;
+    String phone;
+    String avatar;
 }

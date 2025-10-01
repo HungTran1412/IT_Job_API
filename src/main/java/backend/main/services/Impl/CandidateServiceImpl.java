@@ -68,6 +68,14 @@ public class CandidateServiceImpl implements CandidateServices {
            throw new RuntimeException("Wrong password!");
        }
 
-       return new LoginResponse(candidate.getCandidateId(), candidate.getEmail(), "Login Successful!");
+       return new LoginResponse(candidate.getCandidateId(),
+                               candidate.getFullname(),
+                               candidate.getEmail(),
+                               candidate.getAddress(),
+                               candidate.getDateOfBirth(),
+                               candidate.getCreateAt(),
+                               candidate.getUpdateAt(),
+                               candidate.getPhone(),
+                               candidate.getAvatar());
     }
 }
