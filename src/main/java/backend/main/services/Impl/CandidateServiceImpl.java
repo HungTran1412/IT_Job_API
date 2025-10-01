@@ -1,6 +1,8 @@
 package backend.main.services.Impl;
 
 import backend.main.dto.request.CandidateRequest;
+import backend.main.dto.request.LoginRequest;
+import backend.main.dto.response.LoginResponse;
 import backend.main.entities.Candidate;
 import backend.main.repository.CandidateRepository;
 import backend.main.services.CandidateServices;
@@ -20,10 +22,11 @@ public class CandidateServiceImpl implements CandidateServices {
     @Autowired
     CandidateRepository candidateRepository;
     @Autowired
-    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+    PasswordEncoder passwordEncoder;
 
-    public CandidateServiceImpl(CandidateRepository candidateRepository) {
+    public CandidateServiceImpl(CandidateRepository candidateRepository, PasswordEncoder passwordEncoder) {
         this.candidateRepository = candidateRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     private String generateCandidateID() {
@@ -37,6 +40,7 @@ public class CandidateServiceImpl implements CandidateServices {
         return id;
     }
 
+    @Override
     public Candidate register(CandidateRequest candidateRequest) {
         //Tao nguoi dung moi
         Candidate candidate = new Candidate();
@@ -53,5 +57,17 @@ public class CandidateServiceImpl implements CandidateServices {
         candidate.setUpdateAt(LocalDate.now());
 
         return candidateRepository.save(candidate);
+    }
+
+    @Override
+    public LoginResponse login(LoginRequest loginRequest) {
+       Candidate candidate = candidateRepository.findByEmail(loginRequest.getEmail())
+               .orElseThrow(()-> new RuntimeException("Email not found!"));
+
+       if(!passwordEncoder.matches(loginRequest.getPassword(),candidate.getPassword())){
+           throw new RuntimeException("Wrong password!");
+       }
+
+       return new LoginResponse(candidate.getCandidateId(), candidate.getEmail(), "Login Successful!");
     }
 }
