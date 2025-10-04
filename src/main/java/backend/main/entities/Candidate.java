@@ -1,9 +1,7 @@
 package backend.main.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import backend.main.enums.Role;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -55,5 +53,6 @@ public class Candidate {
     String cv;
 
     @Column(name = "role")
-    String role;
+    @Enumerated(EnumType.STRING)
+    Role role;
 }

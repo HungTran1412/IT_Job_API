@@ -5,6 +5,7 @@ import backend.main.dto.request.CandidateRegisterRequest;
 import backend.main.dto.request.CandidateLoginRequest;
 import backend.main.dto.response.CandidateLoginResponse;
 import backend.main.entities.Candidate;
+import backend.main.enums.Role;
 import backend.main.repository.CandidateRepository;
 import backend.main.services.CandidateService;
 import lombok.AccessLevel;
@@ -60,7 +61,7 @@ public class CandidateServiceImpl implements CandidateService {
         candidate.setCreateAt(LocalDate.now()); // Ngày tạo tài khoản
         candidate.setUpdateAt(LocalDate.now()); // Ngày cập nhật tài khoản
         candidate.setCv(candidateRegisterRequest.getCv());
-        candidate.setRole("CANDIDATE"); // Gán vai trò mặc định
+        candidate.setRole(Role.CANDIDATE); // Gán vai trò mặc định
 
         // Lưu vào database
         return candidateRepository.save(candidate);

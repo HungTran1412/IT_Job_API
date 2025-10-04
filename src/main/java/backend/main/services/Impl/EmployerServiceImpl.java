@@ -5,6 +5,7 @@ import backend.main.dto.request.EmployerLoginRequest;
 import backend.main.dto.request.EmployerRegisterRequest;
 import backend.main.dto.response.EmployerLoginResponse;
 import backend.main.entities.Employer;
+import backend.main.enums.Role;
 import backend.main.repository.EmployerRepository;
 import backend.main.services.EmployerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,7 @@ public class EmployerServiceImpl implements EmployerService {
         employer.setAvatar(employerRegisterRequest.getAvatar());
         employer.setCreateAt(LocalDate.now());
         employer.setUpdateAt(LocalDate.now());
-        employer.setRole("EMPLOYER");
+        employer.setRole(Role.EMPLOYER);
 
         return employerRepository.save(employer);
     }

@@ -1,5 +1,6 @@
 package backend.main.dto.response;
 
+import backend.main.enums.Role;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +24,6 @@ public class CandidateLoginResponse {
     LocalDate udpateAt;
     String phone;
     String avatar;
-    String role;
+    Role role;
     String token;
 }

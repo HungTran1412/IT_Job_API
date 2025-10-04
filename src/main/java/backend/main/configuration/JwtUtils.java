@@ -1,5 +1,6 @@
 package backend.main.configuration;
 
+import backend.main.enums.Role;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.AccessLevel;
@@ -27,10 +28,10 @@ public class JwtUtils {
     }
 
     //Tạo JWT mới
-    public String generateToken(String email, String role) {
+    public String generateToken(String email, Role role) {
         return Jwts.builder()
                 .setSubject(email)
-                .claim("role", role)
+                .claim("role", role.name())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -53,21 +54,21 @@ public class JwtUtils {
 
     //Trích xuất email ở subject từ token
     public String extractEmail(String token) {
-        return Jwts.parserBuilder()
+        return (String) Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .getSubject();
+                .get("role");
     }
 
     //Trich xuat role
     public String extractRole(String token) {
-        return Jwts.parserBuilder()
+        return (String) Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .getSubject();
+                .get("role");
     }
 }
