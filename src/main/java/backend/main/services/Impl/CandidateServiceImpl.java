@@ -5,7 +5,7 @@ import backend.main.dto.request.LoginRequest;
 import backend.main.dto.response.LoginResponse;
 import backend.main.entities.Candidate;
 import backend.main.repository.CandidateRepository;
-import backend.main.services.CandidateServices;
+import backend.main.services.CandidateService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import java.util.Random;
 
 @FieldDefaults(level = AccessLevel.PRIVATE,  makeFinal = true)
 @Service
-public class CandidateServiceImpl implements CandidateServices {
+public class CandidateServiceImpl implements CandidateService {
     @Autowired
     CandidateRepository candidateRepository;
     @Autowired
