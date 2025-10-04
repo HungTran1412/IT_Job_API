@@ -24,4 +24,5 @@ public class CandidateLoginResponse {
     String phone;
     String avatar;
     String role;
+    String token;
 }

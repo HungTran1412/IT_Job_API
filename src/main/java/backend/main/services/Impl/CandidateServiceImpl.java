@@ -1,5 +1,6 @@
 package backend.main.services.Impl;
 
+import backend.main.configuration.JwtUtils;
 import backend.main.dto.request.CandidateRegisterRequest;
 import backend.main.dto.request.CandidateLoginRequest;
 import backend.main.dto.response.CandidateLoginResponse;
@@ -22,10 +23,13 @@ public class CandidateServiceImpl implements CandidateService {
     CandidateRepository candidateRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    JwtUtils jwtUtils;
 
-    public CandidateServiceImpl(CandidateRepository candidateRepository, PasswordEncoder passwordEncoder) {
+    public CandidateServiceImpl(CandidateRepository candidateRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils) {
         this.candidateRepository = candidateRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtils = jwtUtils;
     }
 
     private String generateCandidateID() {
@@ -73,6 +77,8 @@ public class CandidateServiceImpl implements CandidateService {
             throw new RuntimeException("Wrong password!");
         }
 
+        String token = jwtUtils.generateToken(candidate.getEmail(), candidate.getRole());
+
         // Trả về thông tin ứng viên (không bao gồm mật khẩu)
         return new CandidateLoginResponse(
                 candidate.getCandidateId(),
@@ -85,7 +91,8 @@ public class CandidateServiceImpl implements CandidateService {
                 candidate.getUpdateAt(),
                 candidate.getPhone(),
                 candidate.getAvatar(),
-                candidate.getRole()
+                candidate.getRole(),
+                token
         );
     }
 }

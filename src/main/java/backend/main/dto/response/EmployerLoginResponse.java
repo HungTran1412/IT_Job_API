@@ -22,4 +22,5 @@ public class EmployerLoginResponse {
     LocalDate udpateAt;
     String avatar;
     String role;
+    String token;
 }

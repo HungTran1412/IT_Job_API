@@ -1,5 +1,6 @@
 package backend.main.services.Impl;
 
+import backend.main.configuration.JwtUtils;
 import backend.main.dto.request.EmployerLoginRequest;
 import backend.main.dto.request.EmployerRegisterRequest;
 import backend.main.dto.response.EmployerLoginResponse;
@@ -20,6 +21,9 @@ public class EmployerServiceImpl implements EmployerService {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    JwtUtils jwtUtils;
 
     private String generateEmployerID() {
         Random random = new Random();
@@ -62,6 +66,8 @@ public class EmployerServiceImpl implements EmployerService {
             throw new RuntimeException("Wrong password!");
         }
 
+        String token = jwtUtils.generateToken(employer.getEmail(), employer.getRole());
+
         return new EmployerLoginResponse(employer.getEmployerId(),
                                          employer.getCompanyName(),
                                          employer.getEmail(),
@@ -70,7 +76,8 @@ public class EmployerServiceImpl implements EmployerService {
                                          employer.getCreateAt(),
                                          employer.getUpdateAt(),
                                          employer.getAvatar(),
-                                         employer.getRole());
+                                         employer.getRole(),
+                                         token);
     }
 
 

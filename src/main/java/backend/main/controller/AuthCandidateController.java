@@ -25,7 +25,7 @@ public class AuthCandidateController {
     }
 
     @PostMapping("/login")
-    public CandidateLoginResponse login(@RequestBody CandidateLoginRequest candidateLoginRequest) {
-        return candidateService.login(candidateLoginRequest);
+    public ResponseEntity<CandidateLoginResponse> login(@RequestBody CandidateLoginRequest request) {
+        return  ResponseEntity.ok().body(candidateService.login(request));
     }
 }
