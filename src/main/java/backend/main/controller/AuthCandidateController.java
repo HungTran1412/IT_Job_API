@@ -1,8 +1,8 @@
 package backend.main.controller;
 
 import backend.main.dto.request.CandidateRegisterRequest;
-import backend.main.dto.request.LoginRequest;
-import backend.main.dto.response.LoginResponse;
+import backend.main.dto.request.CandidateLoginRequest;
+import backend.main.dto.response.CandidateLoginResponse;
 import backend.main.entities.Candidate;
 import backend.main.services.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class AuthCandidateController {
     }
 
     @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginRequest loginRequest) {
-        return candidateService.login(loginRequest);
+    public CandidateLoginResponse login(@RequestBody CandidateLoginRequest candidateLoginRequest) {
+        return candidateService.login(candidateLoginRequest);
     }
 }

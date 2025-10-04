@@ -1,6 +1,8 @@
 package backend.main.controller;
 
+import backend.main.dto.request.EmployerLoginRequest;
 import backend.main.dto.request.EmployerRegisterRequest;
+import backend.main.dto.response.EmployerLoginResponse;
 import backend.main.entities.Employer;
 import backend.main.services.EmployerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,5 +22,10 @@ public class AuthEmployerController {
     ResponseEntity<?> registerEmployer(@RequestBody EmployerRegisterRequest employerRegisterRequest){
         Employer employer = employerService.register(employerRegisterRequest);
         return ResponseEntity.ok().body(employer);
+    }
+
+    @PostMapping("/login")
+    EmployerLoginResponse loginEmployer(@RequestBody EmployerLoginRequest employerLoginRequest){
+        return employerService.login(employerLoginRequest);
     }
 }

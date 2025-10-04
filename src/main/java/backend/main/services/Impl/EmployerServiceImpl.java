@@ -1,6 +1,8 @@
 package backend.main.services.Impl;
 
+import backend.main.dto.request.EmployerLoginRequest;
 import backend.main.dto.request.EmployerRegisterRequest;
+import backend.main.dto.response.EmployerLoginResponse;
 import backend.main.entities.Employer;
 import backend.main.repository.EmployerRepository;
 import backend.main.services.EmployerService;
@@ -30,6 +32,7 @@ public class EmployerServiceImpl implements EmployerService {
         return id;
     }
 
+    //dang ky
     @Override
     public Employer register(EmployerRegisterRequest employerRegisterRequest) {
         Employer employer = new Employer();
@@ -45,6 +48,30 @@ public class EmployerServiceImpl implements EmployerService {
         employer.setUpdateAt(LocalDate.now());
         employer.setRole("EMPLOYER");
 
-        return employer;
+        return employerRepository.save(employer);
     }
+
+    //Dang nhap
+    @Override
+    public EmployerLoginResponse login(EmployerLoginRequest employerLoginRequest) {
+        Employer employer = employerRepository.findByEmail(employerLoginRequest.getEmail())
+                .orElseThrow(() -> new RuntimeException("Email not found!"));
+
+        //So sanh mat khau
+        if(!passwordEncoder.matches(employerLoginRequest.getPassword(), employer.getPassword())) {
+            throw new RuntimeException("Wrong password!");
+        }
+
+        return new EmployerLoginResponse(employer.getEmployerId(),
+                                         employer.getCompanyName(),
+                                         employer.getEmail(),
+                                         employer.getAddress(),
+                                         employer.getPhone(),
+                                         employer.getCreateAt(),
+                                         employer.getUpdateAt(),
+                                         employer.getAvatar(),
+                                         employer.getRole());
+    }
+
+
 }

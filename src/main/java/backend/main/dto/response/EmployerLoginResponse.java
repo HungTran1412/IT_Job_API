@@ -7,22 +7,19 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class LoginResponse {
-    String candidateId;
+public class EmployerLoginResponse {
+    String employerId;
+    String companyName;
     String email;
-    String fullname;
-    String gender;
     String address;
-    LocalDate dateOfBirth;
+    String phone;
     LocalDate createAt;
     LocalDate udpateAt;
-    String phone;
     String avatar;
     String role;
 }
