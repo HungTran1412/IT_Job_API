@@ -30,6 +30,9 @@ public class Candidate {
     @Column(name = "password")
     String password;
 
+    @Column(name = "gender")
+    String gender;
+
     @Column(name = "address")
     String address;
 
@@ -47,4 +50,10 @@ public class Candidate {
 
     @Column(name = "avatar")
     String avatar;
+
+    @Column(name = "cv")
+    String cv;
+
+    @Column(name = "role")
+    String role;
 }

@@ -1,6 +1,6 @@
 package backend.main.services.Impl;
 
-import backend.main.dto.request.CandidateRequest;
+import backend.main.dto.request.CandidateRegisterRequest;
 import backend.main.dto.request.LoginRequest;
 import backend.main.dto.response.LoginResponse;
 import backend.main.entities.Candidate;
@@ -9,7 +9,6 @@ import backend.main.services.CandidateServices;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -41,20 +40,23 @@ public class CandidateServiceImpl implements CandidateServices {
     }
 
     @Override
-    public Candidate register(CandidateRequest candidateRequest) {
+    public Candidate register(CandidateRegisterRequest candidateRegisterRequest) {
         //Tao nguoi dung moi
         Candidate candidate = new Candidate();
 
-        candidate.setFullname(candidateRequest.getFullname());
+        candidate.setFullname(candidateRegisterRequest.getFullname());
         candidate.setCandidateId(generateCandidateID());
-        candidate.setEmail(candidateRequest.getEmail());
-        candidate.setPassword(passwordEncoder.encode(candidateRequest.getPassword()));
-        candidate.setPhone(candidateRequest.getPhone());
-        candidate.setDateOfBirth(candidateRequest.getDateOfBirth());
-        candidate.setAddress(candidateRequest.getAddress());
-        candidate.setAvatar(candidateRequest.getAvatar());
+        candidate.setEmail(candidateRegisterRequest.getEmail());
+        candidate.setPassword(passwordEncoder.encode(candidateRegisterRequest.getPassword()));
+        candidate.setGender(candidateRegisterRequest.getGender());
+        candidate.setPhone(candidateRegisterRequest.getPhone());
+        candidate.setDateOfBirth(candidateRegisterRequest.getDateOfBirth());
+        candidate.setAddress(candidateRegisterRequest.getAddress());
+        candidate.setAvatar(candidateRegisterRequest.getAvatar());
         candidate.setCreateAt(LocalDate.now());
         candidate.setUpdateAt(LocalDate.now());
+        candidate.setCv(candidateRegisterRequest.getCv());
+        candidate.setRole("CANDIDATE");
 
         return candidateRepository.save(candidate);
     }
@@ -71,11 +73,13 @@ public class CandidateServiceImpl implements CandidateServices {
        return new LoginResponse(candidate.getCandidateId(),
                                candidate.getFullname(),
                                candidate.getEmail(),
+                               candidate.getGender(),
                                candidate.getAddress(),
                                candidate.getDateOfBirth(),
                                candidate.getCreateAt(),
                                candidate.getUpdateAt(),
                                candidate.getPhone(),
-                               candidate.getAvatar());
+                               candidate.getAvatar(),
+                               candidate.getRole());
     }
 }

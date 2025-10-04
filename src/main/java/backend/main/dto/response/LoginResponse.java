@@ -17,10 +17,12 @@ public class LoginResponse {
     String candidateId;
     String email;
     String fullname;
+    String gender;
     String address;
     LocalDate dateOfBirth;
     LocalDate createAt;
     LocalDate udpateAt;
     String phone;
     String avatar;
+    String role;
 }
