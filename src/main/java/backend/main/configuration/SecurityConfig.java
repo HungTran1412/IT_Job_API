@@ -26,16 +26,16 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class )
                 .authorizeHttpRequests(auth -> auth
                         // Cho phép không cần token
                         .requestMatchers("/company/login", "/user/login", "/company/register", "/user/register").permitAll()
 
                         // Các API dành riêng cho employer
-                        .requestMatchers("/company/**").hasRole("EMPLOYER")
+                        .requestMatchers("/company/**").hasAuthority("ROLE_EMPLOYER")
 
                         // Các API dành riêng cho candidate
-                        .requestMatchers("/user/**").hasRole("CANDIDATE")
+                        .requestMatchers("/user/**").hasAuthority("ROLE_CANDIDATE")
 
                         // Các request khác cần xác thực
                         .anyRequest().authenticated()

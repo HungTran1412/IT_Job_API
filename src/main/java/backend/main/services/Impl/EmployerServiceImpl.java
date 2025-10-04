@@ -2,7 +2,7 @@ package backend.main.services.Impl;
 
 import backend.main.configuration.JwtUtils;
 import backend.main.dto.request.EmployerLoginRequest;
-import backend.main.dto.request.EmployerRegisterRequest;
+import backend.main.dto.request.EmployerRequest;
 import backend.main.dto.response.EmployerLoginResponse;
 import backend.main.entities.Employer;
 import backend.main.enums.Role;
@@ -39,19 +39,19 @@ public class EmployerServiceImpl implements EmployerService {
 
     //dang ky
     @Override
-    public Employer register(EmployerRegisterRequest employerRegisterRequest) {
+    public Employer register(EmployerRequest employerRequest) {
         Employer employer = new Employer();
 
         employer.setEmployerId(generateEmployerID());
-        employer.setEmail(employerRegisterRequest.getEmail());
-        employer.setPassword(passwordEncoder.encode(employerRegisterRequest.getPassword()));
-        employer.setCompanyName(employerRegisterRequest.getCompanyName());
-        employer.setAddress(employerRegisterRequest.getAddress());
-        employer.setPhone(employerRegisterRequest.getPhone());
-        employer.setAvatar(employerRegisterRequest.getAvatar());
+        employer.setEmail(employerRequest.getEmail());
+        employer.setPassword(passwordEncoder.encode(employerRequest.getPassword()));
+        employer.setCompanyName(employerRequest.getCompanyName());
+        employer.setAddress(employerRequest.getAddress());
+        employer.setPhone(employerRequest.getPhone());
+        employer.setAvatar(employerRequest.getAvatar());
         employer.setCreateAt(LocalDate.now());
         employer.setUpdateAt(LocalDate.now());
-        employer.setRole(Role.EMPLOYER);
+        employer.setRole(Role.ROLE_EMPLOYER);
 
         return employerRepository.save(employer);
     }

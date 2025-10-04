@@ -1,7 +1,7 @@
 package backend.main.enums;
 
 public enum Role {
-    ADMIN,
-    EMPLOYER,
-    CANDIDATE
+    ROLE_ADMIN,
+    ROLE_EMPLOYER,
+    ROLE_CANDIDATE
 }

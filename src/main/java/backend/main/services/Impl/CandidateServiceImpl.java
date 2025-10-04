@@ -1,7 +1,7 @@
 package backend.main.services.Impl;
 
 import backend.main.configuration.JwtUtils;
-import backend.main.dto.request.CandidateRegisterRequest;
+import backend.main.dto.request.CandidateRequest;
 import backend.main.dto.request.CandidateLoginRequest;
 import backend.main.dto.response.CandidateLoginResponse;
 import backend.main.entities.Candidate;
@@ -44,24 +44,24 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
-    public Candidate register(CandidateRegisterRequest candidateRegisterRequest) {
+    public Candidate register(CandidateRequest candidateRequest) {
         // Tạo đối tượng Candidate mới
         Candidate candidate = new Candidate();
 
         // Gán giá trị từ request sang entity
-        candidate.setFullname(candidateRegisterRequest.getFullname());
+        candidate.setFullname(candidateRequest.getFullname());
         candidate.setCandidateId(generateCandidateID());
-        candidate.setEmail(candidateRegisterRequest.getEmail());
-        candidate.setPassword(passwordEncoder.encode(candidateRegisterRequest.getPassword())); // Mã hóa mật khẩu
-        candidate.setGender(candidateRegisterRequest.getGender());
-        candidate.setPhone(candidateRegisterRequest.getPhone());
-        candidate.setDateOfBirth(candidateRegisterRequest.getDateOfBirth());
-        candidate.setAddress(candidateRegisterRequest.getAddress());
-        candidate.setAvatar(candidateRegisterRequest.getAvatar());
+        candidate.setEmail(candidateRequest.getEmail());
+        candidate.setPassword(passwordEncoder.encode(candidateRequest.getPassword())); // Mã hóa mật khẩu
+        candidate.setGender(candidateRequest.getGender());
+        candidate.setPhone(candidateRequest.getPhone());
+        candidate.setDateOfBirth(candidateRequest.getDateOfBirth());
+        candidate.setAddress(candidateRequest.getAddress());
+        candidate.setAvatar(candidateRequest.getAvatar());
         candidate.setCreateAt(LocalDate.now()); // Ngày tạo tài khoản
         candidate.setUpdateAt(LocalDate.now()); // Ngày cập nhật tài khoản
-        candidate.setCv(candidateRegisterRequest.getCv());
-        candidate.setRole(Role.CANDIDATE); // Gán vai trò mặc định
+        candidate.setCv(candidateRequest.getCv());
+        candidate.setRole(Role.ROLE_CANDIDATE); // Gán vai trò mặc định
 
         // Lưu vào database
         return candidateRepository.save(candidate);
@@ -95,5 +95,22 @@ public class CandidateServiceImpl implements CandidateService {
                 candidate.getRole(),
                 token
         );
+    }
+
+    @Override
+    public Candidate updateInfo(String id, CandidateRequest request) {
+        Candidate candidate = candidateRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Candidate not found!"));
+
+        candidate.setFullname(request.getFullname());
+        candidate.setGender(request.getGender());
+        candidate.setPhone(request.getPhone());
+        candidate.setDateOfBirth(request.getDateOfBirth());
+        candidate.setAddress(request.getAddress());
+        candidate.setAvatar(request.getAvatar());
+        candidate.setUpdateAt(LocalDate.now());
+        candidate.setCv(request.getCv());
+
+        return candidateRepository.save(candidate);
     }
 }

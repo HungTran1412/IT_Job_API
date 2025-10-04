@@ -1,6 +1,6 @@
 package backend.main.controller;
 
-import backend.main.dto.request.CandidateRegisterRequest;
+import backend.main.dto.request.CandidateRequest;
 import backend.main.dto.request.CandidateLoginRequest;
 import backend.main.dto.response.CandidateLoginResponse;
 import backend.main.entities.Candidate;
@@ -19,8 +19,8 @@ public class AuthCandidateController {
     CandidateService candidateService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody CandidateRegisterRequest candidateRegisterRequest) {
-        Candidate candidate = candidateService.register(candidateRegisterRequest);
+    public ResponseEntity<?> register(@RequestBody CandidateRequest candidateRequest) {
+        Candidate candidate = candidateService.register(candidateRequest);
         return ResponseEntity.ok().body(candidate);
     }
 

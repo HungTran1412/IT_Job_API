@@ -1,7 +1,7 @@
 package backend.main.controller;
 
 import backend.main.dto.request.EmployerLoginRequest;
-import backend.main.dto.request.EmployerRegisterRequest;
+import backend.main.dto.request.EmployerRequest;
 import backend.main.dto.response.EmployerLoginResponse;
 import backend.main.entities.Employer;
 import backend.main.services.EmployerService;
@@ -19,8 +19,8 @@ public class AuthEmployerController {
     EmployerService employerService;
 
     @PostMapping("/register")
-    ResponseEntity<?> registerEmployer(@RequestBody EmployerRegisterRequest employerRegisterRequest){
-        Employer employer = employerService.register(employerRegisterRequest);
+    ResponseEntity<?> registerEmployer(@RequestBody EmployerRequest employerRequest){
+        Employer employer = employerService.register(employerRequest);
         return ResponseEntity.ok().body(employer);
     }
 

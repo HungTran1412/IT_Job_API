@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -40,15 +41,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 String email = jwtUtils.extractEmail(token);
                 String  role = jwtUtils.extractRole(token);
 
-                //Tạo đối tượng userdetail
-                User userDetails = new User(email, "", Collections.emptyList());
+                SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role);
 
                 //Tao doi tuong authentication
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
-                                userDetails,
+                                email,
                                 null,
-                                userDetails.getAuthorities()
+                                Collections.singleton(authority)
                         );
 
                 // Thêm chi tiết vào đối tượng xác thực

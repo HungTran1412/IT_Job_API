@@ -1,6 +1,5 @@
 package backend.main.dto.request;
 
-import jakarta.persistence.Column;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,11 +10,14 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
 @Setter
-public class EmployerRegisterRequest {
+public class CandidateRequest {
+    String fullname;
     String email;
     String password;
-    String companyName;
+    String gender;
     String address;
+    LocalDate dateOfBirth;
     String phone;
     String avatar;
+    String cv;
 }

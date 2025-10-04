@@ -54,12 +54,12 @@ public class JwtUtils {
 
     //Trích xuất email ở subject từ token
     public String extractEmail(String token) {
-        return (String) Jwts.parserBuilder()
+        return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .get("role");
+                .getSubject();
     }
 
     //Trich xuat role
