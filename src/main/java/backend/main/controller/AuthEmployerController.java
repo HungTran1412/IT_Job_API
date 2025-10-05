@@ -19,13 +19,13 @@ public class AuthEmployerController {
     EmployerService employerService;
 
     @PostMapping("/register")
-    ResponseEntity<?> registerEmployer(@RequestBody EmployerRequest employerRequest){
+    public ResponseEntity<?> registerEmployer(@RequestBody EmployerRequest employerRequest){
         Employer employer = employerService.register(employerRequest);
         return ResponseEntity.ok().body(employer);
     }
 
     @PostMapping("/login")
-    EmployerLoginResponse loginEmployer(@RequestBody EmployerLoginRequest employerLoginRequest){
-        return employerService.login(employerLoginRequest);
+    public ResponseEntity<EmployerLoginResponse> loginEmployer(@RequestBody EmployerLoginRequest request) {
+        return ResponseEntity.ok().body(employerService.login(request));
     }
 }

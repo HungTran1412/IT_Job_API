@@ -51,7 +51,7 @@ public class CandidateController {
 
         if(!candidate.getEmail().equals(email)){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("You can't edit another uesr's information!");
+                    .body("You can't edit another user's information!");
         }
 
         //Cap nhat

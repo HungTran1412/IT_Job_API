@@ -8,4 +8,5 @@ import backend.main.entities.Employer;
 public interface EmployerService {
     Employer register(EmployerRequest employerRequest);
     EmployerLoginResponse login(EmployerLoginRequest employerLoginRequest);
+    Employer updateInfo(String id, EmployerRequest request);
 }

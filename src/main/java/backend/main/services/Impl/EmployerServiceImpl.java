@@ -81,5 +81,17 @@ public class EmployerServiceImpl implements EmployerService {
                                          token);
     }
 
+    @Override
+    public Employer updateInfo(String id, EmployerRequest request) {
+        Employer employer = employerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Employer not found!"));
 
+        employer.setCompanyName(request.getCompanyName());
+        employer.setAddress(request.getAddress());
+        employer.setPhone(request.getPhone());
+        employer.setAvatar(request.getAvatar());
+        employer.setUpdateAt(LocalDate.now());
+
+        return employerRepository.save(employer);
+    }
 }
