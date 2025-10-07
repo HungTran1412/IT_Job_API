@@ -49,18 +49,11 @@ public class CandidateServiceImpl implements CandidateService {
         Candidate candidate = new Candidate();
 
         // Gán giá trị từ request sang entity
-        candidate.setFullname(candidateRequest.getFullname());
         candidate.setCandidateId(generateCandidateID());
         candidate.setEmail(candidateRequest.getEmail());
         candidate.setPassword(passwordEncoder.encode(candidateRequest.getPassword())); // Mã hóa mật khẩu
-        candidate.setGender(candidateRequest.getGender());
-        candidate.setPhone(candidateRequest.getPhone());
-        candidate.setDateOfBirth(candidateRequest.getDateOfBirth());
-        candidate.setAddress(candidateRequest.getAddress());
-        candidate.setAvatar(candidateRequest.getAvatar());
         candidate.setCreateAt(LocalDate.now()); // Ngày tạo tài khoản
         candidate.setUpdateAt(LocalDate.now()); // Ngày cập nhật tài khoản
-        candidate.setCv(candidateRequest.getCv());
         candidate.setRole(Role.ROLE_CANDIDATE); // Gán vai trò mặc định
 
         // Lưu vào database

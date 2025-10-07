@@ -45,10 +45,6 @@ public class EmployerServiceImpl implements EmployerService {
         employer.setEmployerId(generateEmployerID());
         employer.setEmail(employerRequest.getEmail());
         employer.setPassword(passwordEncoder.encode(employerRequest.getPassword()));
-        employer.setCompanyName(employerRequest.getCompanyName());
-        employer.setAddress(employerRequest.getAddress());
-        employer.setPhone(employerRequest.getPhone());
-        employer.setAvatar(employerRequest.getAvatar());
         employer.setCreateAt(LocalDate.now());
         employer.setUpdateAt(LocalDate.now());
         employer.setRole(Role.ROLE_EMPLOYER);
