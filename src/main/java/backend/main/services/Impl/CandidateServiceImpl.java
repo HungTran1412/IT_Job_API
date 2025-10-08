@@ -10,39 +10,33 @@ import backend.main.enums.Role;
 import backend.main.exception.AppException;
 import backend.main.repository.CandidateRepository;
 import backend.main.services.CandidateService;
+import backend.main.utils.SendEmailHandler;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Random;
+import java.util.UUID;
 
 @FieldDefaults(level = AccessLevel.PRIVATE,  makeFinal = true)
 @Service
 public class CandidateServiceImpl implements CandidateService {
-    @Autowired
     CandidateRepository candidateRepository;
-    @Autowired
     PasswordEncoder passwordEncoder;
-    @Autowired
     JwtUtils jwtUtils;
+    SendEmailHandler sendEmailHandler;
 
-    public CandidateServiceImpl(CandidateRepository candidateRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils) {
+    public CandidateServiceImpl(CandidateRepository candidateRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils, SendEmailHandler sendEmailHandler) {
         this.candidateRepository = candidateRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
+        this.sendEmailHandler = sendEmailHandler;
     }
 
     private String generateCandidateID() {
-        Random random = new Random();
-        String id;
-        do {
-            int randomNumber = 100000 + random.nextInt(900000); // Sinh số từ 100000 đến 999999
-            id = "USER" + randomNumber;
-        } while (candidateRepository.existsById(id)); // Nếu ID đã tồn tại thì sinh lại
-        return id;
+        return "USER" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
     @Override
@@ -60,9 +54,26 @@ public class CandidateServiceImpl implements CandidateService {
         candidate.setCreateAt(LocalDate.now()); // Ngày tạo tài khoản
         candidate.setUpdateAt(LocalDate.now()); // Ngày cập nhật tài khoản
         candidate.setRole(Role.ROLE_CANDIDATE); // Gán vai trò mặc định
+        candidate.setEnabled(false);
 
-        // Lưu vào database
-        return candidateRepository.save(candidate);
+        String token = UUID.randomUUID().toString();
+        candidate.setVerificationToken(token);
+
+        String verifyLink = "http://localhost:8080/user/verify?token=" + token;
+        sendEmailHandler.sendVerificationEmail(candidate.getEmail(), verifyLink);
+
+        return  candidateRepository.save(candidate);
+    }
+
+    @Override
+    public Candidate verifyCandidate(String token){
+        Candidate cd = candidateRepository.findByVerificationToken(token)
+                .orElseThrow(() -> new AppException(ErrorCode.TOKEN_INVALID));
+
+        cd.setUpdateAt(LocalDate.now());
+        cd.setEnabled(true);
+        cd.setVerificationToken(null);
+        return candidateRepository.save(cd);
     }
 
     @Override
@@ -74,6 +85,10 @@ public class CandidateServiceImpl implements CandidateService {
         // So sánh mật khẩu nhập vào với mật khẩu đã mã hóa trong DB
         if (!passwordEncoder.matches(candidateLoginRequest.getPassword(), candidate.getPassword())) {
             throw new AppException(ErrorCode.WRONG_PASSWORD);
+        }
+
+        if(candidate.getEnabled() == false){
+            throw new AppException(ErrorCode.ACCOUNT_UNENABLED);
         }
 
         String token = jwtUtils.generateToken(candidate.getEmail(), candidate.getRole());

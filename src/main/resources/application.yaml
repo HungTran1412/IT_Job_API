@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: ITJobAPI
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/itjob_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: "hunghung2k4123@gmail.com"
+    password: "hukm xrqg gsvw ihmi"
+    protocol: smtp
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.starttls.required: true
+      mail.debug: true
+
+jwt:
+  secret: "QKYDcrgwoDAp8i/8oMX6YGYk1BaZRfl9JxKueIVdzhl4vqDPsYT9qtQCJIgwhK0z"
+  expiration: 3600000

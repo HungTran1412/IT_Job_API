@@ -14,7 +14,10 @@ public enum ErrorCode {
     WRONG_PASSWORD(1002,"Wrong Password!"),
     EMAIL_DOES_NOT_EXIST(1003,"Email Does Not Exist!"),
     EMPLOYER_NOT_FOUND(1004, "Employer not found!"),
-    CANDIDATE_NOT_FOUND(1005, "Candidate not found!"),;
+    CANDIDATE_NOT_FOUND(1005, "Candidate not found!"),
+    TOKEN_INVALID(1006, "Token invalid!"),
+    ACCOUNT_UNENABLED(1007, "Account Unenabled!"),
+    ID_EXISTED(1008, "ID existed!"),;
 
     int code;
     String message;

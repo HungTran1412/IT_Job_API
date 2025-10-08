@@ -10,33 +10,29 @@ import backend.main.enums.Role;
 import backend.main.exception.AppException;
 import backend.main.repository.EmployerRepository;
 import backend.main.services.EmployerService;
-import org.springframework.beans.factory.annotation.Autowired;
+import backend.main.utils.SendEmailHandler;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class EmployerServiceImpl implements EmployerService {
-    @Autowired
     EmployerRepository employerRepository;
-
-    @Autowired
     PasswordEncoder passwordEncoder;
-
-    @Autowired
     JwtUtils jwtUtils;
+    SendEmailHandler sendEmailHandler;
+
+    public EmployerServiceImpl(EmployerRepository employerRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils, SendEmailHandler sendEmailHandler) {
+        this.employerRepository = employerRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtils = jwtUtils;
+        this.sendEmailHandler = sendEmailHandler;
+    }
 
     private String generateEmployerID() {
-        Random random = new Random();
-        String id;
-        do{
-            int randomNumber = 100000 + random.nextInt(900000);
-            id = "EMPL" + randomNumber;
-        }while(employerRepository.existsById(id));
-
-        return id;
+       return "EMPL" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
     //dang ky
@@ -54,6 +50,25 @@ public class EmployerServiceImpl implements EmployerService {
         employer.setCreateAt(LocalDate.now());
         employer.setUpdateAt(LocalDate.now());
         employer.setRole(Role.ROLE_EMPLOYER);
+        employer.setEnabled(false);
+
+        String token = UUID.randomUUID().toString();
+        employer.setVerificationToken(token);
+
+        String verifyLink = "http://localhost:8080/company/verify?token=" + token;
+        sendEmailHandler.sendVerificationEmail(employer.getEmail(), verifyLink);
+
+        return employerRepository.save(employer);
+    }
+
+    @Override
+    public Employer verifyEmployer(String token){
+        Employer employer = employerRepository.findByVerificationToken(token)
+                .orElseThrow(() -> new AppException(ErrorCode.TOKEN_INVALID));
+
+        employer.setUpdateAt(LocalDate.now());
+        employer.setEnabled(true);
+        employer.setVerificationToken(null);
 
         return employerRepository.save(employer);
     }
@@ -67,6 +82,11 @@ public class EmployerServiceImpl implements EmployerService {
         //So sanh mat khau
         if(!passwordEncoder.matches(employerLoginRequest.getPassword(), employer.getPassword())) {
             throw new AppException(ErrorCode.WRONG_PASSWORD);
+        }
+
+        //kiem tra xem tai khoan da duoc kich hoat chua
+        if(employer.getEnabled() == false){
+            throw new AppException(ErrorCode.ACCOUNT_UNENABLED);
         }
 
         String token = jwtUtils.generateToken(employer.getEmail(), employer.getRole());

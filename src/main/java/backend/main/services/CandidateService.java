@@ -9,4 +9,5 @@ public interface CandidateService {
     Candidate register(CandidateRequest candidateRequest);
     CandidateLoginResponse login(CandidateLoginRequest candidateLoginRequest);
     Candidate updateInfo(String id, CandidateRequest request);
+    Candidate verifyCandidate(String token);
 }

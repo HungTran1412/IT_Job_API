@@ -8,10 +8,10 @@ import backend.main.entities.Candidate;
 import backend.main.services.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -25,6 +25,14 @@ public class AuthCandidateController {
 
         apiResponse.setResult(candidateService.register(candidateRequest));
         return apiResponse;
+    }
+
+    @GetMapping("/verify")
+    public Map<String, String> verify(@RequestParam("token") String token){
+        Map<String, String> map = new HashMap<>();
+        Candidate candidate = candidateService.verifyCandidate(token);
+        map.put("message", "Your account has been verified!");
+        return map;
     }
 
     @PostMapping("/login")

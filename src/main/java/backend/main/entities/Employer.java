@@ -46,4 +46,10 @@ public class Employer {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     Role role;
+
+    @Column(name = "enabled")
+    Boolean enabled = false;
+
+    @Column(name = "verification_token")
+    String verificationToken;
 }

@@ -14,7 +14,7 @@ import java.util.Date;
 @Component
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class JwtUtils {
-    //Lấy secret key ở file application.properties
+    //Lấy secret key ở file application.yaml
     @Value("${jwt.secret}")
     String secretKey;
 

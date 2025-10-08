@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class )
                 .authorizeHttpRequests(auth -> auth
                         // Cho phép không cần token
-                        .requestMatchers("/company/login", "/user/login", "/company/register", "/user/register").permitAll()
+                        .requestMatchers("/company/login", "/user/login", "/company/register", "/user/register", "/user/verify", "/company/verify").permitAll()
 
                         // Các API dành riêng cho employer
                         .requestMatchers("/company/**").hasAuthority("ROLE_EMPLOYER")

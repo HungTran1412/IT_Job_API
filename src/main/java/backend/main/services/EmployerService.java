@@ -9,4 +9,5 @@ public interface EmployerService {
     Employer register(EmployerRequest employerRequest);
     EmployerLoginResponse login(EmployerLoginRequest employerLoginRequest);
     Employer updateInfo(String id, EmployerRequest request);
+    Employer verifyEmployer(String token);
 }

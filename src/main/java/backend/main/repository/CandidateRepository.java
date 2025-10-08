@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface CandidateRepository extends CrudRepository<Candidate, String> {
     Optional<Candidate> findByEmail(String email);
+    Optional<Candidate> findByVerificationToken(String token);
 }
