@@ -5,7 +5,9 @@ import backend.main.dto.request.EmployerLoginRequest;
 import backend.main.dto.request.EmployerRequest;
 import backend.main.dto.response.EmployerLoginResponse;
 import backend.main.entities.Employer;
+import backend.main.enums.ErrorCode;
 import backend.main.enums.Role;
+import backend.main.exception.AppException;
 import backend.main.repository.EmployerRepository;
 import backend.main.services.EmployerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,10 @@ public class EmployerServiceImpl implements EmployerService {
     //dang ky
     @Override
     public Employer register(EmployerRequest employerRequest) {
+        if(employerRepository.findByEmail(employerRequest.getEmail()).isPresent()){
+            throw new AppException(ErrorCode.EMAIL_EXISTED);
+        }
+
         Employer employer = new Employer();
 
         employer.setEmployerId(generateEmployerID());
@@ -56,11 +62,11 @@ public class EmployerServiceImpl implements EmployerService {
     @Override
     public EmployerLoginResponse login(EmployerLoginRequest employerLoginRequest) {
         Employer employer = employerRepository.findByEmail(employerLoginRequest.getEmail())
-                .orElseThrow(() -> new RuntimeException("Email not found!"));
+                .orElseThrow(() -> new AppException(ErrorCode.EMAIL_DOES_NOT_EXIST));
 
         //So sanh mat khau
         if(!passwordEncoder.matches(employerLoginRequest.getPassword(), employer.getPassword())) {
-            throw new RuntimeException("Wrong password!");
+            throw new AppException(ErrorCode.WRONG_PASSWORD);
         }
 
         String token = jwtUtils.generateToken(employer.getEmail(), employer.getRole());
@@ -80,7 +86,7 @@ public class EmployerServiceImpl implements EmployerService {
     @Override
     public Employer updateInfo(String id, EmployerRequest request) {
         Employer employer = employerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employer not found!"));
+                .orElseThrow(() -> new AppException(ErrorCode.EMPLOYER_NOT_FOUND));
 
         employer.setCompanyName(request.getCompanyName());
         employer.setAddress(request.getAddress());

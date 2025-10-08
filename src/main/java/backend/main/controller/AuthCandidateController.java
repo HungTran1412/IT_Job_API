@@ -2,6 +2,7 @@ package backend.main.controller;
 
 import backend.main.dto.request.CandidateRequest;
 import backend.main.dto.request.CandidateLoginRequest;
+import backend.main.dto.response.ApiResponse;
 import backend.main.dto.response.CandidateLoginResponse;
 import backend.main.entities.Candidate;
 import backend.main.services.CandidateService;
@@ -19,9 +20,11 @@ public class AuthCandidateController {
     CandidateService candidateService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody CandidateRequest candidateRequest) {
-        Candidate candidate = candidateService.register(candidateRequest);
-        return ResponseEntity.ok().body(candidate);
+    public ApiResponse<Candidate> register(@RequestBody CandidateRequest candidateRequest){
+        ApiResponse<Candidate> apiResponse = new ApiResponse<>();
+
+        apiResponse.setResult(candidateService.register(candidateRequest));
+        return apiResponse;
     }
 
     @PostMapping("/login")

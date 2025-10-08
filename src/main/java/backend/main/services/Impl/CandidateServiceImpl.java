@@ -5,7 +5,9 @@ import backend.main.dto.request.CandidateRequest;
 import backend.main.dto.request.CandidateLoginRequest;
 import backend.main.dto.response.CandidateLoginResponse;
 import backend.main.entities.Candidate;
+import backend.main.enums.ErrorCode;
 import backend.main.enums.Role;
+import backend.main.exception.AppException;
 import backend.main.repository.CandidateRepository;
 import backend.main.services.CandidateService;
 import lombok.AccessLevel;
@@ -45,6 +47,9 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public Candidate register(CandidateRequest candidateRequest) {
+        if(candidateRepository.findByEmail(candidateRequest.getEmail()).isPresent()){
+            throw new AppException(ErrorCode.EMAIL_EXISTED);
+        }
         // Tạo đối tượng Candidate mới
         Candidate candidate = new Candidate();
 
@@ -64,11 +69,11 @@ public class CandidateServiceImpl implements CandidateService {
     public CandidateLoginResponse login(CandidateLoginRequest candidateLoginRequest) {
         // Tìm ứng viên theo email, nếu không có thì ném lỗi
         Candidate candidate = candidateRepository.findByEmail(candidateLoginRequest.getEmail())
-                .orElseThrow(() -> new RuntimeException("Email not found!"));
+                .orElseThrow(() -> new AppException(ErrorCode.EMAIL_DOES_NOT_EXIST));
 
         // So sánh mật khẩu nhập vào với mật khẩu đã mã hóa trong DB
         if (!passwordEncoder.matches(candidateLoginRequest.getPassword(), candidate.getPassword())) {
-            throw new RuntimeException("Wrong password!");
+            throw new AppException(ErrorCode.WRONG_PASSWORD);
         }
 
         String token = jwtUtils.generateToken(candidate.getEmail(), candidate.getRole());
@@ -93,7 +98,7 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public Candidate updateInfo(String id, CandidateRequest request) {
         Candidate candidate = candidateRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Candidate not found!"));
+                .orElseThrow(() -> new AppException(ErrorCode.CANDIDATE_NOT_FOUND));
 
         candidate.setFullname(request.getFullname());
         candidate.setGender(request.getGender());
