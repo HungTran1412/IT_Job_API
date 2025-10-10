@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,8 +32,14 @@ public class EmployerController {
         this.jwtUtils = jwtUtils;
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateInfo(@PathVariable String id, @RequestBody EmployerRequest request, @RequestHeader(value = "Authorization") String authHeader) {
+    @PutMapping(value = "/update/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> updateInfo(@PathVariable String id,
+                                        @ModelAttribute EmployerRequest request,
+                                        @RequestHeader(value = "Authorization") String authHeader) {
+        System.out.println("===== [UPDATE EMPLOYER INFO] =====");
+        System.out.println("Employer ID: " + id);
+        System.out.println("Token: " + authHeader);
+
         //lay token
         String token = authHeader.replace("Bearer ", "");
 
@@ -44,8 +51,6 @@ public class EmployerController {
 
         //Lay email va role
         String email = jwtUtils.extractEmail(token);
-        String role = jwtUtils.extractRole(token);
-        System.out.println(role);
 
         //Chinh chinh nguoi dung moi duoc sua
         Employer employer = employerRepository.findById(id).orElse(null);

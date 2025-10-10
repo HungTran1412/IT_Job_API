@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,8 +30,14 @@ public class CandidateController {
         this.jwtUtils = jwtUtils;
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateInfo(@PathVariable String id, @RequestBody CandidateRequest candidateRequest, @RequestHeader("Authorization") String authHeader) {
+    @PutMapping(value = "/update/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> updateInfo(@PathVariable String id,
+                                        @ModelAttribute CandidateRequest candidateRequest,
+                                        @RequestHeader("Authorization") String authHeader) {
+        System.out.println("===== [UPDATE CANDIDATE INFO] =====");
+        System.out.println("Candidate ID: " + id);
+        System.out.println("Token: " + authHeader);
+
         //Get token from header
         String token = authHeader.replace("Bearer ", "");
 
@@ -42,17 +49,25 @@ public class CandidateController {
 
         //get email
         String email = jwtUtils.extractEmail(token);
-        String role = jwtUtils.extractRole(token);
-        System.out.println(role);
+//        String role = jwtUtils.extractRole(token);
+//        System.out.println(role);
 
         //chỉ chính chủ được sửa
         Candidate candidate = candidateRepository.findById(id).orElse(null);
         System.out.println("EmaiLLLLLLLL: " + candidate.getEmail());
 
         if(!candidate.getEmail().equals(email)){
+            System.out.println(">>> Candidate not found with id: " + id);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("You can't edit another user's information!");
         }
+
+        // Log dữ liệu gửi lên
+        System.out.println("Fullname: " + candidateRequest.getFullname());
+        System.out.println("Gender: " + candidateRequest.getGender());
+        System.out.println("Phone: " + candidateRequest.getPhone());
+        System.out.println("Avatar: " + (candidateRequest.getAvatar() != null ? candidateRequest.getAvatar().getOriginalFilename() : "null"));
+
 
         //Cap nhat
         Candidate updated = candidateService.updateInfo(id, candidateRequest);

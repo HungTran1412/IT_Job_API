@@ -31,3 +31,9 @@ spring:
 jwt:
   secret: "QKYDcrgwoDAp8i/8oMX6YGYk1BaZRfl9JxKueIVdzhl4vqDPsYT9qtQCJIgwhK0z"
   expiration: 3600000
+
+cloudinary:
+  cloud-name: "dw5kaujjx"
+  api-key: "214241934923182"
+  api-secret: "YttthxmWwS25l9jx_cPRfNCcjtM"
+  secure: true

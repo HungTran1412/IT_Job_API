@@ -10,29 +10,37 @@ import backend.main.enums.Role;
 import backend.main.exception.AppException;
 import backend.main.repository.CandidateRepository;
 import backend.main.services.CandidateService;
+import backend.main.utils.CloudinaryImageUpload;
 import backend.main.utils.SendEmailHandler;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Random;
 import java.util.UUID;
 
 @FieldDefaults(level = AccessLevel.PRIVATE,  makeFinal = true)
 @Service
 public class CandidateServiceImpl implements CandidateService {
+    @Autowired
     CandidateRepository candidateRepository;
+    @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
     JwtUtils jwtUtils;
+    @Autowired
     SendEmailHandler sendEmailHandler;
+    @Autowired
+    CloudinaryImageUpload cloudinaryImageUpload;
 
-    public CandidateServiceImpl(CandidateRepository candidateRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils, SendEmailHandler sendEmailHandler) {
+    public CandidateServiceImpl(CandidateRepository candidateRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils, SendEmailHandler sendEmailHandler, CloudinaryImageUpload cloudinaryImageUpload) {
         this.candidateRepository = candidateRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
         this.sendEmailHandler = sendEmailHandler;
+        this.cloudinaryImageUpload = cloudinaryImageUpload;
     }
 
     private String generateCandidateID() {
@@ -56,13 +64,16 @@ public class CandidateServiceImpl implements CandidateService {
         candidate.setRole(Role.ROLE_CANDIDATE); // Gán vai trò mặc định
         candidate.setEnabled(false);
 
+        //sinh token ngau nhien
         String token = UUID.randomUUID().toString();
         candidate.setVerificationToken(token);
 
+        //gan link + token vao email va gui
         String verifyLink = "http://localhost:8080/user/verify?token=" + token;
         sendEmailHandler.sendVerificationEmail(candidate.getEmail(), verifyLink);
 
-        return  candidateRepository.save(candidate);
+        //luu nguoi dung
+        return saveCandidate(candidate);
     }
 
     @Override
@@ -73,57 +84,68 @@ public class CandidateServiceImpl implements CandidateService {
         cd.setUpdateAt(LocalDate.now());
         cd.setEnabled(true);
         cd.setVerificationToken(null);
-        return candidateRepository.save(cd);
+        return saveCandidate(cd);
     }
 
     @Override
     public CandidateLoginResponse login(CandidateLoginRequest candidateLoginRequest) {
         // Tìm ứng viên theo email, nếu không có thì ném lỗi
-        Candidate candidate = candidateRepository.findByEmail(candidateLoginRequest.getEmail())
+        Candidate c = candidateRepository.findByEmail(candidateLoginRequest.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.EMAIL_DOES_NOT_EXIST));
 
         // So sánh mật khẩu nhập vào với mật khẩu đã mã hóa trong DB
-        if (!passwordEncoder.matches(candidateLoginRequest.getPassword(), candidate.getPassword())) {
+        if (!passwordEncoder.matches(candidateLoginRequest.getPassword(), c.getPassword())) {
             throw new AppException(ErrorCode.WRONG_PASSWORD);
         }
 
-        if(candidate.getEnabled() == false){
+        if(c.getEnabled() == false){
             throw new AppException(ErrorCode.ACCOUNT_UNENABLED);
         }
 
-        String token = jwtUtils.generateToken(candidate.getEmail(), candidate.getRole());
+        String token = jwtUtils.generateToken(c.getEmail(), c.getRole());
 
         // Trả về thông tin ứng viên (không bao gồm mật khẩu)
         return new CandidateLoginResponse(
-                candidate.getCandidateId(),
-                candidate.getFullname(),
-                candidate.getEmail(),
-                candidate.getGender(),
-                candidate.getAddress(),
-                candidate.getDateOfBirth(),
-                candidate.getCreateAt(),
-                candidate.getUpdateAt(),
-                candidate.getPhone(),
-                candidate.getAvatar(),
-                candidate.getRole(),
+                c.getCandidateId(),
+                c.getFullname(),
+                c.getEmail(),
+                c.getGender(),
+                c.getAddress(),
+                c.getDateOfBirth(),
+                c.getCreateAt(),
+                c.getUpdateAt(),
+                c.getPhone(),
+                c.getAvatar(),
+                c.getRole(),
                 token
         );
     }
 
     @Override
     public Candidate updateInfo(String id, CandidateRequest request) {
-        Candidate candidate = candidateRepository.findById(id)
+        Candidate c = candidateRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.CANDIDATE_NOT_FOUND));
 
-        candidate.setFullname(request.getFullname());
-        candidate.setGender(request.getGender());
-        candidate.setPhone(request.getPhone());
-        candidate.setDateOfBirth(request.getDateOfBirth());
-        candidate.setAddress(request.getAddress());
-        candidate.setAvatar(request.getAvatar());
-        candidate.setUpdateAt(LocalDate.now());
-        candidate.setCv(request.getCv());
+        c.setFullname(request.getFullname());
+        c.setGender(request.getGender());
+        c.setPhone(request.getPhone());
+        c.setDateOfBirth(request.getDateOfBirth());
+        c.setAddress(request.getAddress());
+        c.setUpdateAt(LocalDate.now());
+        c.setCv(request.getCv());
 
-        return candidateRepository.save(candidate);
+        //Kiem tra xem nguoi dung co cap nhat anh khong
+        if(request.getAvatar() != null && !request.getAvatar().isEmpty()){
+            System.out.println("Image: " + request.getAvatar().getOriginalFilename());
+            String imgUrl = cloudinaryImageUpload.uploadImage(request.getAvatar());
+            c.setAvatar(imgUrl);
+        }
+
+        return candidateRepository.save(c);
+    }
+
+    private Candidate saveCandidate(Candidate c) {
+        c.setUpdateAt(LocalDate.now());
+        return candidateRepository.save(c);
     }
 }

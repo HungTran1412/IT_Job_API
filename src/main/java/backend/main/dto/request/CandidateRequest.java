@@ -4,6 +4,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -16,8 +18,9 @@ public class CandidateRequest {
     String password;
     String gender;
     String address;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     LocalDate dateOfBirth;
     String phone;
-    String avatar;
+    MultipartFile avatar;
     String cv;
 }
