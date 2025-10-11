@@ -1,21 +1,21 @@
 package backend.main.exception;
 
-import backend.main.enums.ErrorCode;
+import backend.main.enums.Code;
 
 public class AppException extends RuntimeException
 {
-    private ErrorCode errorCode;
+    private Code code;
 
-    public AppException(ErrorCode errorCode) {
-        super(errorCode.getMessage());
-        this.errorCode = errorCode;
+    public AppException(Code code) {
+        super(code.getMessage());
+        this.code = code;
     }
 
-    public ErrorCode getErrorCode() {
-        return errorCode;
+    public Code getErrorCode() {
+        return code;
     }
 
-    public void setErrorCode(ErrorCode errorCode) {
-        this.errorCode = errorCode;
+    public void setErrorCode(Code code) {
+        this.code = code;
     }
 }

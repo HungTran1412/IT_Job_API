@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public enum ErrorCode {
+public enum Code {
     UNCATEGORIZED_EXCEPTION(1836, "Uncategorized error"),
     EMAIL_EXISTED(1001,"Email Already Exists!"),
     WRONG_PASSWORD(1002,"Wrong Password!"),
@@ -18,7 +18,8 @@ public enum ErrorCode {
     TOKEN_INVALID(1006, "Token invalid!"),
     ACCOUNT_UNENABLED(1007, "Account Unenabled!"),
     ID_EXISTED(1008, "ID existed!"),
-    IMAGE_UPLOAD_FAILED(1009, "Image Upload Failed!"),;
+    IMAGE_UPLOAD_FAILED(1009, "Image Upload Failed!"),
+    LOGIN_SUCCEEDED(2001, "Login succeeded!"),;
 
     int code;
     String message;

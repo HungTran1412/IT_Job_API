@@ -5,6 +5,7 @@ import backend.main.dto.request.CandidateLoginRequest;
 import backend.main.dto.response.ApiResponse;
 import backend.main.dto.response.CandidateLoginResponse;
 import backend.main.entities.Candidate;
+import backend.main.enums.Code;
 import backend.main.services.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,13 @@ public class AuthCandidateController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<CandidateLoginResponse> login(@RequestBody CandidateLoginRequest request) {
-        return  ResponseEntity.ok().body(candidateService.login(request));
+    public ApiResponse<CandidateLoginResponse> login(@RequestBody CandidateLoginRequest candidateLoginRequest){
+        CandidateLoginResponse response = candidateService.login(candidateLoginRequest);
+
+        return ApiResponse.<CandidateLoginResponse>builder()
+                .code(Code.LOGIN_SUCCEEDED.getCode())
+                .message(Code.LOGIN_SUCCEEDED.getMessage())
+                .result(response)
+                .build();
     }
 }

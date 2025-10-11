@@ -6,7 +6,10 @@ import backend.main.dto.response.ApiResponse;
 import backend.main.dto.response.EmployerLoginResponse;
 import backend.main.entities.Candidate;
 import backend.main.entities.Employer;
+import backend.main.enums.Code;
+import backend.main.services.CandidateService;
 import backend.main.services.EmployerService;
+import com.cloudinary.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +39,13 @@ public class AuthEmployerController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<EmployerLoginResponse> loginEmployer(@RequestBody EmployerLoginRequest request) {
-        return ResponseEntity.ok().body(employerService.login(request));
+    public ApiResponse<EmployerLoginResponse> login(@RequestBody EmployerLoginRequest request){
+        EmployerLoginResponse response = employerService.login(request);
+
+        return ApiResponse.<EmployerLoginResponse>builder()
+                .code(Code.LOGIN_SUCCEEDED.getCode())
+                .message(Code.LOGIN_SUCCEEDED.getMessage())
+                .result(response)
+                .build();
     }
 }

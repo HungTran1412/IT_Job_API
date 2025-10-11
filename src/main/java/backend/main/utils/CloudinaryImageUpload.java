@@ -1,6 +1,6 @@
 package backend.main.utils;
 
-import backend.main.enums.ErrorCode;
+import backend.main.enums.Code;
 import backend.main.exception.AppException;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
@@ -23,7 +23,7 @@ public class CloudinaryImageUpload {
 
         if (file == null) {
             System.out.println(">>>File is null!");
-            throw new AppException(ErrorCode.IMAGE_UPLOAD_FAILED);
+            throw new AppException(Code.IMAGE_UPLOAD_FAILED);
         }
 
         System.out.println("File name: " + file.getOriginalFilename());
@@ -54,11 +54,11 @@ public class CloudinaryImageUpload {
         } catch (IOException e) {
             System.out.println(">>>IOException when uploading image!");
             e.printStackTrace();
-            throw new AppException(ErrorCode.IMAGE_UPLOAD_FAILED);
+            throw new AppException(Code.IMAGE_UPLOAD_FAILED);
         } catch (Exception e) {
             System.out.println(">>>Unexpected error during upload!");
             e.printStackTrace();
-            throw new AppException(ErrorCode.IMAGE_UPLOAD_FAILED);
+            throw new AppException(Code.IMAGE_UPLOAD_FAILED);
         }
     }
 }

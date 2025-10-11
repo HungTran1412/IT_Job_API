@@ -15,15 +15,6 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CandidateLoginResponse {
     String candidateId;
-    String email;
-    String fullname;
-    String gender;
-    String address;
-    LocalDate dateOfBirth;
-    LocalDate createAt;
-    LocalDate udpateAt;
-    String phone;
-    String avatar;
     Role role;
     String token;
 }

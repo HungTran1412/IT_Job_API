@@ -5,7 +5,7 @@ import backend.main.dto.request.CandidateRequest;
 import backend.main.dto.request.CandidateLoginRequest;
 import backend.main.dto.response.CandidateLoginResponse;
 import backend.main.entities.Candidate;
-import backend.main.enums.ErrorCode;
+import backend.main.enums.Code;
 import backend.main.enums.Role;
 import backend.main.exception.AppException;
 import backend.main.repository.CandidateRepository;
@@ -50,13 +50,14 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public Candidate register(CandidateRequest candidateRequest) {
         if(candidateRepository.findByEmail(candidateRequest.getEmail()).isPresent()){
-            throw new AppException(ErrorCode.EMAIL_EXISTED);
+            throw new AppException(Code.EMAIL_EXISTED);
         }
         // Tạo đối tượng Candidate mới
         Candidate candidate = new Candidate();
 
         // Gán giá trị từ request sang entity
         candidate.setCandidateId(generateCandidateID());
+        candidate.setFullname(candidateRequest.getFullname());
         candidate.setEmail(candidateRequest.getEmail());
         candidate.setPassword(passwordEncoder.encode(candidateRequest.getPassword())); // Mã hóa mật khẩu
         candidate.setCreateAt(LocalDate.now()); // Ngày tạo tài khoản
@@ -79,7 +80,7 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public Candidate verifyCandidate(String token){
         Candidate cd = candidateRepository.findByVerificationToken(token)
-                .orElseThrow(() -> new AppException(ErrorCode.TOKEN_INVALID));
+                .orElseThrow(() -> new AppException(Code.TOKEN_INVALID));
 
         cd.setUpdateAt(LocalDate.now());
         cd.setEnabled(true);
@@ -91,15 +92,15 @@ public class CandidateServiceImpl implements CandidateService {
     public CandidateLoginResponse login(CandidateLoginRequest candidateLoginRequest) {
         // Tìm ứng viên theo email, nếu không có thì ném lỗi
         Candidate c = candidateRepository.findByEmail(candidateLoginRequest.getEmail())
-                .orElseThrow(() -> new AppException(ErrorCode.EMAIL_DOES_NOT_EXIST));
+                .orElseThrow(() -> new AppException(Code.EMAIL_DOES_NOT_EXIST));
 
         // So sánh mật khẩu nhập vào với mật khẩu đã mã hóa trong DB
         if (!passwordEncoder.matches(candidateLoginRequest.getPassword(), c.getPassword())) {
-            throw new AppException(ErrorCode.WRONG_PASSWORD);
+            throw new AppException(Code.WRONG_PASSWORD);
         }
 
         if(c.getEnabled() == false){
-            throw new AppException(ErrorCode.ACCOUNT_UNENABLED);
+            throw new AppException(Code.ACCOUNT_UNENABLED);
         }
 
         String token = jwtUtils.generateToken(c.getEmail(), c.getRole());
@@ -107,15 +108,6 @@ public class CandidateServiceImpl implements CandidateService {
         // Trả về thông tin ứng viên (không bao gồm mật khẩu)
         return new CandidateLoginResponse(
                 c.getCandidateId(),
-                c.getFullname(),
-                c.getEmail(),
-                c.getGender(),
-                c.getAddress(),
-                c.getDateOfBirth(),
-                c.getCreateAt(),
-                c.getUpdateAt(),
-                c.getPhone(),
-                c.getAvatar(),
                 c.getRole(),
                 token
         );
@@ -124,7 +116,7 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public Candidate updateInfo(String id, CandidateRequest request) {
         Candidate c = candidateRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.CANDIDATE_NOT_FOUND));
+                .orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
 
         c.setFullname(request.getFullname());
         c.setGender(request.getGender());

@@ -5,7 +5,7 @@ import backend.main.dto.request.EmployerLoginRequest;
 import backend.main.dto.request.EmployerRequest;
 import backend.main.dto.response.EmployerLoginResponse;
 import backend.main.entities.Employer;
-import backend.main.enums.ErrorCode;
+import backend.main.enums.Code;
 import backend.main.enums.Role;
 import backend.main.exception.AppException;
 import backend.main.repository.EmployerRepository;
@@ -47,12 +47,13 @@ public class EmployerServiceImpl implements EmployerService {
     @Override
     public Employer register(EmployerRequest employerRequest) {
         if(employerRepository.findByEmail(employerRequest.getEmail()).isPresent()){
-            throw new AppException(ErrorCode.EMAIL_EXISTED);
+            throw new AppException(Code.EMAIL_EXISTED);
         }
 
         Employer employer = new Employer();
 
         employer.setEmployerId(generateEmployerID());
+        employer.setCompanyName(employerRequest.getCompanyName());
         employer.setEmail(employerRequest.getEmail());
         employer.setPassword(passwordEncoder.encode(employerRequest.getPassword()));
         employer.setCreateAt(LocalDate.now());
@@ -77,7 +78,7 @@ public class EmployerServiceImpl implements EmployerService {
     @Override
     public Employer verifyEmployer(String token){
         Employer e = employerRepository.findByVerificationToken(token)
-                .orElseThrow(() -> new AppException(ErrorCode.TOKEN_INVALID));
+                .orElseThrow(() -> new AppException(Code.TOKEN_INVALID));
 
         e.setUpdateAt(LocalDate.now());
         e.setEnabled(true);
@@ -90,28 +91,21 @@ public class EmployerServiceImpl implements EmployerService {
     @Override
     public EmployerLoginResponse login(EmployerLoginRequest request) {
         Employer e = employerRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new AppException(ErrorCode.EMAIL_DOES_NOT_EXIST));
+                .orElseThrow(() -> new AppException(Code.EMAIL_DOES_NOT_EXIST));
 
         //So sanh mat khau
         if(!passwordEncoder.matches(request.getPassword(), e.getPassword())) {
-            throw new AppException(ErrorCode.WRONG_PASSWORD);
+            throw new AppException(Code.WRONG_PASSWORD);
         }
 
         //kiem tra xem tai khoan da duoc kich hoat chua
         if(e.getEnabled() == false){
-            throw new AppException(ErrorCode.ACCOUNT_UNENABLED);
+            throw new AppException(Code.ACCOUNT_UNENABLED);
         }
 
         String token = jwtUtils.generateToken(e.getEmail(), e.getRole());
 
         return new EmployerLoginResponse(e.getEmployerId(),
-                                         e.getCompanyName(),
-                                         e.getEmail(),
-                                         e.getAddress(),
-                                         e.getPhone(),
-                                         e.getCreateAt(),
-                                         e.getUpdateAt(),
-                                         e.getAvatar(),
                                          e.getRole(),
                                          token);
     }
@@ -119,7 +113,7 @@ public class EmployerServiceImpl implements EmployerService {
     @Override
     public Employer updateInfo(String id, EmployerRequest request) {
         Employer e = employerRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.EMPLOYER_NOT_FOUND));
+                .orElseThrow(() -> new AppException(Code.EMPLOYER_NOT_FOUND));
 
         e.setCompanyName(request.getCompanyName());
         e.setAddress(request.getAddress());
