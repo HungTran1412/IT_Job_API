@@ -2,6 +2,7 @@ package backend.main.configuration;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
@@ -30,33 +31,37 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // Lấy header 'Authorization' từ nơi chưa JWT
         String authHeader = request.getHeader("Authorization");
+        String token = null;
 
-        //Kiểm tra header có tồn tại và bằng đầu bằng Bearer koong
+        //Ưu tiên lấy từ header Authorization
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
-
-            //Xác thực tính hợp lẹ của token
-            if(jwtUtils.validateToken(token)) {
-                //trích xuat thông tin người dùng
-                String email = jwtUtils.extractEmail(token);
-                String  role = jwtUtils.extractRole(token);
-
-                SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role);
-
-                //Tao doi tuong authentication
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                email,
-                                null,
-                                Collections.singleton(authority)
-                        );
-
-                // Thêm chi tiết vào đối tượng xác thực
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+            token = authHeader.substring(7);
+        }else {
+            //Nếu không có header thì lấy ở cookie
+            if(request.getCookies() != null){
+                for(Cookie cookie: request.getCookies()){
+                    if("jwt".equals(cookie.getName())){
+                        token = cookie.getValue();
+                        break;
+                    }
+                }
             }
         }
+
+        if(token != null && jwtUtils.validateToken(token)) {
+            String email = jwtUtils.extractEmail(token);
+            String id  = jwtUtils.extractId(token);
+            String role  = jwtUtils.extractRole(token);
+
+            SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role);
+            UsernamePasswordAuthenticationToken auth =
+                    new UsernamePasswordAuthenticationToken(email, null, Collections.singleton(authority));
+
+            auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            request.setAttribute("userId", id);
+            SecurityContextHolder.getContext().setAuthentication(auth);
+        }
+
         filterChain.doFilter(request, response);
     }
 }

@@ -80,6 +80,6 @@ public class JwtUtils {
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .get("id");
+                .get("id", String.class);
     }
 }

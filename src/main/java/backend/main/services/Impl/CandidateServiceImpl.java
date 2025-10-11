@@ -3,8 +3,6 @@ package backend.main.services.Impl;
 import backend.main.configuration.JwtUtils;
 import backend.main.dto.request.CandidateRequest;
 import backend.main.dto.request.CandidateLoginRequest;
-import backend.main.dto.response.CandidateLoginResponse;
-import backend.main.dto.response.CandidateResponse;
 import backend.main.entities.Candidate;
 import backend.main.enums.Code;
 import backend.main.enums.Role;
@@ -20,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @FieldDefaults(level = AccessLevel.PRIVATE,  makeFinal = true)
@@ -61,8 +60,8 @@ public class CandidateServiceImpl implements CandidateService {
         candidate.setFullname(candidateRequest.getFullname());
         candidate.setEmail(candidateRequest.getEmail());
         candidate.setPassword(passwordEncoder.encode(candidateRequest.getPassword())); // Mã hóa mật khẩu
-        candidate.setCreateAt(LocalDate.now()); // Ngày tạo tài khoản
-        candidate.setUpdateAt(LocalDate.now()); // Ngày cập nhật tài khoản
+        candidate.setCreateAt(LocalDateTime.now()); // Ngày tạo tài khoản
+        candidate.setUpdateAt(LocalDateTime.now()); // Ngày cập nhật tài khoản
         candidate.setRole(Role.ROLE_CANDIDATE); // Gán vai trò mặc định
         candidate.setEnabled(false);
 
@@ -83,35 +82,20 @@ public class CandidateServiceImpl implements CandidateService {
         Candidate cd = candidateRepository.findByVerificationToken(token)
                 .orElseThrow(() -> new AppException(Code.TOKEN_INVALID));
 
-        cd.setUpdateAt(LocalDate.now());
+        cd.setUpdateAt(LocalDateTime.now());
         cd.setEnabled(true);
         cd.setVerificationToken(null);
         return saveCandidate(cd);
     }
 
     @Override
-    public CandidateResponse getCandidateById(String id) {
-        Candidate c = candidateRepository.findById(id)
-                .orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
-
-        return new CandidateResponse(
-                c.getFullname(),
-                c.getEmail(),
-                c.getAddress(),
-                c.getDateOfBirth(),
-                c.getPhone(),
-                c.getAvatar(),
-                c.getCv());
-    }
-
-    @Override
-    public CandidateLoginResponse login(CandidateLoginRequest candidateLoginRequest) {
+    public String login(CandidateLoginRequest request) {
         // Tìm ứng viên theo email, nếu không có thì ném lỗi
-        Candidate c = candidateRepository.findByEmail(candidateLoginRequest.getEmail())
+        Candidate c = candidateRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(Code.EMAIL_DOES_NOT_EXIST));
 
         // So sánh mật khẩu nhập vào với mật khẩu đã mã hóa trong DB
-        if (!passwordEncoder.matches(candidateLoginRequest.getPassword(), c.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), c.getPassword())) {
             throw new AppException(Code.WRONG_PASSWORD);
         }
 
@@ -119,14 +103,8 @@ public class CandidateServiceImpl implements CandidateService {
             throw new AppException(Code.ACCOUNT_UNENABLED);
         }
 
-        String token = jwtUtils.generateToken(c.getCandidateId(),c.getEmail(), c.getRole());
-
         // Trả về thông tin ứng viên (không bao gồm mật khẩu)
-        return new CandidateLoginResponse(
-                c.getCandidateId(),
-                c.getRole(),
-                token
-        );
+        return jwtUtils.generateToken(c.getCandidateId(),c.getEmail(), c.getRole());
     }
 
     @Override
@@ -139,7 +117,7 @@ public class CandidateServiceImpl implements CandidateService {
         c.setPhone(request.getPhone());
         c.setDateOfBirth(request.getDateOfBirth());
         c.setAddress(request.getAddress());
-        c.setUpdateAt(LocalDate.now());
+        c.setUpdateAt(LocalDateTime.now());
         c.setCv(request.getCv());
 
         //Kiem tra xem nguoi dung co cap nhat anh khong
@@ -153,7 +131,7 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     private Candidate saveCandidate(Candidate c) {
-        c.setUpdateAt(LocalDate.now());
+        c.setUpdateAt(LocalDateTime.now());
         return candidateRepository.save(c);
     }
 }

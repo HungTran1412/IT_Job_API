@@ -3,8 +3,6 @@ package backend.main.services.Impl;
 import backend.main.configuration.JwtUtils;
 import backend.main.dto.request.EmployerLoginRequest;
 import backend.main.dto.request.EmployerRequest;
-import backend.main.dto.response.EmployerLoginResponse;
-import backend.main.dto.response.EmployerResponse;
 import backend.main.entities.Employer;
 import backend.main.enums.Code;
 import backend.main.enums.Role;
@@ -17,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -57,8 +55,8 @@ public class EmployerServiceImpl implements EmployerService {
         employer.setCompanyName(employerRequest.getCompanyName());
         employer.setEmail(employerRequest.getEmail());
         employer.setPassword(passwordEncoder.encode(employerRequest.getPassword()));
-        employer.setCreateAt(LocalDate.now());
-        employer.setUpdateAt(LocalDate.now());
+        employer.setCreateAt(LocalDateTime.now());
+        employer.setUpdateAt(LocalDateTime.now());
         employer.setRole(Role.ROLE_EMPLOYER);
         employer.setEnabled(false);
 
@@ -81,30 +79,16 @@ public class EmployerServiceImpl implements EmployerService {
         Employer e = employerRepository.findByVerificationToken(token)
                 .orElseThrow(() -> new AppException(Code.TOKEN_INVALID));
 
-        e.setUpdateAt(LocalDate.now());
+        e.setUpdateAt(LocalDateTime.now());
         e.setEnabled(true);
         e.setVerificationToken(null);
 
         return saveEmployer(e);
     }
 
-    @Override
-    public EmployerResponse getEmployerById(String id) {
-        Employer e = employerRepository.findById(id)
-                .orElseThrow(() -> new AppException(Code.EMPLOYER_NOT_FOUND));
-
-        return new EmployerResponse(
-                e.getCompanyName(),
-                e.getEmail(),
-                e.getAddress(),
-                e.getPhone(),
-                e.getAvatar()
-        );
-    }
-
     //Dang nhap
     @Override
-    public EmployerLoginResponse login(EmployerLoginRequest request) {
+    public String login(EmployerLoginRequest request) {
         Employer e = employerRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(Code.EMAIL_DOES_NOT_EXIST));
 
@@ -118,11 +102,7 @@ public class EmployerServiceImpl implements EmployerService {
             throw new AppException(Code.ACCOUNT_UNENABLED);
         }
 
-        String token = jwtUtils.generateToken(e.getEmployerId(),e.getEmail(), e.getRole());
-
-        return new EmployerLoginResponse(e.getEmployerId(),
-                                         e.getRole(),
-                                         token);
+        return jwtUtils.generateToken(e.getEmployerId(), e.getEmail(), e.getRole());
     }
 
     @Override
@@ -133,7 +113,7 @@ public class EmployerServiceImpl implements EmployerService {
         e.setCompanyName(request.getCompanyName());
         e.setAddress(request.getAddress());
         e.setPhone(request.getPhone());
-        e.setUpdateAt(LocalDate.now());
+        e.setUpdateAt(LocalDateTime.now());
 
         //Kiem tra xem nguoi dung co cap nhat anh khong
         if(request.getAvatar() != null && !request.getAvatar().isEmpty()){
@@ -146,7 +126,7 @@ public class EmployerServiceImpl implements EmployerService {
     }
 
     private Employer saveEmployer(Employer e) {
-        e.setUpdateAt(LocalDate.now());
+        e.setUpdateAt(LocalDateTime.now());
         return employerRepository.save(e);
     }
 }

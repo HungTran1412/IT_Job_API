@@ -34,50 +34,51 @@ public class CandidateController {
         this.jwtUtils = jwtUtils;
     }
 
-    @GetMapping(value = "/info/{id}")
-    public ResponseEntity<ApiResponse<CandidateResponse>> getInfo(
-            @PathVariable String id,
-            @RequestHeader("Authorization")  String auth) {
-        try {
-            String token = auth.replace("Bearer ", "");
-
-            // Kiểm tra tính hợp lệ
-            if (!jwtUtils.validateToken(token)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(ApiResponse.<CandidateResponse>builder()
-                                .code(Code.TOKEN_INVALID.getCode())
-                                .message(Code.TOKEN_INVALID.getMessage())
-                                .build());
-            }
-
-            String email = jwtUtils.extractEmail(token);
-
-            CandidateResponse response = candidateService.getCandidateById(id);
-            Candidate candidate = candidateRepository.findById(id)
-                    .orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
-
-            if (!candidate.getEmail().equals(email)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(ApiResponse.<CandidateResponse>builder()
-                                .code(Code.CANNOT_GET_ANOTHER_INFO.getCode())
-                                .message(Code.CANNOT_GET_ANOTHER_INFO.getMessage())
-                                .build());
-            }
-
-            return ResponseEntity.ok(
-                    ApiResponse.<CandidateResponse>builder()
-                            .code(Code.GET_INFO_SUCCEEDED.getCode())
-                            .message(Code.GET_INFO_SUCCEEDED.getMessage())
-                            .result(response)
-                            .build()
-            );
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+    @GetMapping(value = "/info")
+    public ResponseEntity<ApiResponse<CandidateResponse>> getProfile(
+            @CookieValue(value = "jwt", required = false) String token
+    ){
+        //Kiểm tra xem có token không
+        if(token == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(ApiResponse.<CandidateResponse>builder()
-                            .code(Code.UNCATEGORIZED_EXCEPTION.getCode())
-                            .message(Code.UNCATEGORIZED_EXCEPTION.getMessage())
+                            .code(Code.TOKEN_INVALID.getCode())
+                            .message("Missing token or user not logged in")
                             .build());
         }
+
+        //Xác thực token
+        if(!jwtUtils.validateToken(token)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.<CandidateResponse>builder()
+                            .code(Code.TOKEN_INVALID.getCode())
+                            .message(Code.TOKEN_INVALID.getMessage())
+                            .build());
+        }
+
+        //giải mã token: decode token
+        String id = jwtUtils.extractId(token);
+
+        //Tim ứng viên theo id
+        Candidate c = candidateRepository.findById(id)
+                .orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
+
+        //Tạo response
+        CandidateResponse response = new CandidateResponse(
+                c.getFullname(),
+                c.getEmail(),
+                c.getAddress(),
+                c.getDateOfBirth(),
+                c.getPhone(),
+                c.getAvatar(),
+                c.getCv()
+        );
+
+        return ResponseEntity.ok(ApiResponse.<CandidateResponse>builder()
+                .code(Code.GET_INFO_SUCCEEDED.getCode())
+                .message(Code.GET_INFO_SUCCEEDED.getMessage())
+                .result(response)
+                .build());
     }
 
     @PutMapping(value = "/update/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})

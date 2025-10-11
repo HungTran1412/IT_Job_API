@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tbl_employer")
@@ -32,10 +33,10 @@ public class Employer {
     String address;
 
     @Column(name = "create_at")
-    LocalDate createAt;
+    LocalDateTime createAt;
 
     @Column(name = "update_at")
-    LocalDate updateAt;
+    LocalDateTime updateAt;
 
     @Column(name = "phone")
     String phone;

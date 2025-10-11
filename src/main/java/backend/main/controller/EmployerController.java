@@ -36,50 +36,48 @@ public class EmployerController {
         this.jwtUtils = jwtUtils;
     }
 
-    @GetMapping(value = "/info/{id}")
-    public ResponseEntity<ApiResponse<EmployerResponse>> getInfo(
-            @PathVariable String id,
-            @RequestHeader("Authorization") String auth
+    @GetMapping(value = "/info")
+    public ResponseEntity<ApiResponse<EmployerResponse>> getEmployerProfile(
+        @CookieValue(value = "jwt", required = true) String token
     ){
-        try {
-            String token = auth.replace("Bearer ", "");
-
-            // Kiểm tra tính hợp lệ
-            if (!jwtUtils.validateToken(token)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(ApiResponse.<EmployerResponse>builder()
-                                .code(Code.TOKEN_INVALID.getCode())
-                                .message(Code.TOKEN_INVALID.getMessage())
-                                .build());
-            }
-
-            String email = jwtUtils.extractEmail(token);
-
-            EmployerResponse response = employerService.getEmployerById(id);
-            Employer e = employerRepository.findById(id)
-                    .orElseThrow(() -> new AppException(Code.EMPLOYER_NOT_FOUND));
-
-            if (!e.getEmail().equals(email)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(ApiResponse.<EmployerResponse>builder()
-                                .code(Code.CANNOT_GET_ANOTHER_INFO.getCode())
-                                .message(Code.CANNOT_GET_ANOTHER_INFO.getMessage())
-                                .build());
-            }
-            return ResponseEntity.ok(
-                    ApiResponse.<EmployerResponse>builder()
-                            .code(Code.GET_INFO_SUCCEEDED.getCode())
-                            .message(Code.GET_INFO_SUCCEEDED.getMessage())
-                            .result(response)
-                            .build()
-            );
-        } catch (AppException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        //Kiem tra xem co cookie khong
+        if(token == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(ApiResponse.<EmployerResponse>builder()
-                            .code(Code.UNCATEGORIZED_EXCEPTION.getCode())
-                            .message(Code.UNCATEGORIZED_EXCEPTION.getMessage())
+                            .code(Code.TOKEN_INVALID.getCode())
+                            .message("Missing token or user not logged in")
                             .build());
         }
+
+        //Xác thực token
+        if(!jwtUtils.validateToken(token)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.<EmployerResponse>builder()
+                            .code(Code.TOKEN_INVALID.getCode())
+                            .message(Code.TOKEN_INVALID.getMessage())
+                            .build());
+        }
+
+        //giải mã token: decode token
+        String id = jwtUtils.extractId(token);
+
+        //Tim nha tuyen dung theo id
+        Employer e = employerRepository.findById(id)
+                .orElseThrow(() -> new AppException(Code.EMPLOYER_NOT_FOUND));
+
+        EmployerResponse response = new EmployerResponse(
+                e.getCompanyName(),
+                e.getEmail(),
+                e.getAddress(),
+                e.getPhone(),
+                e.getAvatar()
+        );
+
+        return ResponseEntity.ok(ApiResponse.<EmployerResponse>builder()
+                .code(Code.GET_INFO_SUCCEEDED.getCode())
+                .message(Code.GET_INFO_SUCCEEDED.getMessage())
+                .result(response)
+                .build());
     }
 
     @PutMapping(value = "/update/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
