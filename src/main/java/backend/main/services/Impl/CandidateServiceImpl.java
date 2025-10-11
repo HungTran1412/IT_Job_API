@@ -119,7 +119,7 @@ public class CandidateServiceImpl implements CandidateService {
             throw new AppException(Code.ACCOUNT_UNENABLED);
         }
 
-        String token = jwtUtils.generateToken(c.getEmail(), c.getRole());
+        String token = jwtUtils.generateToken(c.getCandidateId(),c.getEmail(), c.getRole());
 
         // Trả về thông tin ứng viên (không bao gồm mật khẩu)
         return new CandidateLoginResponse(

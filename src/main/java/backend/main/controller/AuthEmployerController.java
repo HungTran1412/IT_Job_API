@@ -45,7 +45,6 @@ public class AuthEmployerController {
         return ApiResponse.<EmployerLoginResponse>builder()
                 .code(Code.LOGIN_SUCCEEDED.getCode())
                 .message(Code.LOGIN_SUCCEEDED.getMessage())
-                .result(response)
                 .build();
     }
 }

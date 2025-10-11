@@ -118,7 +118,7 @@ public class EmployerServiceImpl implements EmployerService {
             throw new AppException(Code.ACCOUNT_UNENABLED);
         }
 
-        String token = jwtUtils.generateToken(e.getEmail(), e.getRole());
+        String token = jwtUtils.generateToken(e.getEmployerId(),e.getEmail(), e.getRole());
 
         return new EmployerLoginResponse(e.getEmployerId(),
                                          e.getRole(),

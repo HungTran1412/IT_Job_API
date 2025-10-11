@@ -43,7 +43,6 @@ public class AuthCandidateController {
         return ApiResponse.<CandidateLoginResponse>builder()
                 .code(Code.LOGIN_SUCCEEDED.getCode())
                 .message(Code.LOGIN_SUCCEEDED.getMessage())
-                .result(response)
                 .build();
     }
 }

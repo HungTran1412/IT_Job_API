@@ -24,7 +24,8 @@ public enum Code {
     UPDATE_INFO_FAILED(2003, "Update info failed!"),
     CANNOT_UPDATE_ANOTHER_USER(2004, "Cannot update another user!"),
     CANNOT_GET_ANOTHER_INFO(2005, "Cannot get another info!"),
-    GET_INFO_SUCCEEDED(2006, "Get info succeeded!"),;
+    GET_INFO_SUCCEEDED(2006, "Get info succeeded!"),
+    ;
 
     int code;
     String message;

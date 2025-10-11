@@ -14,4 +14,9 @@ public class ApiResponse<T>{
     int code = 1000;
     String message;
     T result;
+
+    public ApiResponse(int code, String message) {
+        this.code = code;
+        this.message = message;
+    }
 }

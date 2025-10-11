@@ -28,9 +28,10 @@ public class JwtUtils {
     }
 
     //Tạo JWT mới
-    public String generateToken(String email, Role role) {
+    public String generateToken(String id,String email, Role role) {
         return Jwts.builder()
                 .setSubject(email)
+                .claim("id", id)
                 .claim("role", role.name())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
@@ -70,5 +71,15 @@ public class JwtUtils {
                 .parseClaimsJws(token)
                 .getBody()
                 .get("role");
+    }
+
+    //Xuat id
+    public String extractId(String token) {
+        return (String) Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("id");
     }
 }
