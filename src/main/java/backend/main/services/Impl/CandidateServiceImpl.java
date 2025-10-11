@@ -4,6 +4,7 @@ import backend.main.configuration.JwtUtils;
 import backend.main.dto.request.CandidateRequest;
 import backend.main.dto.request.CandidateLoginRequest;
 import backend.main.dto.response.CandidateLoginResponse;
+import backend.main.dto.response.CandidateResponse;
 import backend.main.entities.Candidate;
 import backend.main.enums.Code;
 import backend.main.enums.Role;
@@ -86,6 +87,21 @@ public class CandidateServiceImpl implements CandidateService {
         cd.setEnabled(true);
         cd.setVerificationToken(null);
         return saveCandidate(cd);
+    }
+
+    @Override
+    public CandidateResponse getCandidateById(String id) {
+        Candidate c = candidateRepository.findById(id)
+                .orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
+
+        return new CandidateResponse(
+                c.getFullname(),
+                c.getEmail(),
+                c.getAddress(),
+                c.getDateOfBirth(),
+                c.getPhone(),
+                c.getAvatar(),
+                c.getCv());
     }
 
     @Override

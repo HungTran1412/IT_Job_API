@@ -4,6 +4,7 @@ import backend.main.configuration.JwtUtils;
 import backend.main.dto.request.EmployerLoginRequest;
 import backend.main.dto.request.EmployerRequest;
 import backend.main.dto.response.EmployerLoginResponse;
+import backend.main.dto.response.EmployerResponse;
 import backend.main.entities.Employer;
 import backend.main.enums.Code;
 import backend.main.enums.Role;
@@ -85,6 +86,20 @@ public class EmployerServiceImpl implements EmployerService {
         e.setVerificationToken(null);
 
         return saveEmployer(e);
+    }
+
+    @Override
+    public EmployerResponse getEmployerById(String id) {
+        Employer e = employerRepository.findById(id)
+                .orElseThrow(() -> new AppException(Code.EMPLOYER_NOT_FOUND));
+
+        return new EmployerResponse(
+                e.getCompanyName(),
+                e.getEmail(),
+                e.getAddress(),
+                e.getPhone(),
+                e.getAvatar()
+        );
     }
 
     //Dang nhap

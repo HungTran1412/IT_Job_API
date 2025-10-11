@@ -19,7 +19,12 @@ public enum Code {
     ACCOUNT_UNENABLED(1007, "Account Unenabled!"),
     ID_EXISTED(1008, "ID existed!"),
     IMAGE_UPLOAD_FAILED(1009, "Image Upload Failed!"),
-    LOGIN_SUCCEEDED(2001, "Login succeeded!"),;
+    LOGIN_SUCCEEDED(2001, "Login succeeded!"),
+    UPDATE_INFO_SUCCEEDED(2002, "Update info succeeded!"),
+    UPDATE_INFO_FAILED(2003, "Update info failed!"),
+    CANNOT_UPDATE_ANOTHER_USER(2004, "Cannot update another user!"),
+    CANNOT_GET_ANOTHER_INFO(2005, "Cannot get another info!"),
+    GET_INFO_SUCCEEDED(2006, "Get info succeeded!"),;
 
     int code;
     String message;
