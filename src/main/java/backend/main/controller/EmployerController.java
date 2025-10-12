@@ -3,7 +3,6 @@ package backend.main.controller;
 import backend.main.configuration.JwtUtils;
 import backend.main.dto.request.EmployerRequest;
 import backend.main.dto.response.ApiResponse;
-import backend.main.dto.response.CandidateResponse;
 import backend.main.dto.response.EmployerResponse;
 import backend.main.entities.Employer;
 import backend.main.enums.Code;
@@ -80,19 +79,24 @@ public class EmployerController {
                 .build());
     }
 
-    @PutMapping(value = "/update/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<ApiResponse<Employer>> updateInfo(@PathVariable String id,
+    @PutMapping(value = "/update", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<ApiResponse<Employer>> updateInfo(
                                                   @ModelAttribute EmployerRequest request,
-                                                  @RequestHeader(value = "Authorization") String authHeader) {
+                                                  @CookieValue(value = "jwt", required = true) String token) {
         System.out.println("===== [UPDATE EMPLOYER INFO] =====");
-        System.out.println("Employer ID: " + id);
-        System.out.println("Token: " + authHeader);
+        System.out.println("Token: " + token);
 
-        //lay token
+        //Kiem tra token
         try {
-            String token = authHeader.replace("Bearer ", "");
+            if(token == null){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(ApiResponse.<Employer>builder()
+                                .code(Code.TOKEN_INVALID.getCode())
+                                .message("Missing token or user not logged in")
+                                .build());
+            }
 
-            //Check valid
+            //Xac thuc token
             if(!jwtUtils.validateToken(token)){
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(ApiResponse.<Employer>builder()
@@ -101,42 +105,42 @@ public class EmployerController {
                                 .build());
             }
 
-            //Lay email va role
-            String email = jwtUtils.extractEmail(token);
+            //Lay id tu token
+            String id = jwtUtils.extractId(token);
+            System.out.println("Employer ID: " + id);
 
-            //Chinh chinh nguoi dung moi duoc sua
-            Employer employer = employerRepository.findById(id)
-                            .orElseThrow(() -> new AppException(Code.EMPLOYER_NOT_FOUND));
-            System.out.println("EmaiLLLLLLLL: " + employer.getEmail());
+            //Kiem tra nguoi dung co ton tai khong
+            Employer e = employerRepository.findById(id)
+                    .orElseThrow(() -> new AppException(Code.EMPLOYER_NOT_FOUND));
 
-            if(!employer.getEmail().equals(email)){
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(ApiResponse.<Employer>builder()
-                                .code(Code.CANNOT_UPDATE_ANOTHER_USER.getCode())
-                                .message(Code.CANNOT_UPDATE_ANOTHER_USER.getMessage())
-                                .build());
-            }
+            //Log du lieu
+            System.out.println("Fullname: " + request.getCompanyName());
+            System.out.println("Phone: " + request.getPhone());
+            System.out.println("Avatar: " + (request.getAvatar() != null
+                    ? request.getAvatar().getOriginalFilename()
+                    : "null"));
 
-            //Update
+            //Cap nhat thong in
             Employer updated = employerService.updateInfo(id, request);
-            return  ResponseEntity.ok(ApiResponse.<Employer>builder()
+
+            return ResponseEntity.ok(ApiResponse.<Employer>builder()
                     .code(Code.UPDATE_INFO_SUCCEEDED.getCode())
                     .message(Code.UPDATE_INFO_SUCCEEDED.getMessage())
-                    .result(updated)
                     .build());
         } catch (AppException e) {
             System.out.println("Custom error: " + e.getMessage());
-            return ResponseEntity.badRequest().body(ApiResponse.<Employer>builder()
-                    .code(Code.UPDATE_INFO_FAILED.getCode())
-                    .message(Code.UPDATE_INFO_FAILED.getMessage())
-                    .build());
-        }catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.<Employer>builder()
+                            .code(Code.UPDATE_INFO_FAILED.getCode())
+                            .message(e.getMessage())
+                            .build());
+        }catch (Exception e){
             System.out.println("Unexpected error: " + e.getMessage());
-            // Bắt lỗi bất ngờ
-            return ResponseEntity.internalServerError().body(ApiResponse.<Employer>builder()
-                    .code(Code.UPDATE_INFO_FAILED.getCode())
-                    .message(Code.UPDATE_INFO_FAILED.getMessage())
-                    .build());
+            return ResponseEntity.internalServerError()
+                    .body(ApiResponse.<Employer>builder()
+                            .code(Code.UPDATE_INFO_FAILED.getCode())
+                            .message("Unexpected error occurred")
+                            .build());
         }
     }
 }

@@ -81,22 +81,26 @@ public class CandidateController {
                 .build());
     }
 
-    @PutMapping(value = "/update/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PutMapping(value = "/update", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ApiResponse<Candidate>> updateInfo(
-            @PathVariable String id,
             @ModelAttribute CandidateRequest candidateRequest,
-            @RequestHeader("Authorization") String authHeader) {
+            @CookieValue(value = "jwt",  required = false) String token) {
 
         System.out.println("===== [UPDATE CANDIDATE INFO] =====");
-        System.out.println("Candidate ID: " + id);
-        System.out.println("Token: " + authHeader);
+        System.out.println("Token: " + token);
 
         try {
-            // Lấy token từ header
-            String token = authHeader.replace("Bearer ", "");
+            //Kiểm tra xem có token không
+            if(token == null){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(ApiResponse.<Candidate>builder()
+                                .code(Code.TOKEN_INVALID.getCode())
+                                .message("Missing token or user not logged in")
+                                .build());
+            }
 
-            // Kiểm tra tính hợp lệ
-            if (!jwtUtils.validateToken(token)) {
+            //Xac thuc token
+            if(!jwtUtils.validateToken(token)){
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(ApiResponse.<Candidate>builder()
                                 .code(Code.TOKEN_INVALID.getCode())
@@ -104,22 +108,15 @@ public class CandidateController {
                                 .build());
             }
 
-            // Lấy email từ token
-            String email = jwtUtils.extractEmail(token);
+            //Lay id tu token
+            String id = jwtUtils.extractId(token);
+            System.out.println("Candidate ID: " + id);
 
-            // Chỉ chính chủ mới được sửa
-            Candidate candidate = candidateRepository.findById(id)
+            //Kiem tra xem nguoi dung co ton tai khong
+            Candidate c = candidateRepository.findById(id)
                     .orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
 
-            if (!candidate.getEmail().equals(email)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(ApiResponse.<Candidate>builder()
-                                .code(Code.CANNOT_UPDATE_ANOTHER_USER.getCode())
-                                .message(Code.CANNOT_UPDATE_ANOTHER_USER.getMessage())
-                                .build());
-            }
-
-            // Ghi log dữ liệu gửi lên
+            //Log du lieu nguoi dung
             System.out.println("Fullname: " + candidateRequest.getFullname());
             System.out.println("Gender: " + candidateRequest.getGender());
             System.out.println("Phone: " + candidateRequest.getPhone());
@@ -127,31 +124,28 @@ public class CandidateController {
                     ? candidateRequest.getAvatar().getOriginalFilename()
                     : "null"));
 
-            // Cập nhật thông tin
+            //Cap nhat thong tin nguoi dung
             Candidate updated = candidateService.updateInfo(id, candidateRequest);
 
-            // Trả về kết quả thành công
+            //Tra ket qua
             return ResponseEntity.ok(ApiResponse.<Candidate>builder()
                     .code(Code.UPDATE_INFO_SUCCEEDED.getCode())
                     .message(Code.UPDATE_INFO_SUCCEEDED.getMessage())
-                    .result(updated)
                     .build());
-
         } catch (AppException e) {
             System.out.println("Custom error: " + e.getMessage());
-            // Bắt lỗi custom
-            return ResponseEntity.badRequest().body(ApiResponse.<Candidate>builder()
-                    .code(Code.UPDATE_INFO_FAILED.getCode())
-                    .message(Code.UPDATE_INFO_FAILED.getMessage())
-                    .build());
-        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.<Candidate>builder()
+                            .code(Code.UPDATE_INFO_FAILED.getCode())
+                            .message(e.getMessage())
+                            .build());
+        }catch (Exception e) {
             System.out.println("Unexpected error: " + e.getMessage());
-            // Bắt lỗi bất ngờ
-            return ResponseEntity.internalServerError().body(ApiResponse.<Candidate>builder()
-                    .code(Code.UPDATE_INFO_FAILED.getCode())
-                    .message(Code.UPDATE_INFO_FAILED.getMessage())
-                    .build());
+            return ResponseEntity.internalServerError()
+                    .body(ApiResponse.<Candidate>builder()
+                            .code(Code.UPDATE_INFO_FAILED.getCode())
+                            .message("Unexpected error occurred")
+                            .build());
         }
     }
-
 }
