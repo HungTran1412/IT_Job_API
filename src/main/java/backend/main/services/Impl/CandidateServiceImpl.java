@@ -1,5 +1,6 @@
 package backend.main.services.Impl;
 
+import backend.main.configuration.AppProperties;
 import backend.main.configuration.JwtUtils;
 import backend.main.dto.request.CandidateRequest;
 import backend.main.dto.request.CandidateLoginRequest;
@@ -39,6 +40,8 @@ public class CandidateServiceImpl implements CandidateService {
     CloudinaryImageUpload cloudinaryImageUpload;
     @Autowired
     VerificationTokenRepository verificationTokenRepository;
+    @Autowired
+    AppProperties appProperties;
 
     private String generateCandidateID() {
         return "USER" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
@@ -74,7 +77,7 @@ public class CandidateServiceImpl implements CandidateService {
         verificationTokenRepository.save(verificationToken);
 
         //gan link + token vao email va gui
-        String verifyLink = "http://localhost:8080/user/verify?token=" + token;
+        String verifyLink = appProperties.getBaseUrl() + appProperties.getVerify().getCandidate() + token;
         sendEmailHandler.sendVerificationEmail(candidate.getEmail(), verifyLink);
 
         //luu nguoi dung

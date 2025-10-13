@@ -1,5 +1,6 @@
 package backend.main.services.Impl;
 
+import backend.main.configuration.AppProperties;
 import backend.main.configuration.JwtUtils;
 import backend.main.dto.request.EmployerLoginRequest;
 import backend.main.dto.request.EmployerRequest;
@@ -39,6 +40,8 @@ public class EmployerServiceImpl implements EmployerService {
     CloudinaryImageUpload  cloudinaryImageUpload;
     @Autowired
     VerificationTokenRepository verificationTokenRepository;
+    @Autowired
+    AppProperties appProperties;
 
     private String generateEmployerID() {
        return "EMPL" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
@@ -75,7 +78,7 @@ public class EmployerServiceImpl implements EmployerService {
         verificationTokenRepository.save(verificationToken);
 
         //gan link + token vua sinh, gui email
-        String verifyLink = "http://localhost:8080/company/verify?token=" + token;
+        String verifyLink = appProperties.getBaseUrl() + appProperties.getVerify().getEmployer()+ token;
         sendEmailHandler.sendVerificationEmail(employer.getEmail(), verifyLink);
 
 

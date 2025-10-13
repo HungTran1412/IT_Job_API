@@ -37,3 +37,9 @@ cloudinary:
   api-key: "214241934923182"
   api-secret: "YttthxmWwS25l9jx_cPRfNCcjtM"
   secure: true
+
+app:
+  base-url: "https://df893477de5f.ngrok-free.app"
+  verify:
+    candidate: "/user/verify?token="
+    employer: "/company/verify?token="
