@@ -13,6 +13,9 @@ import backend.main.repository.VerificationTokenRepository;
 import backend.main.services.EmployerService;
 import backend.main.utils.CloudinaryImageUpload;
 import backend.main.utils.SendEmailHandler;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
 public class EmployerServiceImpl implements EmployerService {
     @Autowired
@@ -34,13 +39,6 @@ public class EmployerServiceImpl implements EmployerService {
     CloudinaryImageUpload  cloudinaryImageUpload;
     @Autowired
     VerificationTokenRepository verificationTokenRepository;
-
-    public EmployerServiceImpl(EmployerRepository employerRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils, SendEmailHandler sendEmailHandler) {
-        this.employerRepository = employerRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtUtils = jwtUtils;
-        this.sendEmailHandler = sendEmailHandler;
-    }
 
     private String generateEmployerID() {
        return "EMPL" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();

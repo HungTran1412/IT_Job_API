@@ -14,6 +14,7 @@ import backend.main.services.CandidateService;
 import backend.main.utils.CloudinaryImageUpload;
 import backend.main.utils.SendEmailHandler;
 import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,  makeFinal = true)
 @Service
 public class CandidateServiceImpl implements CandidateService {
@@ -37,17 +39,6 @@ public class CandidateServiceImpl implements CandidateService {
     CloudinaryImageUpload cloudinaryImageUpload;
     @Autowired
     VerificationTokenRepository verificationTokenRepository;
-
-    public CandidateServiceImpl(CandidateRepository candidateRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils, SendEmailHandler sendEmailHandler,
-                                CloudinaryImageUpload cloudinaryImageUpload,
-                                VerificationTokenRepository verificationTokenRepository) {
-        this.candidateRepository = candidateRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtUtils = jwtUtils;
-        this.sendEmailHandler = sendEmailHandler;
-        this.cloudinaryImageUpload = cloudinaryImageUpload;
-        this.verificationTokenRepository = verificationTokenRepository;
-    }
 
     private String generateCandidateID() {
         return "USER" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
