@@ -24,7 +24,8 @@ public class AuthEmployerController {
     @PostMapping("/register")
     public ApiResponse<Employer> register(@RequestBody EmployerRequest request){
         ApiResponse<Employer> apiResponse = new ApiResponse<>();
-        apiResponse.setResult(employerService.register(request));
+        employerService.register(request);
+        apiResponse.setMessage("Register successed. Please check your email to verifiy!");
         return apiResponse;
     }
 

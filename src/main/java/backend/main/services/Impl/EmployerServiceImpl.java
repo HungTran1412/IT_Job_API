@@ -4,10 +4,12 @@ import backend.main.configuration.JwtUtils;
 import backend.main.dto.request.EmployerLoginRequest;
 import backend.main.dto.request.EmployerRequest;
 import backend.main.entities.Employer;
+import backend.main.entities.VerificationToken;
 import backend.main.enums.Code;
 import backend.main.enums.Role;
 import backend.main.exception.AppException;
 import backend.main.repository.EmployerRepository;
+import backend.main.repository.VerificationTokenRepository;
 import backend.main.services.EmployerService;
 import backend.main.utils.CloudinaryImageUpload;
 import backend.main.utils.SendEmailHandler;
@@ -30,6 +32,8 @@ public class EmployerServiceImpl implements EmployerService {
     SendEmailHandler sendEmailHandler;
     @Autowired
     CloudinaryImageUpload  cloudinaryImageUpload;
+    @Autowired
+    VerificationTokenRepository verificationTokenRepository;
 
     public EmployerServiceImpl(EmployerRepository employerRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils, SendEmailHandler sendEmailHandler) {
         this.employerRepository = employerRepository;
@@ -60,29 +64,42 @@ public class EmployerServiceImpl implements EmployerService {
         employer.setRole(Role.ROLE_EMPLOYER);
         employer.setEnabled(false);
 
+        //luu thong tin
+        saveEmployer(employer);
+
         //sinh token ngau nhien
         String token = UUID.randomUUID().toString();
-        employer.setVerificationToken(token);
+        VerificationToken verificationToken = new VerificationToken();
+        verificationToken.setToken(token);
+        verificationToken.setExpirationTime(LocalDateTime.now().plusMinutes(5));
+        verificationToken.setEmployer( employer );
+
+        verificationTokenRepository.save(verificationToken);
 
         //gan link + token vua sinh, gui email
         String verifyLink = "http://localhost:8080/company/verify?token=" + token;
         sendEmailHandler.sendVerificationEmail(employer.getEmail(), verifyLink);
 
-        //luu thong tin
-        saveEmployer(employer);
 
         return employer;
     }
 
     @Override
     public Employer verifyEmployer(String token){
-        Employer e = employerRepository.findByVerificationToken(token)
+        VerificationToken vt = verificationTokenRepository.findByToken(token)
                 .orElseThrow(() -> new AppException(Code.TOKEN_INVALID));
 
+        if(vt.getExpirationTime().isBefore(LocalDateTime.now())){
+            Employer e = vt.getEmployer();
+            verificationTokenRepository.delete(vt);
+            employerRepository.delete(e);
+            throw new AppException(Code.TOKEN_EXPIRED);
+        }
+
+        Employer e = vt.getEmployer();
         e.setUpdateAt(LocalDateTime.now());
         e.setEnabled(true);
-        e.setVerificationToken(null);
-
+        verificationTokenRepository.delete(vt);
         return saveEmployer(e);
     }
 

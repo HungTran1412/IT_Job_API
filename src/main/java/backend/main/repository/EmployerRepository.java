@@ -8,5 +8,4 @@ import java.util.Optional;
 
 public interface EmployerRepository extends CrudRepository<Employer, String> {
     Optional<Employer> findByEmail(String email);
-    Optional<Employer> findByVerificationToken(String token);
 }

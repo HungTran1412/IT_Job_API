@@ -50,7 +50,4 @@ public class Employer {
 
     @Column(name = "enabled")
     Boolean enabled = false;
-
-    @Column(name = "verification_token")
-    String verificationToken;
 }

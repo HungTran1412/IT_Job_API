@@ -24,8 +24,8 @@ public class AuthCandidateController {
     @PostMapping("/register")
     public ApiResponse<Candidate> register(@RequestBody CandidateRequest candidateRequest){
         ApiResponse<Candidate> apiResponse = new ApiResponse<>();
-
-        apiResponse.setResult(candidateService.register(candidateRequest));
+        candidateService.register(candidateRequest);
+        apiResponse.setMessage("Register successed. Please check your email to verifiy!");
         return apiResponse;
     }
 

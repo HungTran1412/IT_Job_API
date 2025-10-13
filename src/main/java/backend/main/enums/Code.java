@@ -25,6 +25,7 @@ public enum Code {
     CANNOT_UPDATE_ANOTHER_USER(2004, "Cannot update another user!"),
     CANNOT_GET_ANOTHER_INFO(2005, "Cannot get another info!"),
     GET_INFO_SUCCEEDED(2006, "Get info succeeded!"),
+    TOKEN_EXPIRED(2007, "Token Expired. Please Register Again!"),
     ;
 
     int code;

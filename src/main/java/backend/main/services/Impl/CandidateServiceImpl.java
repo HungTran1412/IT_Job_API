@@ -4,10 +4,12 @@ import backend.main.configuration.JwtUtils;
 import backend.main.dto.request.CandidateRequest;
 import backend.main.dto.request.CandidateLoginRequest;
 import backend.main.entities.Candidate;
+import backend.main.entities.VerificationToken;
 import backend.main.enums.Code;
 import backend.main.enums.Role;
 import backend.main.exception.AppException;
 import backend.main.repository.CandidateRepository;
+import backend.main.repository.VerificationTokenRepository;
 import backend.main.services.CandidateService;
 import backend.main.utils.CloudinaryImageUpload;
 import backend.main.utils.SendEmailHandler;
@@ -17,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -34,13 +35,18 @@ public class CandidateServiceImpl implements CandidateService {
     SendEmailHandler sendEmailHandler;
     @Autowired
     CloudinaryImageUpload cloudinaryImageUpload;
+    @Autowired
+    VerificationTokenRepository verificationTokenRepository;
 
-    public CandidateServiceImpl(CandidateRepository candidateRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils, SendEmailHandler sendEmailHandler, CloudinaryImageUpload cloudinaryImageUpload) {
+    public CandidateServiceImpl(CandidateRepository candidateRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils, SendEmailHandler sendEmailHandler,
+                                CloudinaryImageUpload cloudinaryImageUpload,
+                                VerificationTokenRepository verificationTokenRepository) {
         this.candidateRepository = candidateRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
         this.sendEmailHandler = sendEmailHandler;
         this.cloudinaryImageUpload = cloudinaryImageUpload;
+        this.verificationTokenRepository = verificationTokenRepository;
     }
 
     private String generateCandidateID() {
@@ -65,26 +71,42 @@ public class CandidateServiceImpl implements CandidateService {
         candidate.setRole(Role.ROLE_CANDIDATE); // Gán vai trò mặc định
         candidate.setEnabled(false);
 
+        saveCandidate(candidate);
+
         //sinh token ngau nhien
         String token = UUID.randomUUID().toString();
-        candidate.setVerificationToken(token);
+        VerificationToken verificationToken = new VerificationToken();
+        verificationToken.setToken(token);
+        verificationToken.setExpirationTime(LocalDateTime.now().plusMinutes(5));
+        verificationToken.setCandidate( candidate );
+
+        verificationTokenRepository.save(verificationToken);
 
         //gan link + token vao email va gui
         String verifyLink = "http://localhost:8080/user/verify?token=" + token;
         sendEmailHandler.sendVerificationEmail(candidate.getEmail(), verifyLink);
 
         //luu nguoi dung
-        return saveCandidate(candidate);
+        return candidate;
     }
 
     @Override
     public Candidate verifyCandidate(String token){
-        Candidate cd = candidateRepository.findByVerificationToken(token)
+        VerificationToken vt = verificationTokenRepository.findByToken(token)
                 .orElseThrow(() -> new AppException(Code.TOKEN_INVALID));
+
+        if(vt.getExpirationTime().isBefore(LocalDateTime.now())){
+            Candidate c = vt.getCandidate();
+            verificationTokenRepository.delete(vt);
+            candidateRepository.delete(c);
+            throw new AppException(Code.TOKEN_EXPIRED);
+        }
+
+        Candidate cd = vt.getCandidate();
 
         cd.setUpdateAt(LocalDateTime.now());
         cd.setEnabled(true);
-        cd.setVerificationToken(null);
+        verificationTokenRepository.delete(vt);
         return saveCandidate(cd);
     }
 
