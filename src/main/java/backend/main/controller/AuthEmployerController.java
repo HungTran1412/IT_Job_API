@@ -1,5 +1,6 @@
 package backend.main.controller;
 
+import backend.main.configuration.AppProperties;
 import backend.main.dto.request.EmployerLoginRequest;
 import backend.main.dto.request.EmployerRequest;
 import backend.main.dto.response.ApiResponse;
@@ -21,20 +22,34 @@ public class AuthEmployerController {
     @Autowired
     EmployerService employerService;
 
+    @Autowired
+    AppProperties appProperties;
+
     @PostMapping("/register")
-    public ApiResponse<Employer> register(@RequestBody EmployerRequest request){
-        ApiResponse<Employer> apiResponse = new ApiResponse<>();
-        employerService.register(request);
-        apiResponse.setMessage("Register successed. Please check your email to verifiy!");
-        return apiResponse;
+    public ApiResponse<String> register(@RequestBody EmployerRequest request){
+        Employer e = employerService.register(request);
+
+        return ApiResponse.<String>builder()
+                .code("success")
+                .message("Register succeeded. Please check your email to verify!")
+                .email(e.getEmail())
+                .build();
     }
 
     @GetMapping("/verify")
-    public Map<String, String> verify(@RequestParam("token") String token){
-        Map<String, String> map = new HashMap<>();
-        Employer employer = employerService.verifyEmployer(token);
-        map.put("message", "Your account has been verified!");
-        return map;
+    public ResponseEntity<Void> verify(@RequestParam("token") String token) {
+        try {
+            employerService.verifyEmployer(token);
+
+            return ResponseEntity.status(302)
+                    .header("Location", appProperties.getFrontend().getVerifiedUrl())
+                    .build();
+
+        } catch (Exception e) {
+            return ResponseEntity.status(302)
+                    .header("Location", appProperties.getFrontend().getFailedUrl())
+                    .build();
+        }
     }
 
     @PostMapping("/login")

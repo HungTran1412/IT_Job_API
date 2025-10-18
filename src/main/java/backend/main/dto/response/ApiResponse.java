@@ -11,12 +11,19 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse<T>{
-    int code = 1000;
+    String code = "success";
     String message;
     T result;
+    String email;
 
-    public ApiResponse(int code, String message) {
+    public ApiResponse(String code, String message) {
         this.code = code;
         this.message = message;
+    }
+
+    public ApiResponse(String code, String message, String email) {
+        this.code = code;
+        this.message = message;
+        this.email = email;
     }
 }

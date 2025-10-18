@@ -1,5 +1,6 @@
 package backend.main.controller;
 
+import backend.main.configuration.AppProperties;
 import backend.main.dto.request.CandidateRequest;
 import backend.main.dto.request.CandidateLoginRequest;
 import backend.main.dto.response.ApiResponse;
@@ -20,21 +21,33 @@ import java.util.Map;
 public class AuthCandidateController {
     @Autowired
     CandidateService candidateService;
-
+    @Autowired
+    AppProperties appProperties;
     @PostMapping("/register")
-    public ApiResponse<Candidate> register(@RequestBody CandidateRequest candidateRequest){
-        ApiResponse<Candidate> apiResponse = new ApiResponse<>();
-        candidateService.register(candidateRequest);
-        apiResponse.setMessage("Register successed. Please check your email to verifiy!");
-        return apiResponse;
+    public ApiResponse<String> register(@RequestBody CandidateRequest candidateRequest){
+        Candidate candidate = candidateService.register(candidateRequest);
+
+        return ApiResponse.<String>builder()
+                .code("success")
+                .message("Register succeeded. Please check your email to verify!")
+                .email(candidate.getEmail())
+                .build();
     }
 
     @GetMapping("/verify")
-    public Map<String, String> verify(@RequestParam("token") String token){
-        Map<String, String> map = new HashMap<>();
-        Candidate candidate = candidateService.verifyCandidate(token);
-        map.put("message", "Your account has been verified!");
-        return map;
+    public ResponseEntity<Void> verify(@RequestParam("token") String token) {
+        try {
+            candidateService.verifyCandidate(token);
+
+            return ResponseEntity.status(302)
+                    .header("Location", appProperties.getFrontend().getVerifiedUrl())
+                    .build();
+
+        } catch (Exception e) {
+            return ResponseEntity.status(302)
+                    .header("Location", appProperties.getFrontend().getFailedUrl())
+                    .build();
+        }
     }
 
     @PostMapping("/login")

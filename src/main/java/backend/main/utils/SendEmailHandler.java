@@ -40,4 +40,6 @@ public class SendEmailHandler {
             throw new RuntimeException(e);
         }
     }
+
+    public void sendOTPEmail(String email, String otpLink) {}
 }

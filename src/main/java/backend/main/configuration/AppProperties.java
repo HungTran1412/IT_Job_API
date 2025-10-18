@@ -15,12 +15,19 @@ public class AppProperties {
     private String baseUrl;
 
     private Verify verify = new Verify();
-
+    private Frontend frontend = new Frontend();
     @Getter
     @Setter
     public static class Verify {
         private String candidate;
         private String employer;
+    }
+
+    @Getter
+    @Setter
+    public static class Frontend {
+        private String verifiedUrl;
+        private String failedUrl;
     }
 }
 

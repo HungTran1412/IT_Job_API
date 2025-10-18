@@ -105,6 +105,11 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
+    public Candidate changePassword(String oldPassword, String newPassword) {
+        return null;
+    }
+
+    @Override
     public String login(CandidateLoginRequest request) {
         // Tìm ứng viên theo email, nếu không có thì ném lỗi
         Candidate c = candidateRepository.findByEmail(request.getEmail())
