@@ -12,7 +12,7 @@ import backend.main.exception.AppException;
 import backend.main.repository.EmployerRepository;
 import backend.main.repository.VerificationTokenRepository;
 import backend.main.services.EmployerService;
-import backend.main.utils.CloudinaryImageUpload;
+import backend.main.utils.CloudinaryFileUpload;
 import backend.main.utils.SendEmailHandler;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,7 @@ public class EmployerServiceImpl implements EmployerService {
     @Autowired
     SendEmailHandler sendEmailHandler;
     @Autowired
-    CloudinaryImageUpload  cloudinaryImageUpload;
+    CloudinaryFileUpload cloudinaryFileUpload;
     @Autowired
     VerificationTokenRepository verificationTokenRepository;
     @Autowired
@@ -136,7 +136,7 @@ public class EmployerServiceImpl implements EmployerService {
         //Kiem tra xem nguoi dung co cap nhat anh khong
         if(request.getAvatar() != null && !request.getAvatar().isEmpty()){
             System.out.println("Image: " + request.getAvatar().getOriginalFilename());
-            String imgUrl = cloudinaryImageUpload.uploadImage(request.getAvatar());
+            String imgUrl = cloudinaryFileUpload.uploadImage(request.getAvatar());
             e.setAvatar(imgUrl);
         }
 

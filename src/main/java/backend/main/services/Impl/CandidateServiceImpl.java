@@ -12,7 +12,7 @@ import backend.main.exception.AppException;
 import backend.main.repository.CandidateRepository;
 import backend.main.repository.VerificationTokenRepository;
 import backend.main.services.CandidateService;
-import backend.main.utils.CloudinaryImageUpload;
+import backend.main.utils.CloudinaryFileUpload;
 import backend.main.utils.SendEmailHandler;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,7 @@ public class CandidateServiceImpl implements CandidateService {
     @Autowired
     SendEmailHandler sendEmailHandler;
     @Autowired
-    CloudinaryImageUpload cloudinaryImageUpload;
+    CloudinaryFileUpload cloudinaryFileUpload;
     @Autowired
     VerificationTokenRepository verificationTokenRepository;
     @Autowired
@@ -139,16 +139,22 @@ public class CandidateServiceImpl implements CandidateService {
         c.setDateOfBirth(request.getDateOfBirth());
         c.setAddress(request.getAddress());
         c.setUpdateAt(LocalDateTime.now());
-        c.setCv(request.getCv());
 
         //Kiem tra xem nguoi dung co cap nhat anh khong
         if(request.getAvatar() != null && !request.getAvatar().isEmpty()){
             System.out.println("Image: " + request.getAvatar().getOriginalFilename());
-            String imgUrl = cloudinaryImageUpload.uploadImage(request.getAvatar());
+            String imgUrl = cloudinaryFileUpload.uploadImage(request.getAvatar());
             c.setAvatar(imgUrl);
         }
 
-        return candidateRepository.save(c);
+        //Kiểm tra người dùng có thêm cv không
+        if(request.getCv() != null && !request.getCv().isEmpty()){
+            System.out.println("CV: " + request.getCv().getOriginalFilename());
+            String url = cloudinaryFileUpload.uploadCv(request.getCv());
+            c.setCv(url);
+        }
+
+        return saveCandidate(c);
     }
 
     private Candidate saveCandidate(Candidate c) {

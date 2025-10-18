@@ -22,5 +22,5 @@ public class CandidateRequest {
     LocalDate dateOfBirth;
     String phone;
     MultipartFile avatar;
-    String cv;
+    MultipartFile cv;
 }
