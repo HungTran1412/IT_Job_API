@@ -9,25 +9,35 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public enum Code {
-    UNCATEGORIZED_EXCEPTION("error", "Uncategorized error"),
-    EMAIL_EXISTED("error","Email Already Exists!"),
-    WRONG_PASSWORD("error","Wrong Password!"),
-    EMAIL_DOES_NOT_EXIST("error","Email Does Not Exist!"),
-    EMPLOYER_NOT_FOUND("error", "Employer not found!"),
-    CANDIDATE_NOT_FOUND("error", "Candidate not found!"),
-    TOKEN_INVALID("error", "Token invalid!"),
-    ACCOUNT_UNENABLED("error", "Account Unenabled!"),
-    ID_EXISTED("error", "ID existed!"),
-    FILE_UPLOAD_FAILED("error", "File Upload Failed!"),
-    LOGIN_SUCCEEDED("success", "Login succeeded!"),
-    UPDATE_INFO_SUCCEEDED("success", "Update info succeeded!"),
-    UPDATE_INFO_FAILED("error", "Update info failed!"),
-    CANNOT_UPDATE_ANOTHER_USER("error", "Cannot update another user!"),
-    CANNOT_GET_ANOTHER_INFO("error", "Cannot get another info!"),
-    GET_INFO_SUCCEEDED("success", "Get info succeeded!"),
-    TOKEN_EXPIRED("error", "Token Expired. Please Register Again!"),
+    UNCATEGORIZED_EXCEPTION(CodeEnum.error.toString(), "Lỗi chưa xác thực"),
+    EMAIL_EXISTED(CodeEnum.error.toString(),"Email đã tồn tại!"),
+    WRONG_PASSWORD(CodeEnum.error.toString(),"Sai mật khẩu!"),
+    EMAIL_DOES_NOT_EXIST(CodeEnum.error.toString(),"Email không tồn tại!"),
+    EMPLOYER_NOT_FOUND(CodeEnum.error.toString(), "Không tìm thấy nhà tuyển dụng!"),
+    CANDIDATE_NOT_FOUND(CodeEnum.error.toString(), "Không tìm thấy ứng viên!"),
+    TOKEN_INVALID(CodeEnum.error.toString(), "Token không hợp lệ!"),
+    ACCOUNT_UNENABLED(CodeEnum.error.toString(), "Tài khoản chưa xác thực!"),
+    ID_EXISTED(CodeEnum.error.toString(), "ID đã ồn tại!"),
+    FILE_UPLOAD_FAILED(CodeEnum.error.toString(), "File Upload thất bại!"),
+    LOGIN_SUCCEEDED(CodeEnum.success.toString(), "Đăng nhập thành công!"),
+    UPDATE_INFO_SUCCEEDED(CodeEnum.success.toString(), "Cập nhật thông tin thành công!"),
+    UPDATE_INFO_FAILED(CodeEnum.error.toString(), "Cập nhật thông tin thất bại!"),
+    CANNOT_UPDATE_ANOTHER_USER(CodeEnum.error.toString(), "Không thể cập nhật thông tin của người khác!"),
+    CANNOT_GET_ANOTHER_INFO(CodeEnum.error.toString(), "Cannot get another info!"),
+    GET_INFO_SUCCEEDED(CodeEnum.success.toString(), "Lấy thông tin thành công!"),
+    TOKEN_EXPIRED(CodeEnum.error.toString(), "Token hết hạn. Vui lòng đăng nhập lại!"),
+    USER_NOT_FOUND(CodeEnum.error.toString(),"Người dùng không tồn tại"),
+    TOKEN_VALID(CodeEnum.success.toString(), "Token hợp lệ"),
+    INTERNAL_ERROR(CodeEnum.error.toString(), ""),
+    TOKEN_NULL(CodeEnum.error.toString(), "Token rỗng"),
+    SERVER_ERROR(CodeEnum.error.toString(), "Lỗi không mong muốn khi kiểm tra mã token"),
     ;
 
     String code;
     String message;
+
+    public enum CodeEnum {
+        success,
+        error,
+    }
 }
