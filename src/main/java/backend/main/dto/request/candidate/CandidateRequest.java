@@ -15,7 +15,6 @@ import java.time.LocalDate;
 public class CandidateRequest {
     String fullname;
     String email;
-    String password;
     String gender;
     String address;
     @DateTimeFormat(pattern = "yyyy-MM-dd")

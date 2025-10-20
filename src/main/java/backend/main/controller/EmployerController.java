@@ -69,7 +69,7 @@ public class EmployerController {
                 e.getEmail(),
                 e.getAddress(),
                 e.getPhone(),
-                e.getAvatar()
+                e.getLogo()
         );
 
         return ResponseEntity.ok(ApiResponse.<EmployerResponse>builder()
@@ -116,8 +116,8 @@ public class EmployerController {
             //Log du lieu
             System.out.println("Fullname: " + request.getCompanyName());
             System.out.println("Phone: " + request.getPhone());
-            System.out.println("Avatar: " + (request.getAvatar() != null
-                    ? request.getAvatar().getOriginalFilename()
+            System.out.println("Avatar: " + (request.getLogo() != null
+                    ? request.getLogo().getOriginalFilename()
                     : "null"));
 
             //Cap nhat thong in

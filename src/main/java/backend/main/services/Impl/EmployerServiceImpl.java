@@ -135,10 +135,10 @@ public class EmployerServiceImpl implements EmployerService {
         e.setUpdateAt(LocalDateTime.now());
 
         //Kiem tra xem nguoi dung co cap nhat anh khong
-        if(request.getAvatar() != null && !request.getAvatar().isEmpty()){
-            System.out.println("Image: " + request.getAvatar().getOriginalFilename());
-            String imgUrl = cloudinaryFileUpload.uploadImage(request.getAvatar());
-            e.setAvatar(imgUrl);
+        if(request.getLogo() != null && !request.getLogo().isEmpty()){
+            System.out.println("Image: " + request.getLogo().getOriginalFilename());
+            String imgUrl = cloudinaryFileUpload.uploadImage(request.getLogo());
+            e.setLogo(imgUrl);
         }
 
         return saveEmployer(e);
