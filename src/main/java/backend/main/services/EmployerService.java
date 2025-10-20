@@ -10,4 +10,5 @@ public interface EmployerService {
     String login(EmployerLoginRequest employerLoginRequest);
     Employer updateInfo(String id, EmployerRequest request);
     Employer verifyEmployer(String token);
+    boolean changePassword(String email, String oldPassword, String newPassword);
 }

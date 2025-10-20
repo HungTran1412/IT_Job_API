@@ -1,9 +1,11 @@
 package backend.main.controller;
 
 import backend.main.configuration.JwtUtils;
+import backend.main.dto.request.ChangePasswordRequest;
 import backend.main.dto.request.employer.EmployerRequest;
 import backend.main.dto.response.ApiResponse;
 import backend.main.dto.response.EmployerResponse;
+import backend.main.entities.Candidate;
 import backend.main.entities.Employer;
 import backend.main.enums.Code;
 import backend.main.exception.AppException;
@@ -141,6 +143,34 @@ public class EmployerController {
                             .code(Code.UPDATE_INFO_FAILED.getCode())
                             .message("Unexpected error occurred")
                             .build());
+        }
+    }
+
+    @PatchMapping(value = "/change-password")
+    public ResponseEntity<ApiResponse> changePassword(@CookieValue(value = "jwt", required = false) String token,
+                                                      @RequestBody ChangePasswordRequest req) {
+        //Kiem tra token
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.<Candidate>builder()
+                            .code(Code.TOKEN_INVALID.getCode())
+                            .message("Missing token or user not logged in")
+                            .build());
+        }
+
+        boolean success = employerService.changePassword(jwtUtils.extractEmail(token), req.getOldPassword(), req.getNewPassword());
+
+        if (success == true) {
+            return ResponseEntity.ok(ApiResponse.builder()
+                    .code(Code.PASSWORD_CHANGED.getCode())
+                    .message(Code.PASSWORD_CHANGED.getMessage())
+                    .build());
+        }
+        else{
+            return ResponseEntity.ok(ApiResponse.builder()
+                    .code(Code.UNCATEGORIZED_EXCEPTION.getCode())
+                    .message(Code.UNCATEGORIZED_EXCEPTION.getMessage())
+                    .build());
         }
     }
 }

@@ -5,6 +5,7 @@ import backend.main.configuration.JwtUtils;
 import backend.main.dto.request.employer.EmployerLoginRequest;
 import backend.main.dto.request.employer.EmployerRegisterRequest;
 import backend.main.dto.request.employer.EmployerRequest;
+import backend.main.entities.Candidate;
 import backend.main.entities.Employer;
 import backend.main.entities.VerificationToken;
 import backend.main.enums.Code;
@@ -103,6 +104,29 @@ public class EmployerServiceImpl implements EmployerService {
         e.setEnabled(true);
         verificationTokenRepository.delete(vt);
         return saveEmployer(e);
+    }
+
+    @Override
+    public boolean changePassword(String email, String oldPassword, String newPassword) {
+        try {
+            Employer e = employerRepository.findByEmail(email)
+                    .orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
+
+            if(e.getPassword() == null){
+                throw new AppException(Code.PASSWORD_IS_NULL);
+            }
+
+            //kiểm tra mật khẩu cũ trước khi đổi
+            if(!passwordEncoder.matches(oldPassword,e.getPassword())){
+                throw new AppException(Code.OLD_PASSWORD_NOT_MATCH);
+            }
+
+            e.setPassword(passwordEncoder.encode(newPassword));
+            saveEmployer(e);
+            return true;
+        } catch (AppException e) {
+            return false;
+        }
     }
 
     //Dang nhap

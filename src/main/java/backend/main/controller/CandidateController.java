@@ -1,6 +1,7 @@
 package backend.main.controller;
 
 import backend.main.configuration.JwtUtils;
+import backend.main.dto.request.ChangePasswordRequest;
 import backend.main.dto.request.candidate.CandidateRequest;
 import backend.main.dto.response.ApiResponse;
 import backend.main.dto.response.CandidateResponse;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
-@FieldDefaults(level = AccessLevel.PRIVATE,  makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CandidateController {
     @Autowired
     CandidateService candidateService;
@@ -37,9 +38,9 @@ public class CandidateController {
     @GetMapping(value = "/info")
     public ResponseEntity<ApiResponse<CandidateResponse>> getProfile(
             @CookieValue(value = "jwt", required = false) String token
-    ){
+    ) {
         //Kiểm tra xem có token không
-        if(token == null){
+        if (token == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(ApiResponse.<CandidateResponse>builder()
                             .code(Code.TOKEN_INVALID.getCode())
@@ -48,7 +49,7 @@ public class CandidateController {
         }
 
         //Xác thực token
-        if(!jwtUtils.validateToken(token)){
+        if (!jwtUtils.validateToken(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(ApiResponse.<CandidateResponse>builder()
                             .code(Code.TOKEN_INVALID.getCode())
@@ -81,17 +82,45 @@ public class CandidateController {
                 .build());
     }
 
+    @PatchMapping(value = "/change-password")
+    public ResponseEntity<ApiResponse> changePassword(@CookieValue(value = "jwt", required = false) String token,
+                                                      @RequestBody ChangePasswordRequest req) {
+        //Kiem tra token
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.<Candidate>builder()
+                            .code(Code.TOKEN_INVALID.getCode())
+                            .message("Missing token or user not logged in")
+                            .build());
+        }
+
+        boolean success = candidateService.changePassword(jwtUtils.extractEmail(token), req.getOldPassword(), req.getNewPassword());
+
+        if (success == true) {
+            return ResponseEntity.ok(ApiResponse.builder()
+                    .code(Code.PASSWORD_CHANGED.getCode())
+                    .message(Code.PASSWORD_CHANGED.getMessage())
+                    .build());
+        }
+        else{
+            return ResponseEntity.ok(ApiResponse.builder()
+                    .code(Code.UNCATEGORIZED_EXCEPTION.getCode())
+                    .message(Code.UNCATEGORIZED_EXCEPTION.getMessage())
+                    .build());
+        }
+    }
+
     @PutMapping(value = "/update", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ApiResponse<Candidate>> updateInfo(
             @ModelAttribute CandidateRequest candidateRequest,
-            @CookieValue(value = "jwt",  required = false) String token) {
+            @CookieValue(value = "jwt", required = false) String token) {
 
         System.out.println("===== [UPDATE CANDIDATE INFO] =====");
         System.out.println("Token: " + token);
 
         try {
             //Kiểm tra xem có token không
-            if(token == null){
+            if (token == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(ApiResponse.<Candidate>builder()
                                 .code(Code.TOKEN_INVALID.getCode())
@@ -100,7 +129,7 @@ public class CandidateController {
             }
 
             //Xac thuc token
-            if(!jwtUtils.validateToken(token)){
+            if (!jwtUtils.validateToken(token)) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(ApiResponse.<Candidate>builder()
                                 .code(Code.TOKEN_INVALID.getCode())
@@ -139,7 +168,7 @@ public class CandidateController {
                             .code(Code.UPDATE_INFO_FAILED.getCode())
                             .message(e.getMessage())
                             .build());
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("Unexpected error: " + e.getMessage());
             return ResponseEntity.internalServerError()
                     .body(ApiResponse.<Candidate>builder()

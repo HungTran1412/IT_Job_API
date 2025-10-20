@@ -106,8 +106,26 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
-    public Candidate changePassword(String oldPassword, String newPassword) {
-        return null;
+    public boolean changePassword(String email, String oldPassword, String newPassword) {
+        try {
+            Candidate c = candidateRepository.findByEmail(email)
+                    .orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
+
+            if(c.getPassword() == null){
+                throw new AppException(Code.PASSWORD_IS_NULL);
+            }
+
+            //kiểm tra mật khẩu cũ trước khi đổi
+            if(!passwordEncoder.matches(oldPassword,c.getPassword())){
+                throw new AppException(Code.OLD_PASSWORD_NOT_MATCH);
+            }
+
+            c.setPassword(passwordEncoder.encode(newPassword));
+            saveCandidate(c);
+            return true;
+        } catch (AppException e) {
+            return false;
+        }
     }
 
     @Override

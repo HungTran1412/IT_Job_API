@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
-@Setter
 public class EmployerRequest {
     String email;
     String companyName;

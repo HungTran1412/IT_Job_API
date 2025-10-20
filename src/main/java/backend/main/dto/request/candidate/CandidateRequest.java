@@ -11,7 +11,6 @@ import java.time.LocalDate;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
-@Setter
 public class CandidateRequest {
     String fullname;
     String email;

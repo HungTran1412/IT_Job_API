@@ -31,6 +31,9 @@ public enum Code {
     INTERNAL_ERROR(CodeEnum.error.toString(), ""),
     TOKEN_NULL(CodeEnum.error.toString(), "Token rỗng"),
     SERVER_ERROR(CodeEnum.error.toString(), "Lỗi không mong muốn khi kiểm tra mã token"),
+    PASSWORD_IS_NULL(CodeEnum.error.toString(),"Mật khẩu trống"),
+    OLD_PASSWORD_NOT_MATCH(CodeEnum.error.toString(), "Mật khẩu cũ không đúng!"),
+    PASSWORD_CHANGED(CodeEnum.success.toString(),"Đã đổi mật khẩu")
     ;
 
     String code;
