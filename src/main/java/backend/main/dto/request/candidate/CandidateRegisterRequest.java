@@ -1,4 +1,4 @@
-package backend.main.dto.request;
+package backend.main.dto.request.candidate;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -8,7 +8,8 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
 @Setter
-public class CandidateLoginRequest {
+public class CandidateRegisterRequest {
+    String fullName;
     String email;
     String password;
 }

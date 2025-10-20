@@ -1,8 +1,9 @@
 package backend.main.controller;
 
 import backend.main.configuration.AppProperties;
-import backend.main.dto.request.EmployerLoginRequest;
-import backend.main.dto.request.EmployerRequest;
+import backend.main.dto.request.employer.EmployerLoginRequest;
+import backend.main.dto.request.employer.EmployerRegisterRequest;
+import backend.main.dto.request.employer.EmployerRequest;
 import backend.main.dto.response.ApiResponse;
 import backend.main.entities.Employer;
 import backend.main.enums.Code;
@@ -12,9 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/company")
@@ -26,7 +24,7 @@ public class AuthEmployerController {
     AppProperties appProperties;
 
     @PostMapping("/register")
-    public ApiResponse<String> register(@RequestBody EmployerRequest request){
+    public ApiResponse<String> register(@RequestBody EmployerRegisterRequest request){
         Employer e = employerService.register(request);
 
         return ApiResponse.<String>builder()

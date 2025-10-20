@@ -1,7 +1,7 @@
 package backend.main.controller;
 
 import backend.main.configuration.JwtUtils;
-import backend.main.dto.request.CandidateRequest;
+import backend.main.dto.request.candidate.CandidateRequest;
 import backend.main.dto.response.ApiResponse;
 import backend.main.dto.response.CandidateResponse;
 import backend.main.entities.Candidate;

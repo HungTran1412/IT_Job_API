@@ -2,8 +2,9 @@ package backend.main.services.Impl;
 
 import backend.main.configuration.AppProperties;
 import backend.main.configuration.JwtUtils;
-import backend.main.dto.request.CandidateRequest;
-import backend.main.dto.request.CandidateLoginRequest;
+import backend.main.dto.request.candidate.CandidateRegisterRequest;
+import backend.main.dto.request.candidate.CandidateRequest;
+import backend.main.dto.request.candidate.CandidateLoginRequest;
 import backend.main.entities.Candidate;
 import backend.main.entities.VerificationToken;
 import backend.main.enums.Code;
@@ -48,7 +49,7 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
-    public Candidate register(CandidateRequest candidateRequest) {
+    public Candidate register(CandidateRegisterRequest candidateRequest) {
         if(candidateRepository.findByEmail(candidateRequest.getEmail()).isPresent()){
             throw new AppException(Code.EMAIL_EXISTED);
         }
@@ -57,7 +58,7 @@ public class CandidateServiceImpl implements CandidateService {
 
         // Gán giá trị từ request sang entity
         candidate.setCandidateId(generateCandidateID());
-        candidate.setFullname(candidateRequest.getFullname());
+        candidate.setFullname(candidateRequest.getFullName());
         candidate.setEmail(candidateRequest.getEmail());
         candidate.setPassword(passwordEncoder.encode(candidateRequest.getPassword())); // Mã hóa mật khẩu
         candidate.setCreateAt(LocalDateTime.now()); // Ngày tạo tài khoản

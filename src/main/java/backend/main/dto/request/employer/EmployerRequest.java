@@ -1,26 +1,19 @@
-package backend.main.dto.request;
+package backend.main.dto.request.employer;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.time.LocalDate;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
 @Setter
-public class CandidateRequest {
-    String fullname;
+public class EmployerRequest {
     String email;
     String password;
-    String gender;
+    String companyName;
     String address;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    LocalDate dateOfBirth;
     String phone;
     MultipartFile avatar;
-    MultipartFile cv;
 }

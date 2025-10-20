@@ -1,8 +1,9 @@
 package backend.main.controller;
 
 import backend.main.configuration.AppProperties;
-import backend.main.dto.request.CandidateRequest;
-import backend.main.dto.request.CandidateLoginRequest;
+import backend.main.dto.request.candidate.CandidateRegisterRequest;
+import backend.main.dto.request.candidate.CandidateRequest;
+import backend.main.dto.request.candidate.CandidateLoginRequest;
 import backend.main.dto.response.ApiResponse;
 import backend.main.entities.Candidate;
 import backend.main.enums.Code;
@@ -13,9 +14,6 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @RestController
 @RequestMapping("/user")
 public class AuthCandidateController {
@@ -24,8 +22,8 @@ public class AuthCandidateController {
     @Autowired
     AppProperties appProperties;
     @PostMapping("/register")
-    public ApiResponse<String> register(@RequestBody CandidateRequest candidateRequest){
-        Candidate candidate = candidateService.register(candidateRequest);
+    public ApiResponse<String> register(@RequestBody CandidateRegisterRequest request){
+        Candidate candidate = candidateService.register(request);
 
         return ApiResponse.<String>builder()
                 .code("success")

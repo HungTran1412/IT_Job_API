@@ -2,8 +2,9 @@ package backend.main.services.Impl;
 
 import backend.main.configuration.AppProperties;
 import backend.main.configuration.JwtUtils;
-import backend.main.dto.request.EmployerLoginRequest;
-import backend.main.dto.request.EmployerRequest;
+import backend.main.dto.request.employer.EmployerLoginRequest;
+import backend.main.dto.request.employer.EmployerRegisterRequest;
+import backend.main.dto.request.employer.EmployerRequest;
 import backend.main.entities.Employer;
 import backend.main.entities.VerificationToken;
 import backend.main.enums.Code;
@@ -49,7 +50,7 @@ public class EmployerServiceImpl implements EmployerService {
 
     //dang ky
     @Override
-    public Employer register(EmployerRequest employerRequest) {
+    public Employer register(EmployerRegisterRequest employerRequest) {
         if(employerRepository.findByEmail(employerRequest.getEmail()).isPresent()){
             throw new AppException(Code.EMAIL_EXISTED);
         }

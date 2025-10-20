@@ -1,7 +1,7 @@
 package backend.main.controller;
 
 import backend.main.configuration.JwtUtils;
-import backend.main.dto.request.EmployerRequest;
+import backend.main.dto.request.employer.EmployerRequest;
 import backend.main.dto.response.ApiResponse;
 import backend.main.dto.response.EmployerResponse;
 import backend.main.entities.Employer;
