@@ -1,6 +1,7 @@
 package backend.main.controller;
 
 import backend.main.configuration.AppProperties;
+import backend.main.dto.request.EmailRequest;
 import backend.main.dto.request.candidate.CandidateRegisterRequest;
 import backend.main.dto.request.candidate.CandidateRequest;
 import backend.main.dto.request.candidate.CandidateLoginRequest;
@@ -72,5 +73,14 @@ public class AuthCandidateController {
                 .build();
 
         return ResponseEntity.ok(apiResponse);
+    }
+
+    @PostMapping("/resend")
+    public ResponseEntity<ApiResponse<?>> resend(@RequestBody EmailRequest emailRequest){
+        candidateService.resendVerification(emailRequest.getEmail());
+        return ResponseEntity.ok(ApiResponse.builder()
+                        .code(Code.RESEND_COMPLETE.getCode())
+                        .message(Code.RESEND_COMPLETE.getMessage())
+                .build());
     }
 }

@@ -1,5 +1,7 @@
 package backend.main.repository;
 
+import backend.main.entities.Candidate;
+import backend.main.entities.Employer;
 import backend.main.entities.VerificationToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -11,4 +13,6 @@ public interface VerificationTokenRepository extends JpaRepository<VerificationT
     Optional<VerificationToken> findByToken(String token);
     void deleteByExpirationTimeBefore(LocalDateTime expirationTime);
     List<VerificationToken> findAllByExpirationTimeBefore(LocalDateTime now);
+    Optional<VerificationToken> findByCandidate(Candidate c);
+    Optional<VerificationToken> findByEmployer(Employer e);
 }

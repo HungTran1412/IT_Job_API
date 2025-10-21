@@ -33,7 +33,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(WHITE_LIST_URL).permitAll()
                         // Cho phép không cần token
-                        .requestMatchers("/company/login", "/user/login", "/company/register", "/user/register", "/user/verify", "/company/verify").permitAll()
+                        .requestMatchers("/company/login", "/user/login", "/company/register", "/user/register", "/user/verify", "/company/verify","/user/resend","/company/resend").permitAll()
 
                         // Các API dành riêng cho employer
                         .requestMatchers("/company/**").hasAuthority("ROLE_EMPLOYER")

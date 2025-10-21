@@ -85,6 +85,32 @@ public class CandidateServiceImpl implements CandidateService {
         return candidate;
     }
 
+    public void resendVerification(String email) {
+        Candidate candidate = candidateRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
+
+        if (candidate.getEnabled() == true) {
+            throw new AppException(Code.ACCOUNT_VERIFIED);
+        }
+
+        // Xóa token cũ nếu đã tồn tại
+        verificationTokenRepository.findByCandidate(candidate)
+                .ifPresent(verificationTokenRepository::delete);
+
+        // Tạo token mới
+        String token = UUID.randomUUID().toString();
+        VerificationToken newToken = new VerificationToken();
+        newToken.setToken(token);
+        newToken.setCandidate(candidate);
+        newToken.setExpirationTime(LocalDateTime.now().plusMinutes(5));
+
+        verificationTokenRepository.save(newToken);
+
+        String verifyLink = appProperties.getBaseUrl() + appProperties.getVerify().getCandidate() + token;
+        sendEmailHandler.sendVerificationEmail(candidate.getEmail(), verifyLink);
+    }
+
+
     @Override
     public Candidate verifyCandidate(String token){
         VerificationToken vt = verificationTokenRepository.findByToken(token)

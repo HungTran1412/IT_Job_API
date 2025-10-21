@@ -129,6 +129,31 @@ public class EmployerServiceImpl implements EmployerService {
         }
     }
 
+    public void resendVerification(String email) {
+        Employer e = employerRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
+
+        if (e.getEnabled() == true) {
+            throw new AppException(Code.ACCOUNT_VERIFIED);
+        }
+
+        // Xóa token cũ nếu đã tồn tại
+        verificationTokenRepository.findByEmployer(e)
+                .ifPresent(verificationTokenRepository::delete);
+
+        // Tạo token mới
+        String token = UUID.randomUUID().toString();
+        VerificationToken newToken = new VerificationToken();
+        newToken.setToken(token);
+        newToken.setEmployer(e);
+        newToken.setExpirationTime(LocalDateTime.now().plusMinutes(5));
+
+        verificationTokenRepository.save(newToken);
+
+        String verifyLink = appProperties.getBaseUrl() + appProperties.getVerify().getCandidate() + token;
+        sendEmailHandler.sendVerificationEmail(e.getEmail(), verifyLink);
+    }
+
     //Dang nhap
     @Override
     public String login(EmployerLoginRequest request) {

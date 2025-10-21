@@ -1,6 +1,7 @@
 package backend.main.controller;
 
 import backend.main.configuration.AppProperties;
+import backend.main.dto.request.EmailRequest;
 import backend.main.dto.request.employer.EmployerLoginRequest;
 import backend.main.dto.request.employer.EmployerRegisterRequest;
 import backend.main.dto.request.employer.EmployerRequest;
@@ -74,5 +75,13 @@ public class AuthEmployerController {
                 .build();
 
         return ResponseEntity.ok(apiResponse);
+    }
+    @PostMapping("/resend")
+    public ResponseEntity<ApiResponse<?>> resend(@RequestBody EmailRequest emailRequest){
+        employerService.resendVerification(emailRequest.getEmail());
+        return ResponseEntity.ok(ApiResponse.builder()
+                .code(Code.RESEND_COMPLETE.getCode())
+                .message(Code.RESEND_COMPLETE.getMessage())
+                .build());
     }
 }

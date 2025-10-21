@@ -33,7 +33,9 @@ public enum Code {
     SERVER_ERROR(CodeEnum.error.toString(), "Lỗi không mong muốn khi kiểm tra mã token"),
     PASSWORD_IS_NULL(CodeEnum.error.toString(),"Mật khẩu trống"),
     OLD_PASSWORD_NOT_MATCH(CodeEnum.error.toString(), "Mật khẩu cũ không đúng!"),
-    PASSWORD_CHANGED(CodeEnum.success.toString(),"Đã đổi mật khẩu")
+    PASSWORD_CHANGED(CodeEnum.success.toString(),"Đã đổi mật khẩu"),
+    ACCOUNT_VERIFIED(CodeEnum.success.toString(),"Tài khoản đã xác thực"),
+    RESEND_COMPLETE(CodeEnum.success.toString(), "Gửi lại email thành công")
     ;
 
     String code;
