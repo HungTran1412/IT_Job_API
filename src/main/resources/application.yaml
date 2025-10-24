@@ -39,7 +39,7 @@ cloudinary:
   secure: true
 
 app:
-  base-url: "https://4ae1b2221c18.ngrok-free.app"
+  base-url: "https://c9d8ae113937.ngrok-free.app"
   verify:
     candidate: "/user/verify?token="
     employer: "/company/verify?token="
