@@ -12,6 +12,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -24,6 +25,7 @@ public class AuthServiceImpl implements AuthService {
     CandidateRepository candidateRepository;
 
     @Override
+    @Transactional
     public Object checkToken(String token) {
         if(token == null || !jwtUtils.validateToken(token)) {
             throw new AppException(Code.TOKEN_INVALID);

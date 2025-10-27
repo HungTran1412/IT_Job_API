@@ -21,6 +21,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -49,22 +50,20 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
+    @Transactional
     public Candidate register(CandidateRegisterRequest candidateRequest) {
         if(candidateRepository.findByEmail(candidateRequest.getEmail()).isPresent()){
             throw new AppException(Code.EMAIL_EXISTED);
         }
         // Tạo đối tượng Candidate mới
-        Candidate candidate = new Candidate();
-
-        // Gán giá trị từ request sang entity
-        candidate.setCandidateId(generateCandidateID());
-        candidate.setFullname(candidateRequest.getFullName());
-        candidate.setEmail(candidateRequest.getEmail());
-        candidate.setPassword(passwordEncoder.encode(candidateRequest.getPassword())); // Mã hóa mật khẩu
-        candidate.setCreateAt(LocalDateTime.now()); // Ngày tạo tài khoản
-        candidate.setUpdateAt(LocalDateTime.now()); // Ngày cập nhật tài khoản
-        candidate.setRole(Role.ROLE_CANDIDATE); // Gán vai trò mặc định
-        candidate.setEnabled(false);
+        Candidate candidate = Candidate.builder()
+                .candidateId(generateCandidateID())
+                .fullname(candidateRequest.getFullName())
+                .email(candidateRequest.getEmail())
+                .password(passwordEncoder.encode(candidateRequest.getPassword())) // Mã hóa mật khẩu
+                .role(Role.ROLE_CANDIDATE) // Gán vai trò mặc định
+                .enabled(false)
+                .build();
 
         saveCandidate(candidate);
 
@@ -85,6 +84,8 @@ public class CandidateServiceImpl implements CandidateService {
         return candidate;
     }
 
+    @Override
+    @Transactional
     public void resendVerification(String email) {
         Candidate candidate = candidateRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
@@ -102,7 +103,7 @@ public class CandidateServiceImpl implements CandidateService {
         VerificationToken newToken = new VerificationToken();
         newToken.setToken(token);
         newToken.setCandidate(candidate);
-        newToken.setExpirationTime(LocalDateTime.now().plusMinutes(5));
+        newToken.setExpirationTime(LocalDateTime.now().plusSeconds(30));
 
         verificationTokenRepository.save(newToken);
 
@@ -112,6 +113,7 @@ public class CandidateServiceImpl implements CandidateService {
 
 
     @Override
+    @Transactional
     public Candidate verifyCandidate(String token){
         VerificationToken vt = verificationTokenRepository.findByToken(token)
                 .orElseThrow(() -> new AppException(Code.TOKEN_INVALID));
@@ -132,6 +134,7 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
+    @Transactional
     public boolean changePassword(String email, String oldPassword, String newPassword) {
         try {
             Candidate c = candidateRepository.findByEmail(email)
@@ -155,6 +158,7 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
+    @Transactional
     public String login(CandidateLoginRequest request) {
         // Tìm ứng viên theo email, nếu không có thì ném lỗi
         Candidate c = candidateRepository.findByEmail(request.getEmail())
@@ -174,6 +178,7 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
+    @Transactional
     public Candidate updateInfo(String id, CandidateRequest request) {
         Candidate c = candidateRepository.findById(id)
                 .orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
@@ -203,7 +208,6 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     private Candidate saveCandidate(Candidate c) {
-        c.setUpdateAt(LocalDateTime.now());
         return candidateRepository.save(c);
     }
 }

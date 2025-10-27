@@ -4,6 +4,7 @@ import backend.main.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,11 +12,11 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "tbl_candidate")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Candidate {
+@SuperBuilder
+public class Candidate extends BaseModel{
     @Id
     @Column(name = "id")
     String candidateId;
@@ -37,12 +38,6 @@ public class Candidate {
 
     @Column(name = "dateofbirth")
     LocalDate dateOfBirth;
-
-    @Column(name = "create_at")
-    LocalDateTime createAt;
-
-    @Column(name = "update_at")
-    LocalDateTime updateAt;
 
     @Column(name = "phone")
     String phone;
