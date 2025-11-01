@@ -64,6 +64,7 @@ public class EmployerServiceImpl implements EmployerService {
                 .password(passwordEncoder.encode(employerRequest.getPassword()))
                 .role(Role.ROLE_EMPLOYER)
                 .enabled(false)
+                .createdAt(LocalDateTime.now())
                 .build();
 
         //luu thong tin

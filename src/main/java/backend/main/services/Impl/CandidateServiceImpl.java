@@ -61,7 +61,8 @@ public class CandidateServiceImpl implements CandidateService {
                 .fullname(candidateRequest.getFullName())
                 .email(candidateRequest.getEmail())
                 .password(passwordEncoder.encode(candidateRequest.getPassword())) // Mã hóa mật khẩu
-                .role(Role.ROLE_CANDIDATE) // Gán vai trò mặc định
+                .role(Role.ROLE_CANDIDATE)
+                .createdAt(LocalDateTime.now())
                 .enabled(false)
                 .isPrivate(true)
                 .build();

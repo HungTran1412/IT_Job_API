@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/company")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class EmployerController {
+public class    EmployerController {
     @Autowired
     EmployerService employerService;
     @Autowired

@@ -1,10 +1,13 @@
 package backend.main.services.Impl;
 
 import backend.main.configuration.JwtUtils;
+import backend.main.entities.Admin;
 import backend.main.entities.Candidate;
 import backend.main.entities.Employer;
 import backend.main.enums.Code;
+import backend.main.enums.Role;
 import backend.main.exception.AppException;
+import backend.main.repository.AdminRepository;
 import backend.main.repository.CandidateRepository;
 import backend.main.repository.EmployerRepository;
 import backend.main.services.AuthService;
@@ -23,28 +26,33 @@ public class AuthServiceImpl implements AuthService {
     EmployerRepository employerRepository;
     @Autowired
     CandidateRepository candidateRepository;
+    @Autowired
+    AdminRepository adminRepository;
 
     @Override
     @Transactional
     public Object checkToken(String token) {
-        if(token == null || !jwtUtils.validateToken(token)) {
+        if (token == null || !jwtUtils.validateToken(token)) {
             throw new AppException(Code.TOKEN_INVALID);
         }
-        System.out.println("Token:"+token);
-        String id = jwtUtils.extractId(token);
-        System.out.println("id:"+id);
+        //Lay id tu token
+        System.out.println("Token:" + token);
+        String email = jwtUtils.extractEmail(token);
+        System.out.println("email:" + email);
 
-        String str = id.substring(0,4);
+        //lay role tu token
+        String role = jwtUtils.extractRole(token);
+        System.out.println("role:" + role);
 
-        System.out.println("str:"+str);
-        if(str.equals("EMPL")){
-            Employer e = employerRepository.findById(id)
-                    .orElseThrow(() -> new AppException(Code.EMPLOYER_NOT_FOUND));
-            return e;
-        }else if(str.equals("USER")){
-            Candidate c  = candidateRepository.findById(id)
+        if (role.equals(Role.ROLE_EMPLOYER.name())) {
+            return employerRepository.findByEmail(email)
                     .orElseThrow(() -> new AppException(Code.USER_NOT_FOUND));
-            return c;
+        } else if (role.equals(Role.ROLE_CANDIDATE.name())) {
+            return candidateRepository.findByEmail(email)
+                    .orElseThrow(() -> new AppException(Code.USER_NOT_FOUND));
+        } else if (role.equals(Role.ROLE_ADMIN.name())) {
+            return adminRepository.findByEmail(email)
+                    .orElseThrow(() -> new AppException(Code.USER_NOT_FOUND));
         }
 
         throw new AppException(Code.USER_NOT_FOUND);

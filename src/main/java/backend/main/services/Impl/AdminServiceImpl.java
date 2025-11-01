@@ -1,6 +1,7 @@
 package backend.main.services.Impl;
 
 import backend.main.configuration.JwtUtils;
+import backend.main.dto.request.ChangePasswordRequest;
 import backend.main.dto.request.LoginRequest;
 import backend.main.dto.request.admin.AdminRegisterRequest;
 import backend.main.entities.Admin;
@@ -17,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,  makeFinal = true)
@@ -42,6 +45,7 @@ public class AdminServiceImpl implements AdminService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .name(request.getName())
                 .role(Role.ROLE_ADMIN)
+                .createdAt(LocalDateTime.now())
                 .build();
 
         return adminRepository.save(admin);
@@ -61,5 +65,29 @@ public class AdminServiceImpl implements AdminService {
 
         // Trả về thông tin ứng viên (không bao gồm mật khẩu)
         return jwtUtils.generateToken(String.valueOf(c.getId()), c.getEmail(), c.getRole());
+    }
+
+    @Transactional
+    @Override
+    public boolean changePassword(String email, ChangePasswordRequest request) {
+        try {
+            Admin c = adminRepository.findByEmail(email)
+                    .orElseThrow(() -> new AppException(Code.EMAIL_DOES_NOT_EXIST));
+
+            if(c.getPassword() == null){
+                throw new AppException(Code.PASSWORD_IS_NULL);
+            }
+
+            //kiểm tra mật khẩu cũ trước khi đổi
+            if(!passwordEncoder.matches(request.getOldPassword(), c.getPassword())){
+                throw new AppException(Code.OLD_PASSWORD_NOT_MATCH);
+            }
+
+            c.setPassword(passwordEncoder.encode(request.getNewPassword()));
+            adminRepository.save(c);
+            return true;
+        } catch (AppException e) {
+            return false;
+        }
     }
 }
