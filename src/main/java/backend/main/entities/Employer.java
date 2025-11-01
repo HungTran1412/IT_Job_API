@@ -15,16 +15,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class Employer extends BaseModel {
+public class Employer extends User {
     @Id
     @Column(name = "id")
     String employerId;
-
-    @Column(name = "email")
-    String email;
-
-    @Column(name = "password")
-    String password;
 
     @Column(name = "company_name")
     String companyName;
@@ -55,10 +49,6 @@ public class Employer extends BaseModel {
 
     @Column(name = "logo")
     String logo;
-
-    @Column(name = "role")
-    @Enumerated(EnumType.STRING)
-    Role role;
 
     @Column(name = "enabled")
     Boolean enabled = false;

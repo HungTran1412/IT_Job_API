@@ -16,21 +16,11 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class Admin {
+public class Admin extends User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "email")
-    String email;
-
-    @Column(name = "password")
-    String password;
-
     @Column(name = "name")
     String name;
-
-    @Column(name = "role")
-    @Enumerated(EnumType.STRING)
-    Role role;
 }
