@@ -2,9 +2,9 @@ package backend.main.services.Impl;
 
 import backend.main.configuration.AppProperties;
 import backend.main.configuration.JwtUtils;
+import backend.main.dto.request.LoginRequest;
 import backend.main.dto.request.candidate.CandidateRegisterRequest;
 import backend.main.dto.request.candidate.CandidateRequest;
-import backend.main.dto.request.candidate.CandidateLoginRequest;
 import backend.main.entities.Candidate;
 import backend.main.entities.VerificationToken;
 import backend.main.enums.Code;
@@ -63,6 +63,7 @@ public class CandidateServiceImpl implements CandidateService {
                 .password(passwordEncoder.encode(candidateRequest.getPassword())) // Mã hóa mật khẩu
                 .role(Role.ROLE_CANDIDATE) // Gán vai trò mặc định
                 .enabled(false)
+                .isPrivate(true)
                 .build();
 
         saveCandidate(candidate);
@@ -159,7 +160,7 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     @Transactional
-    public String login(CandidateLoginRequest request) {
+    public String login(LoginRequest request) {
         // Tìm ứng viên theo email, nếu không có thì ném lỗi
         Candidate c = candidateRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(Code.EMAIL_DOES_NOT_EXIST));

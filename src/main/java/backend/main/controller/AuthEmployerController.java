@@ -2,9 +2,8 @@ package backend.main.controller;
 
 import backend.main.configuration.AppProperties;
 import backend.main.dto.request.EmailRequest;
-import backend.main.dto.request.employer.EmployerLoginRequest;
+import backend.main.dto.request.LoginRequest;
 import backend.main.dto.request.employer.EmployerRegisterRequest;
-import backend.main.dto.request.employer.EmployerRequest;
 import backend.main.dto.response.ApiResponse;
 import backend.main.entities.Employer;
 import backend.main.enums.Code;
@@ -29,8 +28,8 @@ public class AuthEmployerController {
         Employer e = employerService.register(request);
 
         return ApiResponse.<String>builder()
-                .code("success")
-                .message("Register succeeded. Please check your email to verify!")
+                .code(Code.REGISTER_SUCCESSED.getCode())
+                .message(Code.REGISTER_SUCCESSED.getMessage())
                 .email(e.getEmail())
                 .build();
     }
@@ -53,7 +52,7 @@ public class AuthEmployerController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<?>> login(
-            @RequestBody EmployerLoginRequest request,
+            @RequestBody LoginRequest request,
             HttpServletResponse response){
         //Gọi service để xác thực và lấy token
         String token = employerService.login(request);

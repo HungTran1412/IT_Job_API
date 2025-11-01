@@ -2,10 +2,9 @@ package backend.main.services.Impl;
 
 import backend.main.configuration.AppProperties;
 import backend.main.configuration.JwtUtils;
-import backend.main.dto.request.employer.EmployerLoginRequest;
+import backend.main.dto.request.LoginRequest;
 import backend.main.dto.request.employer.EmployerRegisterRequest;
 import backend.main.dto.request.employer.EmployerRequest;
-import backend.main.entities.Candidate;
 import backend.main.entities.Employer;
 import backend.main.entities.VerificationToken;
 import backend.main.enums.Code;
@@ -160,7 +159,7 @@ public class EmployerServiceImpl implements EmployerService {
     //Dang nhap
     @Transactional
     @Override
-    public String login(EmployerLoginRequest request) {
+    public String login(LoginRequest request) {
         Employer e = employerRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(Code.EMAIL_DOES_NOT_EXIST));
 

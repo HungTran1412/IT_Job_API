@@ -54,4 +54,7 @@ public class Candidate extends BaseModel{
 
     @Column(name = "enabled")
     Boolean enabled = false;
+
+    @Column(name = "is_private")
+    Boolean isPrivate = true;
 }
