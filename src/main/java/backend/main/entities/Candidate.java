@@ -4,6 +4,7 @@ import backend.main.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,23 +12,17 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "tbl_candidate")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Candidate {
+@SuperBuilder
+public class Candidate extends User{
     @Id
     @Column(name = "id")
     String candidateId;
 
     @Column(name = "fullname")
     String fullname;
-
-    @Column(name = "email")
-    String email;
-
-    @Column(name = "password")
-    String password;
 
     @Column(name = "gender")
     String gender;
@@ -38,12 +33,6 @@ public class Candidate {
     @Column(name = "dateofbirth")
     LocalDate dateOfBirth;
 
-    @Column(name = "create_at")
-    LocalDateTime createAt;
-
-    @Column(name = "update_at")
-    LocalDateTime updateAt;
-
     @Column(name = "phone")
     String phone;
 
@@ -53,10 +42,9 @@ public class Candidate {
     @Column(name = "cv")
     String cv;
 
-    @Column(name = "role")
-    @Enumerated(EnumType.STRING)
-    Role role;
-
     @Column(name = "enabled")
     Boolean enabled = false;
+
+    @Column(name = "is_private")
+    Boolean isPrivate = true;
 }

@@ -2,10 +2,9 @@ package backend.main.services.Impl;
 
 import backend.main.configuration.AppProperties;
 import backend.main.configuration.JwtUtils;
-import backend.main.dto.request.employer.EmployerLoginRequest;
+import backend.main.dto.request.LoginRequest;
 import backend.main.dto.request.employer.EmployerRegisterRequest;
 import backend.main.dto.request.employer.EmployerRequest;
-import backend.main.entities.Candidate;
 import backend.main.entities.Employer;
 import backend.main.entities.VerificationToken;
 import backend.main.enums.Code;
@@ -22,6 +21,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -51,21 +51,21 @@ public class EmployerServiceImpl implements EmployerService {
 
     //dang ky
     @Override
+    @Transactional
     public Employer register(EmployerRegisterRequest employerRequest) {
         if(employerRepository.findByEmail(employerRequest.getEmail()).isPresent()){
             throw new AppException(Code.EMAIL_EXISTED);
         }
 
-        Employer employer = new Employer();
-
-        employer.setEmployerId(generateEmployerID());
-        employer.setCompanyName(employerRequest.getCompanyName());
-        employer.setEmail(employerRequest.getEmail());
-        employer.setPassword(passwordEncoder.encode(employerRequest.getPassword()));
-        employer.setCreateAt(LocalDateTime.now());
-        employer.setUpdateAt(LocalDateTime.now());
-        employer.setRole(Role.ROLE_EMPLOYER);
-        employer.setEnabled(false);
+        Employer employer = Employer.builder()
+                .employerId(generateEmployerID())
+                .companyName(employerRequest.getCompanyName())
+                .email(employerRequest.getEmail())
+                .password(passwordEncoder.encode(employerRequest.getPassword()))
+                .role(Role.ROLE_EMPLOYER)
+                .enabled(false)
+                .createdAt(LocalDateTime.now())
+                .build();
 
         //luu thong tin
         saveEmployer(employer);
@@ -88,6 +88,7 @@ public class EmployerServiceImpl implements EmployerService {
     }
 
     @Override
+    @Transactional
     public Employer verifyEmployer(String token){
         VerificationToken vt = verificationTokenRepository.findByToken(token)
                 .orElseThrow(() -> new AppException(Code.TOKEN_INVALID));
@@ -107,6 +108,7 @@ public class EmployerServiceImpl implements EmployerService {
     }
 
     @Override
+    @Transactional
     public boolean changePassword(String email, String oldPassword, String newPassword) {
         try {
             Employer e = employerRepository.findByEmail(email)
@@ -129,6 +131,7 @@ public class EmployerServiceImpl implements EmployerService {
         }
     }
 
+    @Transactional
     public void resendVerification(String email) {
         Employer e = employerRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
@@ -146,7 +149,7 @@ public class EmployerServiceImpl implements EmployerService {
         VerificationToken newToken = new VerificationToken();
         newToken.setToken(token);
         newToken.setEmployer(e);
-        newToken.setExpirationTime(LocalDateTime.now().plusMinutes(5));
+        newToken.setExpirationTime(LocalDateTime.now().plusSeconds(30));
 
         verificationTokenRepository.save(newToken);
 
@@ -155,8 +158,9 @@ public class EmployerServiceImpl implements EmployerService {
     }
 
     //Dang nhap
+    @Transactional
     @Override
-    public String login(EmployerLoginRequest request) {
+    public String login(LoginRequest request) {
         Employer e = employerRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(Code.EMAIL_DOES_NOT_EXIST));
 
@@ -174,6 +178,7 @@ public class EmployerServiceImpl implements EmployerService {
     }
 
     @Override
+    @Transactional
     public Employer updateInfo(String id, EmployerRequest request) {
         Employer e = employerRepository.findById(id)
                 .orElseThrow(() -> new AppException(Code.EMPLOYER_NOT_FOUND));
