@@ -2,9 +2,8 @@ package backend.main.controller;
 
 import backend.main.configuration.AppProperties;
 import backend.main.dto.request.EmailRequest;
+import backend.main.dto.request.LoginRequest;
 import backend.main.dto.request.candidate.CandidateRegisterRequest;
-import backend.main.dto.request.candidate.CandidateRequest;
-import backend.main.dto.request.candidate.CandidateLoginRequest;
 import backend.main.dto.response.ApiResponse;
 import backend.main.entities.Candidate;
 import backend.main.enums.Code;
@@ -27,8 +26,8 @@ public class AuthCandidateController {
         Candidate candidate = candidateService.register(request);
 
         return ApiResponse.<String>builder()
-                .code("success")
-                .message("Register succeeded. Please check your email to verify!")
+                .code(Code.REGISTER_SUCCESSED.toString())
+                .message(Code.REGISTER_SUCCESSED.getMessage())
                 .email(candidate.getEmail())
                 .build();
     }
@@ -51,7 +50,7 @@ public class AuthCandidateController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<?>> login(
-            @RequestBody CandidateLoginRequest request,
+            @RequestBody LoginRequest request,
             HttpServletResponse response){
         //Gọi service để xác thực và lấy token
         String token = candidateService.login(request);

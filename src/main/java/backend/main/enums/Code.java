@@ -35,7 +35,8 @@ public enum Code {
     OLD_PASSWORD_NOT_MATCH(CodeEnum.error.toString(), "Mật khẩu cũ không đúng!"),
     PASSWORD_CHANGED(CodeEnum.success.toString(),"Đã đổi mật khẩu"),
     ACCOUNT_VERIFIED(CodeEnum.success.toString(),"Tài khoản đã xác thực"),
-    RESEND_COMPLETE(CodeEnum.success.toString(), "Gửi lại email thành công")
+    RESEND_COMPLETE(CodeEnum.success.toString(), "Gửi lại email thành công"),
+    REGISTER_SUCCESSED(CodeEnum.success.toString(), "Đăng ký thành công, vui lòng check email!")
     ;
 
     String code;

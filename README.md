@@ -9,14 +9,14 @@
 ---
 
 ## Kiến trúc & Công nghệ
-- **Java 17+**
+- **Java 21**
 - **Spring Boot 3.x**
 - **Spring Security** (JWT Authentication/ BCryptPasswordEncoder)
 - **Spring Data JPA** (truy cập database)
 - **MySQL**
 - **Cloudinary** (lưu ảnh/avatar/CV)
 - **Lombok**
-- **Postman** (test API)
+- **Swagger** (test and describe API)
 
 ---
 
@@ -64,12 +64,3 @@ src
 | `POST` | `/company/login`    | Đăng nhập, trả về cookie JWT | ❌           |
 | `GET`  | `/company/info`     | Xem thông tin công ty        | ✅           |
 | `PUT`  | `/company/update`   | Cập nhật thông tin công ty   | ✅           |
-
-## Mã ứng dụng phổ biến
-| Code | Message                | Mô tả                           |
-|------|------------------------| ------------------------------- |
-| 2001 | Login succeeded!       | Đăng nhập thành công            |
-| 2006 | Get info succeeded     | Lấy thông tin thành công        |
-| 1006 | Token invalid          | Token không hợp lệ hoặc hết hạn |
-| 1005 | Candidate not found    | Không tìm thấy người dùng       |
-| 1836 | Uncategorized error    | Lỗi chưa được phân loại   |

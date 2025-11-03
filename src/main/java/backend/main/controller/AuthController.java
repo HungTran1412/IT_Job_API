@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/check")
+@RequestMapping("/auth/check")
 public class AuthController {
     @Autowired
     private AuthService authService;

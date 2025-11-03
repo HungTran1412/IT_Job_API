@@ -39,9 +39,9 @@ cloudinary:
   secure: true
 
 app:
-  base-url: "https://d059ac4b8449.ngrok-free.app"
+  base-url: "http://localhost:8080"
   verify:
     candidate: "/user/verify?token="
     employer: "/company/verify?token="
   front-end:
-    verified-url: "https://9608c3dae040.ngrok-free.app/email-verified"
+    verified-url: "http://localhost:3000/email-verified"
