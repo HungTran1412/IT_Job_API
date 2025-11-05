@@ -32,7 +32,7 @@ public class AdminInit {
 	@Bean
 	ApplicationRunner applicationRunner(AdminRepository repository) {
 		return args -> {
-			if(repository.findByName("admin").isEmpty()) {
+			if(repository.findByEmail("admin@dev.com").isEmpty()) {
 				Set<String> roles = new HashSet<String>();
 				roles.add(Role.ROLE_ADMIN.name());
 				
@@ -51,3 +51,4 @@ public class AdminInit {
 	}
 
 }
+
