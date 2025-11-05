@@ -7,4 +7,5 @@ public interface JobRepository{
     void deleteById(String jobId);
     List<Job> search(String keyword, String location, String salaryRange);
     List<Job> findByStatus(String status);
+
 }
