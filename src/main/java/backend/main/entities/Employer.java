@@ -1,12 +1,19 @@
 package backend.main.entities;
 
-import backend.main.enums.Role;
-import jakarta.persistence.*;
-import lombok.*;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tbl_employer")
@@ -52,4 +59,7 @@ public class Employer extends User {
 
     @Column(name = "enabled")
     Boolean enabled = false;
+    
+    @OneToMany(mappedBy = "employer",orphanRemoval = true)
+    List<Job> jobs;
 }
