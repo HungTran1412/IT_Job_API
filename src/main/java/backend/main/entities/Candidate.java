@@ -1,13 +1,19 @@
 package backend.main.entities;
 
-import backend.main.enums.Role;
-import jakarta.persistence.*;
-import lombok.*;
+import java.time.LocalDate;
+import java.util.List;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tbl_candidate")
@@ -47,4 +53,7 @@ public class Candidate extends User{
 
     @Column(name = "is_private")
     Boolean isPrivate = true;
+    
+    @OneToMany(mappedBy = "candidate",orphanRemoval = true)
+    List<Application> applications;
 }

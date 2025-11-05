@@ -1,11 +1,15 @@
 package backend.main.repository;
 
-import backend.main.entities.Admin;
-import org.springframework.data.repository.CrudRepository;
-
+import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.repository.CrudRepository;
+
+import backend.main.entities.Job;
+
 public interface JobRepository extends CrudRepository<Job,String> {
-    Optional<Job> findByTilte(String tilte);
+    Optional<Job> findByTitle(String title);
+    List<Job> findByStatus(String status);
+    List<Job> findByTitleContainingAndLocationContaining(String keyword, String location);
 
 }
