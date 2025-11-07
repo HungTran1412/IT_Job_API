@@ -25,17 +25,6 @@ public class AdminController {
     @Autowired
     JwtUtils jwtUtils;
 
-    @PostMapping("/register")
-    public ApiResponse<String> registerAdmin(@RequestBody AdminRegisterRequest request) {
-        Admin a = adminService.addAdmin(request);
-
-        return ApiResponse.<String>builder()
-                .code(Code.REGISTER_SUCCESSED.getCode())
-                .message("Đăng ký thành công!")
-                .email(request.getEmail())
-                .build();
-    }
-
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<?>> login(
             @RequestBody LoginRequest request,
