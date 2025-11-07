@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import backend.main.entities.Job;
+import backend.main.enums.JobStatus;
 
 public interface JobService {
     Job save(Job job);
@@ -13,5 +14,5 @@ public interface JobService {
     void deleteById(String jobId);
     Job updateJob(Job job);
     List<Job> search(String keyword, String location, String salaryRange);
-    List<Job> findByStatus(String status);
+    List<Job> findByStatus(JobStatus status);
 }

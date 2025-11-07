@@ -3,6 +3,7 @@ package backend.main.controller;
 import java.util.List;
 import java.util.Optional;
 
+import backend.main.enums.JobStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -63,7 +64,7 @@ public class JobController {
     }
 
     @GetMapping("/status/{status}")
-    public List<Job> getJobsByStatus(@PathVariable String status) {
+    public List<Job> getJobsByStatus(@PathVariable JobStatus status) {
         return jobService.findByStatus(status);
     }
 }

@@ -31,7 +31,7 @@ public class AdminInit {
 				User user = Admin.builder()
 								.name("admin")
 								.password(encoder.encode("admin"))
-								.email("dumabao69@gmail.com")
+								.email("admin@dev.com")
 								.role(Role.ROLE_ADMIN)
 								.build();
 						

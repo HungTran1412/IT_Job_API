@@ -34,25 +34,6 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public Admin addAdmin(AdminRegisterRequest request) {
-        if(adminRepository.findByEmail(request.getEmail()).isPresent()){
-            throw new AppException(Code.EMAIL_EXISTED);
-        }
-
-        //Tao moi doi tuong
-        Admin admin = Admin.builder()
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .name(request.getName())
-                .role(Role.ROLE_ADMIN)
-                .createdAt(LocalDateTime.now())
-                .build();
-
-        return adminRepository.save(admin);
-    }
-
-    @Override
-    @Transactional
     public String login(LoginRequest request) {
         // Tìm ứng viên theo email, nếu không có thì ném lỗi
         Admin c = adminRepository.findByEmail(request.getEmail())

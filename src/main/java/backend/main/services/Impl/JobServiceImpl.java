@@ -3,6 +3,7 @@ package backend.main.services.Impl;
 import java.util.List;
 import java.util.Optional;
 
+import backend.main.enums.JobStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,26 +24,31 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
+    @Transactional
     public List<Job> findAll() {
         return (List<Job>) jobRepository.findAll();
     }
 
     @Override
+    @Transactional
     public Optional<Job> findById(String jobId) {
         return jobRepository.findById(jobId);
     }
 
     @Override
+    @Transactional
     public Optional<Job> findByTitle(String title) {
         return jobRepository.findByTitle(title);
     }
 
     @Override
+    @Transactional
     public void deleteById(String jobId) {
         jobRepository.deleteById(jobId);
     }
 
     @Override
+    @Transactional
     public List<Job> search(String keyword, String location, String salaryRange) {
         return jobRepository.findByTitleContainingAndLocationContaining(keyword, location);
     }
@@ -55,7 +61,8 @@ public class JobServiceImpl implements JobService {
     }
 
 	@Override
-	public List<Job> findByStatus(String status) {
+    @Transactional
+	public List<Job> findByStatus(JobStatus status) {
 		return jobRepository.findByStatus(status);
 	}
 }

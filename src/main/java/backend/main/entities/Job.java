@@ -27,7 +27,7 @@ import lombok.experimental.SuperBuilder;
 public class Job extends BaseModel{
     @Id
     String jobId;
-    String tilte;
+    String title;
     String description;
     String requirements;
     String salary;
