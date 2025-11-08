@@ -26,7 +26,7 @@ public class AuthCandidateController {
         Candidate candidate = candidateService.register(request);
 
         return ApiResponse.<String>builder()
-                .code(Code.REGISTER_SUCCESSED.toString())
+                .code(Code.REGISTER_SUCCESSED.getCode())
                 .message(Code.REGISTER_SUCCESSED.getMessage())
                 .email(candidate.getEmail())
                 .build();
