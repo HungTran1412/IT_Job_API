@@ -72,7 +72,8 @@ public class CandidateController {
                 c.getDateOfBirth(),
                 c.getPhone(),
                 c.getAvatar(),
-                c.getCv()
+                c.getCv(),
+                c.getIsPrivate()
         );
 
         return ResponseEntity.ok(ApiResponse.<CandidateResponse>builder()
@@ -110,7 +111,7 @@ public class CandidateController {
         }
     }
 
-    @PutMapping(value = "/update", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PatchMapping(value = "/update", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ApiResponse<Candidate>> updateInfo(
             @ModelAttribute CandidateRequest candidateRequest,
             @CookieValue(value = "jwt", required = false) String token) {

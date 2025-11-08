@@ -1,6 +1,9 @@
 package backend.main.services.Impl;
 
 import backend.main.configuration.JwtUtils;
+import backend.main.dto.response.AdminResponse;
+import backend.main.dto.response.CandidateResponse;
+import backend.main.dto.response.EmployerResponse;
 import backend.main.entities.Admin;
 import backend.main.entities.Candidate;
 import backend.main.entities.Employer;
@@ -16,6 +19,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static backend.main.enums.Role.ROLE_EMPLOYER;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -43,18 +48,52 @@ public class AuthServiceImpl implements AuthService {
         //lay role tu token
         String role = jwtUtils.extractRole(token);
         System.out.println("role:" + role);
+//        ROLE_ADMIN
 
-        if (role.equals(Role.ROLE_EMPLOYER.name())) {
-            return employerRepository.findByEmail(email)
-                    .orElseThrow(() -> new AppException(Code.USER_NOT_FOUND));
-        } else if (role.equals(Role.ROLE_CANDIDATE.name())) {
-            return candidateRepository.findByEmail(email)
-                    .orElseThrow(() -> new AppException(Code.USER_NOT_FOUND));
-        } else if (role.equals(Role.ROLE_ADMIN.name())) {
-            return adminRepository.findByEmail(email)
-                    .orElseThrow(() -> new AppException(Code.USER_NOT_FOUND));
+
+        switch (role) {
+            case "ROLE_EMPLOYER" -> {
+                return employerRepository.findByEmail(email)
+                        .map(e -> new EmployerResponse(
+                                e.getCompanyName(),
+                                e.getCity(),
+                                e.getAddress(),
+                                e.getCompanyModel(),
+                                e.getCompanyEmployees(),
+                                e.getWorkingTime(),
+                                e.getWorkingOvertime(),
+                                e.getDescription(),
+                                e.getPhone(),
+                                e.getLogo()
+                        )).orElseThrow(() -> new AppException(Code.EMPLOYER_NOT_FOUND));
+            }
+            case "ROLE_CANDIDATE" ->{
+                return candidateRepository.findByEmail(email)
+                        .map(c -> new CandidateResponse(
+                                c.getFullname(),
+                                c.getEmail(),
+                                c.getAddress(),
+                                c.getDateOfBirth(),
+                                c.getPhone(),
+                                c.getAvatar(),
+                                c.getCv(),
+                                c.getIsPrivate()
+                        )).orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
+            }
+            case "ROLE_ADMIN" ->{
+                return adminRepository.findByEmail(email)
+                        .map(a -> new AdminResponse(
+                                a.getEmail(),
+                                a.getName()
+                        )).orElseThrow(() -> new AppException(Code.USER_NOT_FOUND));
+            }
+            default -> throw new AppException(Code.USER_NOT_FOUND);
         }
-
-        throw new AppException(Code.USER_NOT_FOUND);
     }
+
+    @Override
+    public void logout() {
+
+    }
+
 }

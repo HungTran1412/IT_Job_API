@@ -18,4 +18,5 @@ public class CandidateResponse {
     String phone;
     String avatar;
     String cv;
+    boolean isPrivate;
 }

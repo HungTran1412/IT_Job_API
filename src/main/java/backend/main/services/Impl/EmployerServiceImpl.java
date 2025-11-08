@@ -5,6 +5,7 @@ import backend.main.configuration.JwtUtils;
 import backend.main.dto.request.LoginRequest;
 import backend.main.dto.request.employer.EmployerRegisterRequest;
 import backend.main.dto.request.employer.EmployerRequest;
+import backend.main.dto.request.employer.EmployerUpdateRequest;
 import backend.main.entities.Employer;
 import backend.main.entities.VerificationToken;
 import backend.main.enums.Code;
@@ -179,13 +180,29 @@ public class EmployerServiceImpl implements EmployerService {
 
     @Override
     @Transactional
-    public Employer updateInfo(String id, EmployerRequest request) {
+    public Employer updateInfo(String id, EmployerUpdateRequest request) {
         Employer e = employerRepository.findById(id)
                 .orElseThrow(() -> new AppException(Code.EMPLOYER_NOT_FOUND));
+
+        System.out.println("CompanyName: " + request.getCompanyName());
+        System.out.println("Address: " + request.getAddress());
+        System.out.println("Phone: " + request.getPhone());
+        System.out.println("City: " + request.getCity());
+        System.out.println("CompanyModel: " + request.getCompanyModel());
+        System.out.println("CompanyEmployees: " + request.getCompanyEmployees());
+        System.out.println("WorkingTime: " + request.getWorkingTime());
+        System.out.println("WorkingOvertime: " + request.getWorkingOvertime());
+        System.out.println("Description: " + request.getDescription());
 
         e.setCompanyName(request.getCompanyName());
         e.setAddress(request.getAddress());
         e.setPhone(request.getPhone());
+        e.setCity(request.getCity());
+        e.setCompanyModel(request.getCompanyModel());
+        e.setCompanyEmployees(request.getCompanyEmployees());
+        e.setWorkingTime(request.getWorkingTime());
+        e.setWorkingOvertime(request.getWorkingOvertime());
+        e.setDescription(request.getDescription());
         e.setUpdateAt(LocalDateTime.now());
 
         //Kiem tra xem nguoi dung co cap nhat anh khong
