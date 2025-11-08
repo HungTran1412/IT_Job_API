@@ -3,6 +3,7 @@ package backend.main.controller;
 import backend.main.configuration.JwtUtils;
 import backend.main.dto.request.ChangePasswordRequest;
 import backend.main.dto.request.employer.EmployerRequest;
+import backend.main.dto.request.employer.EmployerUpdateRequest;
 import backend.main.dto.response.ApiResponse;
 import backend.main.dto.response.EmployerResponse;
 import backend.main.entities.Candidate;
@@ -68,8 +69,13 @@ public class    EmployerController {
 
         EmployerResponse response = new EmployerResponse(
                 e.getCompanyName(),
-                e.getEmail(),
+                e.getCity(),
                 e.getAddress(),
+                e.getCompanyModel(),
+                e.getCompanyEmployees(),
+                e.getWorkingTime(),
+                e.getWorkingOvertime(),
+                e.getDescription(),
                 e.getPhone(),
                 e.getLogo()
         );
@@ -81,9 +87,9 @@ public class    EmployerController {
                 .build());
     }
 
-    @PutMapping(value = "/update", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PatchMapping(value = "/update", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ApiResponse<Employer>> updateInfo(
-                                                  @ModelAttribute EmployerRequest request,
+                                                  @ModelAttribute EmployerUpdateRequest request,
                                                   @CookieValue(value = "jwt", required = true) String token) {
         System.out.println("===== [UPDATE EMPLOYER INFO] =====");
         System.out.println("Token: " + token);
@@ -109,18 +115,10 @@ public class    EmployerController {
 
             //Lay id tu token
             String id = jwtUtils.extractId(token);
-            System.out.println("Employer ID: " + id);
 
             //Kiem tra nguoi dung co ton tai khong
             Employer e = employerRepository.findById(id)
                     .orElseThrow(() -> new AppException(Code.EMPLOYER_NOT_FOUND));
-
-            //Log du lieu
-            System.out.println("Fullname: " + request.getCompanyName());
-            System.out.println("Phone: " + request.getPhone());
-            System.out.println("Avatar: " + (request.getLogo() != null
-                    ? request.getLogo().getOriginalFilename()
-                    : "null"));
 
             //Cap nhat thong in
             Employer updated = employerService.updateInfo(id, request);

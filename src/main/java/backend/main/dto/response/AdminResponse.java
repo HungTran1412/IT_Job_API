@@ -11,5 +11,4 @@ import lombok.experimental.FieldDefaults;
 public class AdminResponse {
     String email;
     String name;
-    String role;
 }
