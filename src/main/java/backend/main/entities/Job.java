@@ -4,16 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import backend.main.enums.JobStatus;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
@@ -26,6 +19,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class Job extends BaseModel{
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "job_id")
     String jobId;
     String title;
     String description;
@@ -33,12 +28,14 @@ public class Job extends BaseModel{
     String salary;
     String location;
     LocalDateTime deadline;
-    JobStatus status;
-    
+    @Builder.Default
+    JobStatus status = JobStatus.PENDING;
+
     @ManyToOne
     @JoinColumn(name = "employer_id")
+    @JsonIgnore
     Employer employer;
-    
+
     @OneToMany(mappedBy = "job")
     List<Application> applications ;
 }
