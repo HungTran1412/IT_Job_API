@@ -18,5 +18,5 @@ public interface JobService {
     List<Job> search(String keyword, String location, String salaryRange);
     List<Job> findAllByStatus(JobStatus status);
     JobStatus reviewJob(JobReviewRequest request);
-//    List<Job> findAllBy
+
 }

@@ -1,12 +1,21 @@
 package backend.main.services.Impl;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import backend.main.configuration.AppProperties;
 import backend.main.configuration.JwtUtils;
 import backend.main.dto.request.LoginRequest;
 import backend.main.dto.request.employer.EmployerRegisterRequest;
-import backend.main.dto.request.employer.EmployerRequest;
 import backend.main.dto.request.employer.EmployerUpdateRequest;
 import backend.main.entities.Employer;
+import backend.main.entities.Job;
 import backend.main.entities.VerificationToken;
 import backend.main.enums.Code;
 import backend.main.enums.Role;
@@ -19,13 +28,6 @@ import backend.main.utils.SendEmailHandler;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -132,7 +134,8 @@ public class EmployerServiceImpl implements EmployerService {
         }
     }
 
-    @Transactional
+    @Override
+	@Transactional
     public void resendVerification(String email) {
         Employer e = employerRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
@@ -224,4 +227,12 @@ public class EmployerServiceImpl implements EmployerService {
         e.setUpdateAt(LocalDateTime.now());
         return employerRepository.save(e);
     }
+    
+    @Override
+   public List<Job> getListJob(String jwt){
+	   String id = jwtUtils.extractId(jwt);
+       Employer employer = employerRepository.findById(id)
+               .orElseThrow(() -> new AppException(Code.EMAIL_DOES_NOT_EXIST));
+	   return employer.getJobs();
+   }
 }

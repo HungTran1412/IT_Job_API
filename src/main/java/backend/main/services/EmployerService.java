@@ -1,10 +1,12 @@
 package backend.main.services;
 
+import java.util.List;
+
 import backend.main.dto.request.LoginRequest;
 import backend.main.dto.request.employer.EmployerRegisterRequest;
-import backend.main.dto.request.employer.EmployerRequest;
 import backend.main.dto.request.employer.EmployerUpdateRequest;
 import backend.main.entities.Employer;
+import backend.main.entities.Job;
 
 public interface EmployerService {
     Employer register(EmployerRegisterRequest employerRequest);
@@ -13,4 +15,5 @@ public interface EmployerService {
     Employer verifyEmployer(String token);
     boolean changePassword(String email, String oldPassword, String newPassword);
     void resendVerification(String email);
+    List<Job> getListJob(String jwt);
 }
