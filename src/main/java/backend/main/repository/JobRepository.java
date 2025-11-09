@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
 public interface JobRepository extends CrudRepository<Job,String> {
     Optional<Job> findByTitle(String title);
     List<Job> findAllByStatus(JobStatus status);
-    List<Job> findByTitleContainingAndLocationContaining(String keyword, String location);
+    List<Job> findAllByTitleContaining(String keyword);
 
 }

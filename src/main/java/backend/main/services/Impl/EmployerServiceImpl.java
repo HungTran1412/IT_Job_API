@@ -210,6 +210,11 @@ public class EmployerServiceImpl implements EmployerService {
             System.out.println("Image: " + request.getLogo().getOriginalFilename());
             String imgUrl = cloudinaryFileUpload.uploadImage(request.getLogo());
             e.setLogo(imgUrl);
+            System.out.println("Logo: " + imgUrl);
+        }else{
+            String imgUrl = e.getLogo();
+            e.setLogo(imgUrl);
+            System.out.println("Logo: " + imgUrl);
         }
 
         return saveEmployer(e);

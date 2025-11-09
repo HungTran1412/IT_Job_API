@@ -82,7 +82,8 @@ public class JobServiceImpl implements JobService {
     @Override
     @Transactional
     public List<Job> search(String keyword, String location, String salaryRange) {
-        return jobRepository.findByTitleContainingAndLocationContaining(keyword, location);
+        System.out.println(jobRepository.findAllByTitleContaining(keyword).toArray().toString());
+        return jobRepository.findAllByTitleContaining(keyword);
     }
 
 
