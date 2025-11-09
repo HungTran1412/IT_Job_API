@@ -36,7 +36,8 @@ public enum Code {
     PASSWORD_CHANGED(CodeEnum.success.toString(),"Đã đổi mật khẩu"),
     ACCOUNT_VERIFIED(CodeEnum.success.toString(),"Tài khoản đã xác thực"),
     RESEND_COMPLETE(CodeEnum.success.toString(), "Gửi lại email thành công"),
-    REGISTER_SUCCESSED(CodeEnum.success.toString(), "Đăng ký thành công, vui lòng check email!")
+    REGISTER_SUCCESSED(CodeEnum.success.toString(), "Đăng ký thành công, vui lòng check email!"),
+    LOGOUT_SUCCESSED(CodeEnum.success.toString(), "Đăng xuất thành công")
     ;
 
     String code;

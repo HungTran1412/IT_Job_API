@@ -90,10 +90,4 @@ public class AuthServiceImpl implements AuthService {
             default -> throw new AppException(Code.USER_NOT_FOUND);
         }
     }
-
-    @Override
-    public void logout() {
-
-    }
-
 }
