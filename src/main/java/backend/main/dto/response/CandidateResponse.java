@@ -1,5 +1,6 @@
 package backend.main.dto.response;
 
+import backend.main.enums.Role;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,4 +20,6 @@ public class CandidateResponse {
     String avatar;
     String cv;
     boolean isPrivate;
+    Role role;
+    String gender;
 }

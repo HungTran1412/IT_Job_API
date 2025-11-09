@@ -64,7 +64,8 @@ public class AuthServiceImpl implements AuthService {
                                 e.getWorkingOvertime(),
                                 e.getDescription(),
                                 e.getPhone(),
-                                e.getLogo()
+                                e.getLogo(),
+                                e.getRole()
                         )).orElseThrow(() -> new AppException(Code.EMPLOYER_NOT_FOUND));
             }
             case "ROLE_CANDIDATE" ->{
@@ -77,14 +78,17 @@ public class AuthServiceImpl implements AuthService {
                                 c.getPhone(),
                                 c.getAvatar(),
                                 c.getCv(),
-                                c.getIsPrivate()
+                                c.getIsPrivate(),
+                                c.getRole(),
+                                c.getGender()
                         )).orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
             }
             case "ROLE_ADMIN" ->{
                 return adminRepository.findByEmail(email)
                         .map(a -> new AdminResponse(
                                 a.getEmail(),
-                                a.getName()
+                                a.getName(),
+                                a.getRole()
                         )).orElseThrow(() -> new AppException(Code.USER_NOT_FOUND));
             }
             default -> throw new AppException(Code.USER_NOT_FOUND);

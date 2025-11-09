@@ -28,21 +28,27 @@ public class CloudinaryFileUpload {
 
         if (file == null || file.isEmpty()) {
             System.out.println(">>> File is null or empty!");
+            // Tùy chọn: Bạn có thể thêm kiểm tra loại tệp tin tại đây nếu muốn chặn sớm.
             throw new AppException(Code.FILE_UPLOAD_FAILED);
         }
+
+        // *** Đảm bảo resourceType là "image" nếu bạn chỉ muốn upload ảnh ***
+        // Nếu bạn muốn chắc chắn 100%, bạn có thể hardcode lại như sau:
+        // String imageResourceType = "image";
 
         System.out.println("File name: " + file.getOriginalFilename());
         System.out.println("File content type: " + file.getContentType());
         System.out.println("Folder: " + folder);
-        System.out.println("Resource type: " + resourceType);
+        System.out.println("Resource type: " + resourceType); // Sẽ là "image"
 
         try {
             Map uploadResult = cloudinary.uploader().upload(
                     file.getBytes(),
                     ObjectUtils.asMap(
                             "folder", folder,
-                            "resource_type", resourceType,
-                            "format", "pdf"
+                            // Cloudinary sẽ tự động nhận dạng định dạng ảnh
+                            "resource_type", resourceType // Giả định tham số này là "image"
+                            // **ĐÃ BỎ:** "format", "pdf"
                     )
             );
 

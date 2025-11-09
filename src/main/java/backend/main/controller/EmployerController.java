@@ -77,7 +77,8 @@ public class    EmployerController {
                 e.getWorkingOvertime(),
                 e.getDescription(),
                 e.getPhone(),
-                e.getLogo()
+                e.getLogo(),
+                e.getRole()
         );
 
         return ResponseEntity.ok(ApiResponse.<EmployerResponse>builder()

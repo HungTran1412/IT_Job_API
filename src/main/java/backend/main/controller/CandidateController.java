@@ -73,7 +73,9 @@ public class CandidateController {
                 c.getPhone(),
                 c.getAvatar(),
                 c.getCv(),
-                c.getIsPrivate()
+                c.getIsPrivate(),
+                c.getRole(),
+                c.getGender()
         );
 
         return ResponseEntity.ok(ApiResponse.<CandidateResponse>builder()
