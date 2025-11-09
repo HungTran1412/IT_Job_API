@@ -37,7 +37,10 @@ public enum Code {
     ACCOUNT_VERIFIED(CodeEnum.success.toString(),"Tài khoản đã xác thực"),
     RESEND_COMPLETE(CodeEnum.success.toString(), "Gửi lại email thành công"),
     REGISTER_SUCCESSED(CodeEnum.success.toString(), "Đăng ký thành công, vui lòng check email!"),
-    LOGOUT_SUCCESSED(CodeEnum.success.toString(), "Đăng xuất thành công")
+    LOGOUT_SUCCESSED(CodeEnum.success.toString(), "Đăng xuất thành công"),
+    JOB_NOT_FOUND(CodeEnum.error.toString(), "Không tìm thấy công việc"),
+    JOB_APROVED(CodeEnum.success.toString(), "Đã duyệt việc làm"),
+    CREATE_JOB_SUCCESSFULL(CodeEnum.success.toString(), "Tạo việc làm thành công")
     ;
 
     String code;

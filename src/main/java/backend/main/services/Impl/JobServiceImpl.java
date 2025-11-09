@@ -1,10 +1,22 @@
 package backend.main.services.Impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import backend.main.dto.request.job.JobRequest;
+import backend.main.dto.request.job.JobReviewRequest;
+import backend.main.entities.Application;
+import backend.main.entities.Employer;
+import backend.main.entities.User;
+import backend.main.enums.Code;
 import backend.main.enums.JobStatus;
+import backend.main.exception.AppException;
+import backend.main.repository.EmployerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import backend.main.entities.Job;
@@ -18,8 +30,28 @@ public class JobServiceImpl implements JobService {
     @Autowired
     private JobRepository jobRepository;
 
+
+    @Autowired
+    private EmployerRepository employerRepository;
+
     @Override
-    public Job save(Job job) {
+    public Job save(JobRequest jobRequest) {
+        String context = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Employer employer = employerRepository.findByEmail(context).orElseThrow(()-> new AppException(Code.USER_NOT_FOUND));
+
+        Job job = Job.builder()
+                .title(jobRequest.getTitle())
+                .description(jobRequest.getDescription())
+                .requirements(jobRequest.getRequirements())
+                .salary(jobRequest.getSalary())
+                .location(jobRequest.getLocation())
+                .deadline(jobRequest.getDeadline())
+                        .build();
+
+        job.setEmployer(employer);
+        job.setApplications(new ArrayList<Application>());
+
         return jobRepository.save(job);
     }
 
@@ -62,7 +94,22 @@ public class JobServiceImpl implements JobService {
 
 	@Override
     @Transactional
-	public List<Job> findByStatus(JobStatus status) {
-		return jobRepository.findByStatus(status);
+	public List<Job> findAllByStatus(JobStatus status) {
+
+		return jobRepository.findAllByStatus(status);
 	}
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public JobStatus reviewJob(JobReviewRequest request) {
+        Job j =  jobRepository.findById(request.getJobId())
+                .orElseThrow(() -> new AppException(Code.JOB_NOT_FOUND));
+
+        j.setStatus(request.getJobStatus());
+
+        jobRepository.save(j);
+
+        return  j.getStatus();
+    }
 }
