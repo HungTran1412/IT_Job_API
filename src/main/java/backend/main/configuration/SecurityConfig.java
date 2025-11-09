@@ -37,6 +37,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf ->  csrf.disable())
+                .logout(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(WHITE_LIST_URL).permitAll()
@@ -46,7 +47,7 @@ public class SecurityConfig {
                                 "/company/verify","/user/resend",
                                 "/company/resend", "/auth/check",
                                 "/admin/register", "/admin/login",
-                                "/api/jobs/*", "/logout").permitAll()
+                                "/api/jobs/*", "/logout","/api/*").permitAll()
 
                         // Các API dành riêng cho employer
                         .requestMatchers("/company/**").hasAuthority("ROLE_EMPLOYER")

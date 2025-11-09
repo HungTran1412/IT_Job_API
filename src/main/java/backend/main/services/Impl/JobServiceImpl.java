@@ -104,7 +104,7 @@ public class JobServiceImpl implements JobService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    //@PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public JobStatus reviewJob(JobReviewRequest request) {
         Job j =  jobRepository.findById(request.getJobId())
                 .orElseThrow(() -> new AppException(Code.JOB_NOT_FOUND));
