@@ -4,22 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import backend.main.configuration.JwtUtils;
 import backend.main.dto.request.job.JobRequest;
 import backend.main.dto.request.job.JobReviewRequest;
 import backend.main.entities.Application;
 import backend.main.entities.Employer;
-import backend.main.entities.User;
+import backend.main.entities.Job;
 import backend.main.enums.Code;
 import backend.main.enums.JobStatus;
 import backend.main.exception.AppException;
 import backend.main.repository.EmployerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-
-import backend.main.entities.Job;
 import backend.main.repository.JobRepository;
 import backend.main.services.JobService;
 import jakarta.transaction.Transactional;
@@ -29,6 +28,9 @@ public class JobServiceImpl implements JobService {
 
     @Autowired
     private JobRepository jobRepository;
+    
+    @Autowired
+    private JwtUtils jwtUtils;
 
 
     @Autowired
@@ -113,4 +115,5 @@ public class JobServiceImpl implements JobService {
 
         return  j.getStatus();
     }
+
 }

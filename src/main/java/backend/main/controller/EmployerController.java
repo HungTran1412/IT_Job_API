@@ -1,8 +1,19 @@
 package backend.main.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import backend.main.configuration.JwtUtils;
 import backend.main.dto.request.ChangePasswordRequest;
-import backend.main.dto.request.employer.EmployerRequest;
 import backend.main.dto.request.employer.EmployerUpdateRequest;
 import backend.main.dto.response.ApiResponse;
 import backend.main.dto.response.EmployerResponse;
@@ -14,11 +25,6 @@ import backend.main.repository.EmployerRepository;
 import backend.main.services.EmployerService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -171,5 +177,22 @@ public class    EmployerController {
                     .message(Code.UNCATEGORIZED_EXCEPTION.getMessage())
                     .build());
         }
+    }
+    
+    @GetMapping("/get-jobs")
+    public ResponseEntity<ApiResponse> getJobs(@CookieValue(name = "jwt", required = false) String token) {
+    	//Kiem tra token
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.<Candidate>builder()
+                            .code(Code.TOKEN_INVALID.getCode())
+                            .message("Missing token or user not logged in")
+                            .build());
+        } 
+        
+        return ResponseEntity.ok(ApiResponse.builder()
+        		.code(Code.ACCOUNT_VERIFIED.getCode())
+        		.result(employerService.getListJob(token))
+        		.build());
     }
 }

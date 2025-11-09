@@ -1,10 +1,10 @@
 package backend.main.repository;
 
-import backend.main.entities.Candidate;
-import backend.main.entities.Employer;
+import java.util.Optional;
+
 import org.springframework.data.repository.CrudRepository;
 
-import java.util.Optional;
+import backend.main.entities.Employer;
 
 public interface EmployerRepository extends CrudRepository<Employer, String> {
     Optional<Employer> findByEmail(String email);
