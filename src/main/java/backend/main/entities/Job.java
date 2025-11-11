@@ -22,12 +22,17 @@ public class Job extends BaseModel{
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "job_id")
     String jobId;
+    
     String title;
     String description;
-    String requirements;
-    String salary;
+    int salaryMin;
+    int salaryMax;
+    String position;
+    List<String> technologies;
+    String workingFrom;
     String location;
     LocalDateTime deadline;
+
     @Builder.Default
     JobStatus status = JobStatus.PENDING;
 

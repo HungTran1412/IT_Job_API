@@ -1,19 +1,19 @@
-package backend.main.dto.request.job;
+package backend.main.dto.response;
 
+import backend.main.enums.JobStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class JobRequest {
+public class JobResponse {
+    String jobId;
     String title;
     String description;
     int salaryMin;
@@ -23,4 +23,7 @@ public class JobRequest {
     String workingFrom;
     String location;
     LocalDateTime deadline;
+    JobStatus status;
+    String employerId;
+    String employerName;
 }
