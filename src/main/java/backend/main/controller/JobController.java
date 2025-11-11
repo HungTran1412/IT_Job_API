@@ -7,6 +7,7 @@ import java.util.Optional;
 import backend.main.dto.request.job.JobRequest;
 import backend.main.dto.request.job.JobReviewRequest;
 import backend.main.dto.response.ApiResponse;
+import backend.main.dto.response.JobResponse;
 import backend.main.enums.Code;
 import backend.main.enums.JobStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +38,12 @@ public class JobController {
         return ResponseEntity.ok(ApiResponse.builder()
                         .code(Code.CREATE_JOB_SUCCESSFULL.getCode())
                         .message(Code.CREATE_JOB_SUCCESSFULL.getMessage())
+                        .data(j)
                         .build());
     }
 
     @GetMapping
-    public List<Job> getAllJobs() {
+    public List<JobResponse> getAllJobs() {
         return jobService.findAll();
     }
 
@@ -57,14 +59,13 @@ public class JobController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Job> updateJob(@PathVariable String id, @RequestBody Job job) {
-        Optional<Job> existingJob = jobService.findById(id);
-        if (existingJob.isPresent()) {
-            job.setJobId(id); // Ensure the ID is set for update
-            return ResponseEntity.ok(jobService.updateJob(job));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<ApiResponse<JobResponse>> updateJob(@PathVariable String id, @RequestBody JobRequest jobRequest) {
+        JobResponse updatedJob = jobService.updateJob(id, jobRequest);
+        return ResponseEntity.ok(ApiResponse.<JobResponse>builder()
+                .code(Code.UPDATE_JOB_SUCCESSFULL.getCode())
+                .message(Code.UPDATE_JOB_SUCCESSFULL.getMessage())
+                .data(updatedJob)
+                .build());
     }
 
     @GetMapping("/search")
@@ -75,6 +76,11 @@ public class JobController {
     @GetMapping("/status/{status}")
     public List<Job> getJobsByStatus(@PathVariable JobStatus status) {
         return jobService.findAllByStatus(status);
+    }
+
+    @GetMapping("/approved")
+    public List<JobResponse> getApprovedJobs() {
+        return jobService.findAllByStatusApproved();
     }
 
     @PutMapping("/review")

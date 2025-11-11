@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import backend.main.configuration.JwtUtils;
 import backend.main.dto.request.job.JobRequest;
+import backend.main.dto.response.JobResponse;
 import backend.main.dto.request.job.JobReviewRequest;
 import backend.main.entities.Application;
 import backend.main.entities.Employer;
@@ -37,7 +38,7 @@ public class JobServiceImpl implements JobService {
     private EmployerRepository employerRepository;
 
     @Override
-    public Job save(JobRequest jobRequest) {
+    public JobResponse save(JobRequest jobRequest) {
         String context = SecurityContextHolder.getContext().getAuthentication().getName();
 
         Employer employer = employerRepository.findByEmail(context).orElseThrow(()-> new AppException(Code.USER_NOT_FOUND));
@@ -45,22 +46,56 @@ public class JobServiceImpl implements JobService {
         Job job = Job.builder()
                 .title(jobRequest.getTitle())
                 .description(jobRequest.getDescription())
-                .requirements(jobRequest.getRequirements())
-                .salary(jobRequest.getSalary())
+                .salaryMin(jobRequest.getSalaryMin())
+                .salaryMax(jobRequest.getSalaryMax())
+                .position(jobRequest.getPosition())
+                .workingFrom(jobRequest.getWorkingFrom())
                 .location(jobRequest.getLocation())
+                .technologies(jobRequest.getTechnologies())
                 .deadline(jobRequest.getDeadline())
                         .build();
 
         job.setEmployer(employer);
         job.setApplications(new ArrayList<Application>());
+        jobRepository.save(job);
 
-        return jobRepository.save(job);
+        return new JobResponse(
+                job.getJobId(),
+                job.getTitle(),
+                job.getDescription(),
+                job.getSalaryMin(),
+                job.getSalaryMax(),
+                job.getPosition(),
+                job.getTechnologies(),
+                job.getWorkingFrom(),
+                job.getLocation(),
+                job.getDeadline(),
+                job.getStatus(),
+                employer.getEmployerId(),
+                employer.getCompanyName(),
+                employer.getLogo());
     }
 
     @Override
     @Transactional
-    public List<Job> findAll() {
-        return (List<Job>) jobRepository.findAll();
+    public List<JobResponse> findAll() {
+        List<Job> jobs = (List<Job>) jobRepository.findAll();
+        return jobs.stream().map(job -> new JobResponse(
+                job.getJobId(),
+                job.getTitle(),
+                job.getDescription(),
+                job.getSalaryMin(),
+                job.getSalaryMax(),
+                job.getPosition(),
+                job.getTechnologies(),
+                job.getWorkingFrom(),
+                job.getLocation(),
+                job.getDeadline(),
+                job.getStatus(),
+                job.getEmployer().getEmployerId(),
+                job.getEmployer().getCompanyName(),
+                job.getEmployer().getLogo()
+        )).toList();
     }
 
     @Override
@@ -91,8 +126,36 @@ public class JobServiceImpl implements JobService {
 
     @Override
     @Transactional
-    public Job updateJob(Job job) {
-        return jobRepository.save(job);
+    public JobResponse updateJob(String jobId, JobRequest jobRequest) {
+        Job job = jobRepository.findById(jobId).orElseThrow(() -> new AppException(Code.JOB_NOT_FOUND));
+        
+        job.setTitle(jobRequest.getTitle());
+        job.setDescription(jobRequest.getDescription());
+        job.setSalaryMin(jobRequest.getSalaryMin());
+        job.setSalaryMax(jobRequest.getSalaryMax());
+        job.setPosition(jobRequest.getPosition());
+        job.setTechnologies(jobRequest.getTechnologies());
+        job.setWorkingFrom(jobRequest.getWorkingFrom());
+        job.setLocation(jobRequest.getLocation());
+        job.setDeadline(jobRequest.getDeadline());
+        
+        job = jobRepository.save(job);
+        
+        return new JobResponse(
+                job.getJobId(),
+                job.getTitle(),
+                job.getDescription(),
+                job.getSalaryMin(),
+                job.getSalaryMax(),
+                job.getPosition(),
+                job.getTechnologies(),
+                job.getWorkingFrom(),
+                job.getLocation(),
+                job.getDeadline(),
+                job.getStatus(),
+                job.getEmployer().getEmployerId(),
+                job.getEmployer().getCompanyName(),
+                job.getEmployer().getLogo());
     }
 
 	@Override
@@ -104,7 +167,29 @@ public class JobServiceImpl implements JobService {
 
     @Override
     @Transactional
-    //@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public List<JobResponse> findAllByStatusApproved() {
+        List<Job> jobs = jobRepository.findAllByStatus(JobStatus.APPROVED);
+        return jobs.stream().map(job -> new JobResponse(
+                job.getJobId(),
+                job.getTitle(),
+                job.getDescription(),
+                job.getSalaryMin(),
+                job.getSalaryMax(),
+                job.getPosition(),
+                job.getTechnologies(),
+                job.getWorkingFrom(),
+                job.getLocation(),
+                job.getDeadline(),
+                job.getStatus(),
+                job.getEmployer().getEmployerId(),
+                job.getEmployer().getCompanyName(),
+                job.getEmployer().getLogo()
+        )).toList();
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public JobStatus reviewJob(JobReviewRequest request) {
         Job j =  jobRepository.findById(request.getJobId())
                 .orElseThrow(() -> new AppException(Code.JOB_NOT_FOUND));

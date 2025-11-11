@@ -40,7 +40,8 @@ public enum Code {
     LOGOUT_SUCCESSED(CodeEnum.success.toString(), "Đăng xuất thành công"),
     JOB_NOT_FOUND(CodeEnum.error.toString(), "Không tìm thấy công việc"),
     JOB_APROVED(CodeEnum.success.toString(), "Đã duyệt việc làm"),
-    CREATE_JOB_SUCCESSFULL(CodeEnum.success.toString(), "Tạo việc làm thành công")
+    CREATE_JOB_SUCCESSFULL(CodeEnum.success.toString(), "Tạo việc làm thành công"),
+    UPDATE_JOB_SUCCESSFULL(CodeEnum.success.toString(), "Cập nhật việc làm thành công")
     ;
 
     String code;
