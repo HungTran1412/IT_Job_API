@@ -37,10 +37,14 @@ public class AuthEmployerController {
     @GetMapping("/verify")
     public ResponseEntity<Void> verify(@RequestParam("token") String token) {
         try {
-            employerService.verifyEmployer(token);
+            Employer verifiedEmployer = employerService.verifyEmployer(token);
+
+            String userId = verifiedEmployer.getEmployerId();
+
+            String url = appProperties.getFrontend().getVerifiedUrl() + userId;
 
             return ResponseEntity.status(302)
-                    .header("Location", appProperties.getFrontend().getVerifiedUrl())
+                    .header("Location", url)
                     .build();
 
         } catch (Exception e) {

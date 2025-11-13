@@ -35,13 +35,19 @@ public class AuthCandidateController {
     @GetMapping("/verify")
     public ResponseEntity<Void> verify(@RequestParam("token") String token) {
         try {
-            candidateService.verifyCandidate(token);
+            Candidate verifiedCandidate = candidateService.verifyCandidate(token);
 
+            String userId = verifiedCandidate.getCandidateId();
+
+            String redirectUrl = appProperties.getFrontend().getVerifiedUrl() + userId;
+
+            // 4. Trả về response redirect với URL mới
             return ResponseEntity.status(302)
-                    .header("Location", appProperties.getFrontend().getVerifiedUrl())
+                    .header("Location", redirectUrl)
                     .build();
 
         } catch (Exception e) {
+            // Giữ nguyên logic xử lý lỗi của bạn, redirect về trang failed
             return ResponseEntity.status(302)
                     .header("Location", appProperties.getFrontend().getFailedUrl())
                     .build();
