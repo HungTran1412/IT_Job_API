@@ -26,4 +26,5 @@ public class JobResponse {
     JobStatus status;
     String employerId;
     String employerName;
+    String logo;
 }
