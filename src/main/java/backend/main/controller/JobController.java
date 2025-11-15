@@ -38,7 +38,7 @@ public class JobController {
         return ResponseEntity.ok(ApiResponse.builder()
                         .code(Code.CREATE_JOB_SUCCESSFULL.getCode())
                         .message(Code.CREATE_JOB_SUCCESSFULL.getMessage())
-                        .data(j)
+                        .result(j)
                         .build());
     }
 
@@ -64,7 +64,7 @@ public class JobController {
         return ResponseEntity.ok(ApiResponse.<JobResponse>builder()
                 .code(Code.UPDATE_JOB_SUCCESSFULL.getCode())
                 .message(Code.UPDATE_JOB_SUCCESSFULL.getMessage())
-                .data(updatedJob)
+                .result(updatedJob)
                 .build());
     }
 
