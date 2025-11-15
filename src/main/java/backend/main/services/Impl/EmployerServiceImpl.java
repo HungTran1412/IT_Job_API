@@ -157,7 +157,7 @@ public class EmployerServiceImpl implements EmployerService {
 
         verificationTokenRepository.save(newToken);
 
-        String verifyLink = appProperties.getBaseUrl() + appProperties.getVerify().getCandidate() + token;
+        String verifyLink = appProperties.getBaseUrl() + appProperties.getVerify().getEmployer() + token;
         sendEmailHandler.sendVerificationEmail(e.getEmail(), verifyLink);
     }
 
