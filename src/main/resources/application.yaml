@@ -44,4 +44,5 @@ app:
     candidate: "/user/verify?token="
     employer: "/company/verify?token="
   front-end:
-    verified-url: "http://localhost:3000/user/login/?userId="
+    verified-candidate-url: "http://localhost:3000/user/login/?userId="
+    verified-company-url: "http://localhost:3000/company/login/?userId="

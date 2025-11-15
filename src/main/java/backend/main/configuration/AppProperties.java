@@ -26,7 +26,8 @@ public class AppProperties {
     @Getter
     @Setter
     public static class Frontend {
-        private String verifiedUrl;
+        private String verifiedCandidateUrl;
+        private String verifiedCompanyUrl;
         private String failedUrl;
     }
 }

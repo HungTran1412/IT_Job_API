@@ -41,7 +41,7 @@ public class AuthEmployerController {
 
             String userId = verifiedEmployer.getEmployerId();
 
-            String url = appProperties.getFrontend().getVerifiedUrl() + userId;
+            String url = appProperties.getFrontend().getVerifiedCompanyUrl() + userId;
 
             return ResponseEntity.status(302)
                     .header("Location", url)
