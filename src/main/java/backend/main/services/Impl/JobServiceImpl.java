@@ -1,18 +1,19 @@
 package backend.main.services.Impl;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import backend.main.configuration.JwtUtils;
 import backend.main.dto.request.job.JobRequest;
-import backend.main.dto.response.JobResponse;
 import backend.main.dto.request.job.JobReviewRequest;
+import backend.main.dto.response.JobResponse;
 import backend.main.entities.Application;
 import backend.main.entities.Employer;
 import backend.main.entities.Job;
@@ -78,9 +79,9 @@ public class JobServiceImpl implements JobService {
 
     @Override
     @Transactional
-    public List<JobResponse> findAll() {
-        List<Job> jobs = (List<Job>) jobRepository.findAll();
-        return jobs.stream().map(job -> new JobResponse(
+    public Page<JobResponse> findAll()  {
+        Page<Job> jobs = (Page<Job>) jobRepository.findAll();
+        return jobs.map(job -> new JobResponse(
                 job.getJobId(),
                 job.getTitle(),
                 job.getDescription(),
@@ -95,7 +96,7 @@ public class JobServiceImpl implements JobService {
                 job.getEmployer().getEmployerId(),
                 job.getEmployer().getCompanyName(),
                 job.getEmployer().getLogo()
-        )).toList();
+        ));
     }
 
     @Override
@@ -118,9 +119,8 @@ public class JobServiceImpl implements JobService {
 
     @Override
     @Transactional
-    public List<Job> search(String keyword, String location, String salaryRange) {
-        System.out.println(jobRepository.findAllByTitleContaining(keyword).toArray().toString());
-        return jobRepository.findAllByTitleContaining(keyword);
+    public Page<Job> search(String keyword, String location, String salaryRange, Pageable pageable) {
+        return jobRepository.findAllByTitleContaining(keyword, pageable);
     }
 
 
@@ -160,16 +160,16 @@ public class JobServiceImpl implements JobService {
 
 	@Override
     @Transactional
-	public List<Job> findAllByStatus(JobStatus status) {
+	public Page<Job> findAllByStatus(JobStatus status, Pageable pageable) {
 
-		return jobRepository.findAllByStatus(status);
+		return jobRepository.findAllByStatus(status, pageable);
 	}
 
     @Override
     @Transactional
-    public List<JobResponse> findAllByStatusApproved() {
-        List<Job> jobs = jobRepository.findAllByStatus(JobStatus.APPROVED);
-        return jobs.stream().map(job -> new JobResponse(
+    public Page<JobResponse> findAllByStatusApproved(Pageable pageable) {
+        Page<Job> jobs = jobRepository.findAllByStatus(JobStatus.APPROVED, pageable);
+        return jobs.map(job -> new JobResponse(
                 job.getJobId(),
                 job.getTitle(),
                 job.getDescription(),
@@ -184,7 +184,7 @@ public class JobServiceImpl implements JobService {
                 job.getEmployer().getEmployerId(),
                 job.getEmployer().getCompanyName(),
                 job.getEmployer().getLogo()
-        )).toList();
+        ));
     }
 
     @Override
