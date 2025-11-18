@@ -17,7 +17,7 @@ public class EmployerUpdateRequest {
     String address;
     String companyModel;
     String companyEmployees;
-    LocalDateTime workingTime;
+    String workingTime;
     LocalDateTime workingOvertime;
     String description;
     String phone;
