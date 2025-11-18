@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,5 +24,6 @@ public class JobRequest {
     List<String> technologies;
     String workingFrom;
     String location;
-    LocalDateTime deadline;
+    @DateTimeFormat(pattern = "yyyy-M-d")
+    LocalDate deadline;
 }

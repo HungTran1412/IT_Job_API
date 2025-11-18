@@ -1,5 +1,6 @@
 package backend.main.entities;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class Job extends BaseModel{
     List<String> technologies;
     String workingFrom;
     String location;
-    LocalDateTime deadline;
+    LocalDate deadline;
 
     @Builder.Default
     JobStatus status = JobStatus.PENDING;

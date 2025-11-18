@@ -18,7 +18,7 @@ public class EmployerResponse {
     String address;
     String companyModel;
     String companyEmployees;
-    LocalDateTime workingTime;
+    String workingTime;
     LocalDateTime workingOvertime;
     String description;
     String phone;
