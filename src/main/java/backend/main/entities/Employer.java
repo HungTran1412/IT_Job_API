@@ -43,7 +43,7 @@ public class Employer extends User {
     String companyEmployees;
 
     @Column(name = "working_time")
-    LocalDateTime workingTime;
+    String workingTime;
 
     @Column(name = "working_overtime")
     LocalDateTime workingOvertime;

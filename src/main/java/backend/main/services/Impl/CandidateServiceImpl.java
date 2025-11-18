@@ -193,26 +193,27 @@ public class CandidateServiceImpl implements CandidateService {
         c.setUpdateAt(LocalDateTime.now());
 
         //Kiem tra xem nguoi dung co cap nhat anh khong
-        if(request.getAvatar() != null && !request.getAvatar().isEmpty()){
+        if(request.getAvatar() != null && !request.getAvatar().isEmpty()) {
             System.out.println("Image: " + request.getAvatar().getOriginalFilename());
             String imgUrl = cloudinaryFileUpload.uploadImage(request.getAvatar());
             c.setAvatar(imgUrl);
-        }else{
-            String imgUrl = c.getAvatar();
-            c.setAvatar(imgUrl);
-            System.out.println("Logo: " + imgUrl);
         }
+//        else if(request.getAvatar().toString() == "null"){
+//            String imgUrl = c.getAvatar();
+//            c.setAvatar(imgUrl);
+//            System.out.println("Logo: " + imgUrl);
+//        }
 
         //Kiểm tra người dùng có thêm cv không
-        if(request.getCv() != null && !request.getCv().isEmpty()){
-            System.out.println("CV: " + request.getCv().getOriginalFilename());
-            String url = cloudinaryFileUpload.uploadCv(request.getCv());
-            c.setCv(url);
-        }else{
-            String url = c.getCv();
-            c.setCv(url);
-            System.out.println("CV: " + url);
-        }
+//        if(request.getCv() != null && !request.getCv().isEmpty()){
+//            System.out.println("CV: " + request.getCv().getOriginalFilename());
+//            String url = cloudinaryFileUpload.uploadCv(request.getCv());
+//            c.setCv(url);
+//        }else{
+//            String url = c.getCv();
+//            c.setCv(url);
+//            System.out.println("CV: " + url);
+//        }
 
         return saveCandidate(c);
     }
