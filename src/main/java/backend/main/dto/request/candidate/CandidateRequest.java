@@ -17,7 +17,7 @@ public class CandidateRequest {
     String email;
     String gender;
     String address;
-    @DateTimeFormat(pattern = "MM/dd/yyyy")
+    @DateTimeFormat(pattern = "yyyy/M/d")
     LocalDate dateOfBirth;
     String phone;
     MultipartFile avatar;
