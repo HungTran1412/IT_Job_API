@@ -63,6 +63,8 @@ public class AuthServiceImpl implements AuthService {
                                 e.getWorkingTime(),
                                 e.getWorkingOvertime(),
                                 e.getDescription(),
+
+
                                 e.getPhone(),
                                 e.getLogo(),
                                 e.getRole()
