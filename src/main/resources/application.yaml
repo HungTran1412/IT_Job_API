@@ -39,10 +39,10 @@ cloudinary:
   secure: true
 
 app:
-  base-url: "http://localhost:8080"
+  base-url: ${BASE_URL}
   verify:
-    candidate: "/user/verify?token="
-    employer: "/company/verify?token="
+    candidate: ${VERIFY_TOKEN_CANDIDATE}
+    employer: ${VERIFY_TOKEN_EMPLOYER}
   front-end:
-    verified-candidate-url: "http://localhost:3000/user/login/?userId="
-    verified-company-url: "http://localhost:3000/company/login/?userId="
+    verified-candidate-url: ${VERIFIED_CANDIDATE_URL}
+    verified-company-url: ${VERIFIED_EMPLOYER_URL}
