@@ -36,6 +36,7 @@ public class AdminController {
                 .secure(false)
                 .path("/")
                 .maxAge(7 * 24 * 60 * 60)
+                .sameSite("Lax")
                 .build();
 
         response.addHeader("Set-Cookie", cookie.toString());
