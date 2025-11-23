@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+@Slf4j
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
@@ -178,7 +180,7 @@ public class EmployerServiceImpl implements EmployerService {
             throw new AppException(Code.ACCOUNT_UNENABLED);
         }
 
-        return jwtUtils.generateToken(e.getEmployerId(), e.getEmail(), e.getRole());
+        return jwtUtils.generateToken(e.getEmployerId(), e.getEmail(), e.getRole(), request.isRememberMe());
     }
 
     @Override

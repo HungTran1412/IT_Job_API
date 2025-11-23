@@ -3,6 +3,7 @@ package backend.main.services.Impl;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +25,7 @@ import backend.main.repository.EmployerRepository;
 import backend.main.repository.JobRepository;
 import backend.main.services.JobService;
 import jakarta.transaction.Transactional;
-
+@Slf4j
 @Service
 public class JobServiceImpl implements JobService {
 

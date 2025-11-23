@@ -176,7 +176,7 @@ public class CandidateServiceImpl implements CandidateService {
         }
 
         // Trả về thông tin ứng viên (không bao gồm mật khẩu)
-        return jwtUtils.generateToken(c.getCandidateId(),c.getEmail(), c.getRole());
+        return jwtUtils.generateToken(c.getCandidateId(),c.getEmail(), c.getRole(), request.isRememberMe());
     }
 
     @Override
