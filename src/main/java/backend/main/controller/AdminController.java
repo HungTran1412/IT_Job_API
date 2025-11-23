@@ -1,15 +1,15 @@
 package backend.main.controller;
 
-import backend.main.configuration.JwtUtils;
+import backend.main.utils.JwtUtils;
 import backend.main.dto.request.ChangePasswordRequest;
 import backend.main.dto.request.LoginRequest;
-import backend.main.dto.request.admin.AdminRegisterRequest;
 import backend.main.dto.response.ApiResponse;
-import backend.main.entities.Admin;
 import backend.main.entities.Candidate;
 import backend.main.enums.Code;
 import backend.main.services.AdminService;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/admin")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class AdminController {
     @Autowired
     AdminService adminService;
@@ -25,17 +26,22 @@ public class AdminController {
     @Autowired
     JwtUtils jwtUtils;
 
+    final int MAX_AGE_REMEMBER = 7 * 24 * 60 * 60; // 7 ngày
+    final int MAX_AGE_DEFAULT  = 24 * 60 * 60;
+
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<?>> login(
             @RequestBody LoginRequest request,
             HttpServletResponse response) {
         String token = adminService.login(request);
 
+        long cookieMaxAge = request.isRememberMe() ? MAX_AGE_REMEMBER : MAX_AGE_DEFAULT;
+
         ResponseCookie cookie = ResponseCookie.from("jwt", token)
                 .httpOnly(true)
                 .secure(false)
                 .path("/")
-                .maxAge(7 * 24 * 60 * 60)
+                .maxAge(cookieMaxAge)
                 .sameSite("Lax")
                 .build();
 

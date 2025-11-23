@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import backend.main.configuration.AppProperties;
-import backend.main.configuration.JwtUtils;
+import backend.main.utils.JwtUtils;
 import backend.main.dto.request.LoginRequest;
 import backend.main.dto.request.employer.EmployerRegisterRequest;
 import backend.main.dto.request.employer.EmployerUpdateRequest;

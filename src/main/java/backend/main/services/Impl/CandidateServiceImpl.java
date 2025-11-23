@@ -1,7 +1,7 @@
 package backend.main.services.Impl;
 
 import backend.main.configuration.AppProperties;
-import backend.main.configuration.JwtUtils;
+import backend.main.utils.JwtUtils;
 import backend.main.dto.request.LoginRequest;
 import backend.main.dto.request.candidate.CandidateRegisterRequest;
 import backend.main.dto.request.candidate.CandidateRequest;
