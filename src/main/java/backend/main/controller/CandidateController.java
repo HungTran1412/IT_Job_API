@@ -1,6 +1,6 @@
 package backend.main.controller;
 
-import backend.main.configuration.JwtUtils;
+import backend.main.utils.JwtUtils;
 import backend.main.dto.request.ChangePasswordRequest;
 import backend.main.dto.request.candidate.CandidateRequest;
 import backend.main.dto.response.ApiResponse;
