@@ -4,13 +4,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import backend.main.utils.ValidationUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import backend.main.configuration.AppProperties;
-import backend.main.configuration.JwtUtils;
+import backend.main.utils.JwtUtils;
 import backend.main.dto.request.LoginRequest;
 import backend.main.dto.request.employer.EmployerRegisterRequest;
 import backend.main.dto.request.employer.EmployerUpdateRequest;
@@ -29,6 +31,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+@Slf4j
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
@@ -56,6 +59,9 @@ public class EmployerServiceImpl implements EmployerService {
     @Override
     @Transactional
     public Employer register(EmployerRegisterRequest employerRequest) {
+        ValidationUtils.validateEmail(employerRequest.getEmail());
+        ValidationUtils.validatePassword(employerRequest.getPassword());
+
         if(employerRepository.findByEmail(employerRequest.getEmail()).isPresent()){
             throw new AppException(Code.EMAIL_EXISTED);
         }
@@ -165,6 +171,9 @@ public class EmployerServiceImpl implements EmployerService {
     @Transactional
     @Override
     public String login(LoginRequest request) {
+        ValidationUtils.validateEmail(request.getEmail());
+        ValidationUtils.validatePassword(request.getPassword());
+
         Employer e = employerRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(Code.EMAIL_DOES_NOT_EXIST));
 
@@ -178,7 +187,7 @@ public class EmployerServiceImpl implements EmployerService {
             throw new AppException(Code.ACCOUNT_UNENABLED);
         }
 
-        return jwtUtils.generateToken(e.getEmployerId(), e.getEmail(), e.getRole());
+        return jwtUtils.generateToken(e.getEmployerId(), e.getEmail(), e.getRole(), request.isRememberMe());
     }
 
     @Override
