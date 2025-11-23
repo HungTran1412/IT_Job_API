@@ -1,5 +1,6 @@
 package backend.main.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,7 +31,8 @@ import lombok.experimental.FieldDefaults;
 @RestController
 @RequestMapping("/company")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class    EmployerController {
+@Tag(name = "Employer:",description = "Lấy, thay đổi thông tin cho ntd, lấy danh sách công việc đã đăng")
+public class EmployerController {
     @Autowired
     EmployerService employerService;
     @Autowired

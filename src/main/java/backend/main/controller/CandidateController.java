@@ -10,6 +10,7 @@ import backend.main.enums.Code;
 import backend.main.exception.AppException;
 import backend.main.repository.CandidateRepository;
 import backend.main.services.CandidateService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/user")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Tag(name = "Candidate:", description = "Lấy, cập nhật thông tin, đổi mật khẩu cho ứng viên")
 public class CandidateController {
     @Autowired
     CandidateService candidateService;

@@ -8,6 +8,7 @@ import backend.main.dto.response.ApiResponse;
 import backend.main.entities.Candidate;
 import backend.main.enums.Code;
 import backend.main.services.CandidateService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseCookie;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
+@Tag(name = "Auth Candidate:", description = "Đăng nhập đăng ký và xác thực tài khoản cho ứng viên")
 public class AuthCandidateController {
     @Autowired
     CandidateService candidateService;

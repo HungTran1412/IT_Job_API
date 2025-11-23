@@ -7,6 +7,7 @@ import backend.main.dto.response.ApiResponse;
 import backend.main.entities.Candidate;
 import backend.main.enums.Code;
 import backend.main.services.AdminService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/admin")
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Tag(name = "Admin: ", description = "Đăng nhập và quên mật khẩu")
 public class AdminController {
     @Autowired
     AdminService adminService;
