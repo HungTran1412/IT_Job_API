@@ -2,6 +2,7 @@ package backend.main.controller;
 
 import java.util.Optional;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,6 +30,7 @@ import backend.main.services.JobService;
 
 @RestController
 @RequestMapping("/api/jobs")
+@Tag(name = "Job:", description = "CRUD các bài tuyển dụng, và duyệt bài tuyển dụng")
 public class JobController {
 
     @Autowired

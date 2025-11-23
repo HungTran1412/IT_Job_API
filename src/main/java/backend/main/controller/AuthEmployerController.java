@@ -8,6 +8,7 @@ import backend.main.dto.response.ApiResponse;
 import backend.main.entities.Employer;
 import backend.main.enums.Code;
 import backend.main.services.EmployerService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseCookie;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/company")
+@Tag(name = "Auth Employer:", description = "Đăng nhập đăng ký và xác thực tài khoản cho nhà tuyển dụng")
 public class AuthEmployerController {
     @Autowired
     EmployerService employerService;
