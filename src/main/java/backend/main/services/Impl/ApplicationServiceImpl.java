@@ -3,6 +3,7 @@ package backend.main.services.Impl;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import backend.main.repository.ApplicationRepository;
 import backend.main.services.ApplicationService;
 import jakarta.transaction.Transactional;
 
+@Slf4j
 @Service
 public class ApplicationServiceImpl implements ApplicationService {
 

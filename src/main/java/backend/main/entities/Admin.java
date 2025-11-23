@@ -24,6 +24,4 @@ public class Admin extends User{
     @Column(name = "name")
     String name;
 
-    @Column(name = "remember_me")
-    boolean rememberMe;
 }
