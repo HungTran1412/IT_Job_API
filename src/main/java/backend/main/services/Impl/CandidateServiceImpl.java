@@ -15,6 +15,7 @@ import backend.main.repository.VerificationTokenRepository;
 import backend.main.services.CandidateService;
 import backend.main.utils.CloudinaryFileUpload;
 import backend.main.utils.SendEmailHandler;
+import backend.main.utils.ValidationUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -52,6 +53,10 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     @Transactional
     public Candidate register(CandidateRegisterRequest candidateRequest) {
+        //kiem tra tinh hop le
+        ValidationUtils.validateEmail(candidateRequest.getEmail());
+        ValidationUtils.validatePassword(candidateRequest.getPassword());
+
         if(candidateRepository.findByEmail(candidateRequest.getEmail()).isPresent()){
             throw new AppException(Code.EMAIL_EXISTED);
         }
@@ -162,6 +167,9 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     @Transactional
     public String login(LoginRequest request) {
+        ValidationUtils.validateEmail(request.getEmail());
+        ValidationUtils.validatePassword(request.getPassword());
+
         // Tìm ứng viên theo email, nếu không có thì ném lỗi
         Candidate c = candidateRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(Code.EMAIL_DOES_NOT_EXIST));
