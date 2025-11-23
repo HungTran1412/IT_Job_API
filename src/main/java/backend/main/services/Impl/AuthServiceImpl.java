@@ -1,14 +1,10 @@
 package backend.main.services.Impl;
 
-import backend.main.configuration.JwtUtils;
+import backend.main.utils.JwtUtils;
 import backend.main.dto.response.AdminResponse;
 import backend.main.dto.response.CandidateResponse;
 import backend.main.dto.response.EmployerResponse;
-import backend.main.entities.Admin;
-import backend.main.entities.Candidate;
-import backend.main.entities.Employer;
 import backend.main.enums.Code;
-import backend.main.enums.Role;
 import backend.main.exception.AppException;
 import backend.main.repository.AdminRepository;
 import backend.main.repository.CandidateRepository;
@@ -16,12 +12,11 @@ import backend.main.repository.EmployerRepository;
 import backend.main.services.AuthService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static backend.main.enums.Role.ROLE_EMPLOYER;
-
+@Slf4j
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuthServiceImpl implements AuthService {
