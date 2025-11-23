@@ -41,7 +41,9 @@ public enum Code {
     JOB_NOT_FOUND(CodeEnum.error.toString(), "Không tìm thấy công việc"),
     JOB_APROVED(CodeEnum.success.toString(), "Đã duyệt việc làm"),
     CREATE_JOB_SUCCESSFULL(CodeEnum.success.toString(), "Tạo việc làm thành công"),
-    UPDATE_JOB_SUCCESSFULL(CodeEnum.success.toString(), "Cập nhật việc làm thành công")
+    UPDATE_JOB_SUCCESSFULL(CodeEnum.success.toString(), "Cập nhật việc làm thành công"),
+    EMAIL_INVALID_FORMAT(CodeEnum.error.toString(), "Email không đúng định dạng"),
+    PASSWORD_INVALID_FORMAT(CodeEnum.error.toString(), "Mật khẩu không hợp lệ")
     ;
 
     String code;

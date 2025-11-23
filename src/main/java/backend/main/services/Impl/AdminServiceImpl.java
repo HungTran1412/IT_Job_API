@@ -8,6 +8,7 @@ import backend.main.enums.Code;
 import backend.main.exception.AppException;
 import backend.main.repository.AdminRepository;
 import backend.main.services.AdminService;
+import backend.main.utils.ValidationUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -31,6 +32,8 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     public String login(LoginRequest request) {
+        ValidationUtils.validateEmail(request.getEmail());
+
         // Tìm ứng viên theo email, nếu không có thì ném lỗi
         Admin c = adminRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(Code.EMAIL_DOES_NOT_EXIST));
