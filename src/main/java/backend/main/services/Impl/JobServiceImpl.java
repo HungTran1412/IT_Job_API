@@ -3,6 +3,7 @@ package backend.main.services.Impl;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import backend.main.configuration.JwtUtils;
+import backend.main.utils.JwtUtils;
 import backend.main.dto.request.job.JobRequest;
 import backend.main.dto.request.job.JobReviewRequest;
 import backend.main.dto.response.JobResponse;
@@ -24,7 +25,7 @@ import backend.main.repository.EmployerRepository;
 import backend.main.repository.JobRepository;
 import backend.main.services.JobService;
 import jakarta.transaction.Transactional;
-
+@Slf4j
 @Service
 public class JobServiceImpl implements JobService {
 

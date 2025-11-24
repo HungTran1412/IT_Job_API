@@ -1,26 +1,23 @@
 package backend.main.services.Impl;
 
-import backend.main.configuration.JwtUtils;
+import backend.main.utils.JwtUtils;
 import backend.main.dto.request.ChangePasswordRequest;
 import backend.main.dto.request.LoginRequest;
-import backend.main.dto.request.admin.AdminRegisterRequest;
 import backend.main.entities.Admin;
-import backend.main.entities.Candidate;
 import backend.main.enums.Code;
-import backend.main.enums.Role;
 import backend.main.exception.AppException;
 import backend.main.repository.AdminRepository;
 import backend.main.services.AdminService;
+import backend.main.utils.ValidationUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-
+@Slf4j
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,  makeFinal = true)
 @Service
@@ -35,6 +32,8 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     public String login(LoginRequest request) {
+        ValidationUtils.validateEmail(request.getEmail());
+
         // Tìm ứng viên theo email, nếu không có thì ném lỗi
         Admin c = adminRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(Code.EMAIL_DOES_NOT_EXIST));
@@ -45,7 +44,7 @@ public class AdminServiceImpl implements AdminService {
         }
 
         // Trả về thông tin ứng viên (không bao gồm mật khẩu)
-        return jwtUtils.generateToken(String.valueOf(c.getId()), c.getEmail(), c.getRole());
+        return jwtUtils.generateToken(String.valueOf(c.getId()), c.getEmail(), c.getRole(), request.isRememberMe());
     }
 
     @Transactional

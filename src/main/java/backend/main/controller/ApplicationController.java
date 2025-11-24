@@ -3,6 +3,7 @@ package backend.main.controller;
 import java.util.List;
 import java.util.Optional;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +25,7 @@ import backend.main.services.ApplicationService;
 
 @RestController
 @RequestMapping("/api/applications")
+@Tag(name = "Application:", description = "CRUD cho ứng tuyển công việc")
 public class ApplicationController {
 
     @Autowired

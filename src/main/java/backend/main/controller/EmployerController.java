@@ -1,5 +1,6 @@
 package backend.main.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import backend.main.configuration.JwtUtils;
+import backend.main.utils.JwtUtils;
 import backend.main.dto.request.ChangePasswordRequest;
 import backend.main.dto.request.employer.EmployerUpdateRequest;
 import backend.main.dto.response.ApiResponse;
@@ -30,7 +31,8 @@ import lombok.experimental.FieldDefaults;
 @RestController
 @RequestMapping("/company")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class    EmployerController {
+@Tag(name = "Employer:",description = "Lấy, thay đổi thông tin cho ntd, lấy danh sách công việc đã đăng")
+public class EmployerController {
     @Autowired
     EmployerService employerService;
     @Autowired

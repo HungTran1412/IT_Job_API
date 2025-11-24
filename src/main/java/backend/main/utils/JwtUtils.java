@@ -1,4 +1,4 @@
-package backend.main.configuration;
+package backend.main.utils;
 
 import backend.main.enums.Role;
 import io.jsonwebtoken.*;
@@ -22,19 +22,23 @@ public class JwtUtils {
     @Value("${jwt.expiration}")
     long expirationMs;
 
+    final long REFRESH_TOKEN_EXPIRATION = 2592000000L;
+
     //Tạo khóa bí mật từ secret key
     Key getSigningKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
     //Tạo JWT mới
-    public String generateToken(String id,String email, Role role) {
+    public String generateToken(String id,String email, Role role, boolean isRememberMe) {
+        long expirationTime = isRememberMe ? REFRESH_TOKEN_EXPIRATION : expirationMs;
+
         return Jwts.builder()
                 .setSubject(email)
                 .claim("id", id)
                 .claim("role", role.name())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
