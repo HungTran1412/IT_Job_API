@@ -77,7 +77,11 @@ public class AuthServiceImpl implements AuthService {
                                 c.getCv(),
                                 c.getIsPrivate(),
                                 c.getRole(),
-                                c.getGender()
+                                c.getGender(),
+                                c.getExperience(),
+                                c.getTechnologies(),
+                                c.getSoftSkill(),
+                                c.getDesiredSalary()
                         )).orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
             }
             case "ROLE_ADMIN" ->{

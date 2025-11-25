@@ -1,5 +1,6 @@
 package backend.main.dto.request.candidate;
 
+import jakarta.persistence.Column;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,4 +23,9 @@ public class CandidateRequest {
     String phone;
     MultipartFile avatar;
     MultipartFile cv;
+    Boolean isPrivate;
+    String experience;
+    String technologies;
+    String softSkill;
+    String desiredSalary;
 }

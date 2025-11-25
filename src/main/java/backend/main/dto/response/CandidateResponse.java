@@ -22,4 +22,8 @@ public class CandidateResponse {
     boolean isPrivate;
     Role role;
     String gender;
+    String experience;
+    String technologies;
+    String softSkill;
+    String desiredSalary;
 }

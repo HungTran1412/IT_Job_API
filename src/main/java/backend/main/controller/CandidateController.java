@@ -77,7 +77,11 @@ public class CandidateController {
                 c.getCv(),
                 c.getIsPrivate(),
                 c.getRole(),
-                c.getGender()
+                c.getGender(),
+                c.getExperience(),
+                c.getTechnologies(),
+                c.getSoftSkill(),
+                c.getDesiredSalary()
         );
 
         return ResponseEntity.ok(ApiResponse.<CandidateResponse>builder()

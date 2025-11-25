@@ -53,7 +53,19 @@ public class Candidate extends User{
 
     @Column(name = "is_private")
     Boolean isPrivate = true;
-    
+
+    @Column(name = "experience")
+    String experience;
+
+    @Column(name = "technologies")
+    String technologies;
+
+    @Column(name = "soft_skill")
+    String softSkill;
+
+    @Column(name = "desired_salary")
+    String desiredSalary;
+
     @OneToMany(mappedBy = "candidate",orphanRemoval = true)
     List<Application> applications;
 }
