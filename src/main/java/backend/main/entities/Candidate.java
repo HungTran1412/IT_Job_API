@@ -68,4 +68,7 @@ public class Candidate extends User{
 
     @OneToMany(mappedBy = "candidate",orphanRemoval = true)
     List<Application> applications;
+    
+    @OneToMany(mappedBy = "candicateLiked",orphanRemoval = true)
+    List<Job> likedJobs;
 }

@@ -12,5 +12,6 @@ public interface CandidateService {
     Candidate updateInfo(String id, CandidateRequest request);
     Candidate verifyCandidate(String token);
     boolean changePassword(String email, String oldPassword, String newPassword);
+    boolean addLikedJob(String jobId, String candicateId);
 
 }

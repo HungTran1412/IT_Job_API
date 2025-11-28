@@ -43,7 +43,8 @@ public enum Code {
     CREATE_JOB_SUCCESSFULL(CodeEnum.success.toString(), "Tạo việc làm thành công"),
     UPDATE_JOB_SUCCESSFULL(CodeEnum.success.toString(), "Cập nhật việc làm thành công"),
     EMAIL_INVALID_FORMAT(CodeEnum.error.toString(), "Email không đúng định dạng"),
-    PASSWORD_INVALID_FORMAT(CodeEnum.error.toString(), "Mật khẩu không hợp lệ")
+    PASSWORD_INVALID_FORMAT(CodeEnum.error.toString(), "Mật khẩu không hợp lệ"),
+    LIKED_JOB_ADDED(CodeEnum.error.toString(), "Thêm việc yêu thích thành công")
     ;
 
     String code;
