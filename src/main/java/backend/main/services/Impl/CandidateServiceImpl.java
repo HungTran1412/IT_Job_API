@@ -244,9 +244,7 @@ public class CandidateServiceImpl implements CandidateService {
 	public boolean addLikedJob(String jobId, String candicateId) {
 		Job job = jobRepository.findById(jobId).orElseThrow(() -> new AppException(Code.JOB_NOT_FOUND));
 		Candidate candidate = candidateRepository.findById(candicateId).orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
-		candidate.getLikedJobs().add(job);
-		candidateRepository.save(candidate);
-		
-		return false;
+		job.setCandicateLiked(candidate);
+		return jobRepository.save(job) != null;
 	}
 }
