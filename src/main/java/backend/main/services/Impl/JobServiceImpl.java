@@ -117,8 +117,8 @@ public class JobServiceImpl implements JobService {
 
     @Override
     @Transactional
-    public void deleteById(String jobId) {
-        jobRepository.deleteById(jobId);
+    public void deleteAllById(List<String> jobId) {
+        jobRepository.deleteAllById(jobId);
     }
 
     @Override
@@ -194,15 +194,22 @@ public class JobServiceImpl implements JobService {
     @Override
     @Transactional
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public JobStatus reviewJob(JobReviewRequest request) {
-        Job j =  jobRepository.findById(request.getJobId())
-                .orElseThrow(() -> new AppException(Code.JOB_NOT_FOUND));
+    public boolean reviewJob(JobReviewRequest request) {
+        try {
+			List<Job> jobs = (List<Job>) jobRepository.findAllById(request.getJobId());
 
-        j.setStatus(request.getJobStatus());
+			if (jobs.size() != request.getJobId().size()) {
+			    throw new AppException(Code.JOB_NOT_FOUND);
+			}
 
-        jobRepository.save(j);
+			jobs.forEach(job -> job.setStatus(request.getJobStatus()));
+			jobRepository.saveAll(jobs);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-        return  j.getStatus();
+        return false;
     }
 
 }

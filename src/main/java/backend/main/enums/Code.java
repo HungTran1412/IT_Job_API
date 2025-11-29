@@ -49,6 +49,9 @@ public enum Code {
     FORGOT_PASSWORD_SUCCESS(CodeEnum.success.toString(), "Nếu email của bạn tồn tại trong hệ thống, chúng tôi đã gửi một mã OTP."),
     RESET_PASSWORD_SUCCESS(CodeEnum.success.toString(), "Mật khẩu của bạn đã được đặt lại thành công."),
     LIKED_JOB_ADDED(CodeEnum.error.toString(), "Thêm việc yêu thích thành công"),
+    DELETED_SUCCESSFULLY(CodeEnum.success.toString(),"Xóa thành công"),
+    UNVALID_VALUE(CodeEnum.error.toString(),"Lỗi dữ liệu")
+    
     ;
 
     String code;

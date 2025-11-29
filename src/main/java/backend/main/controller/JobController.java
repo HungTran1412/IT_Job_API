@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import backend.main.dto.request.job.DeleteRequest;
 import backend.main.dto.request.job.JobRequest;
 import backend.main.dto.request.job.JobReviewRequest;
 import backend.main.dto.response.ApiResponse;
@@ -47,13 +48,17 @@ public class JobController {
     }
 
     @GetMapping
-    public Page<JobResponse> getAllJobs(
+    public ResponseEntity<ApiResponse<Object>> getAllJobs(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "jobId") String sortBy,
             @RequestParam(defaultValue = "asc") String direction) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sortBy));
-        return jobService.findAll(pageable);
+        return ResponseEntity.ok(ApiResponse.builder()
+                .code(Code.CREATE_JOB_SUCCESSFULL.getCode())
+                .message(Code.CREATE_JOB_SUCCESSFULL.getMessage())
+                .result(jobService.findAll(pageable))
+                .build());
     }
 
     @GetMapping("/{title}")
@@ -63,8 +68,12 @@ public class JobController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteJob(@PathVariable String id) {
-        jobService.deleteById(id);
+    public ResponseEntity<ApiResponse<Object>> deleteJob(@RequestBody DeleteRequest request) {
+        jobService.deleteAllById(request.getIds());
+        return ResponseEntity.ok(ApiResponse.builder()
+                .code(Code.DELETED_SUCCESSFULLY.getCode())
+                .message(Code.DELETED_SUCCESSFULLY.getMessage())
+                .build()); 
     }
 
     @PutMapping("/{id}")
@@ -113,10 +122,16 @@ public class JobController {
 
     @PutMapping("/review")
     public ResponseEntity<ApiResponse<Job>> reviewJob(@RequestBody JobReviewRequest request) {
-        var j = jobService.reviewJob(request);
-        return ResponseEntity.ok(ApiResponse.<Job>builder()
+        if(jobService.reviewJob(request)) {
+			return ResponseEntity.ok(ApiResponse.<Job>builder()
                 .code(Code.JOB_APROVED.getCode())
                 .message(Code.JOB_APROVED.getMessage())
                 .build());
+		} else {
+        	return ResponseEntity.ok(ApiResponse.<Job>builder()
+                    .code(Code.UNCATEGORIZED_EXCEPTION.getCode())
+                    .message(Code.UNCATEGORIZED_EXCEPTION.getMessage())
+                    .build());
+        }
     }
 }

@@ -1,5 +1,6 @@
 package backend.main.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -16,11 +17,11 @@ public interface JobService {
     Page<JobResponse> findAll(Pageable pageable );
     Optional<Job> findById(String jobId);
     Optional<Job> findByTitle(String title);
-    void deleteById(String jobId);
+    void deleteAllById(List<String> jobId);
     JobResponse updateJob(String jobId, JobRequest jobRequest);
     Page<Job> search(String keyword, String location, String salaryRange, Pageable pageable);
     Page<Job> findAllByStatus(JobStatus status, Pageable pageable);
     Page<JobResponse> findAllByStatusApproved(Pageable pageable);
-    JobStatus reviewJob(JobReviewRequest request);
+    boolean reviewJob(JobReviewRequest request);
 
 }
