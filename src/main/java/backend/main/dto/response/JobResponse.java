@@ -1,6 +1,6 @@
 package backend.main.dto.response;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -26,7 +26,7 @@ public class JobResponse {
     List<String> technologies;
     String workingFrom;
     String location;
-    LocalDateTime deadline;
+    LocalDate deadline;
     JobStatus status;
     String employerId;
     String employerName;
