@@ -13,7 +13,7 @@ import backend.main.enums.JobStatus;
 
 public interface JobService {
     JobResponse save(JobRequest jobRequest);
-    Page<JobResponse> findAll( );
+    Page<JobResponse> findAll(Pageable pageable );
     Optional<Job> findById(String jobId);
     Optional<Job> findByTitle(String title);
     void deleteById(String jobId);

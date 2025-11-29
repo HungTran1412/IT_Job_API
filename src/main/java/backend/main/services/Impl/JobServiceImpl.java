@@ -1,17 +1,17 @@
 package backend.main.services.Impl;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import backend.main.utils.JwtUtils;
 import backend.main.dto.request.job.JobRequest;
 import backend.main.dto.request.job.JobReviewRequest;
 import backend.main.dto.response.JobResponse;
@@ -24,7 +24,9 @@ import backend.main.exception.AppException;
 import backend.main.repository.EmployerRepository;
 import backend.main.repository.JobRepository;
 import backend.main.services.JobService;
+import backend.main.utils.JwtUtils;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class JobServiceImpl implements JobService {
@@ -80,8 +82,9 @@ public class JobServiceImpl implements JobService {
 
     @Override
     @Transactional
-    public Page<JobResponse> findAll()  {
-        Page<Job> jobs = (Page<Job>) jobRepository.findAll();
+    public Page<JobResponse> findAll(Pageable pageable)  {
+    	List<Job> results = (List<Job>) jobRepository.findAll();
+        Page<Job> jobs = new PageImpl<Job>(results,pageable,results.size());
         return jobs.map(job -> new JobResponse(
                 job.getJobId(),
                 job.getTitle(),

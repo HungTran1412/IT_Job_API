@@ -2,7 +2,6 @@ package backend.main.controller;
 
 import java.util.Optional;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +26,7 @@ import backend.main.entities.Job;
 import backend.main.enums.Code;
 import backend.main.enums.JobStatus;
 import backend.main.services.JobService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/jobs")
@@ -53,7 +53,7 @@ public class JobController {
             @RequestParam(defaultValue = "jobId") String sortBy,
             @RequestParam(defaultValue = "asc") String direction) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sortBy));
-        return jobService.findAll();
+        return jobService.findAll(pageable);
     }
 
     @GetMapping("/{title}")
