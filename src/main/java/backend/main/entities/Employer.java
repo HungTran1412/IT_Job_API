@@ -62,4 +62,5 @@ public class Employer extends User {
     
     @OneToMany(mappedBy = "employer",orphanRemoval = true)
     List<Job> jobs;
+    
 }

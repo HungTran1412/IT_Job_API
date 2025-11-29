@@ -4,15 +4,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import backend.main.utils.ValidationUtils;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import backend.main.configuration.AppProperties;
-import backend.main.utils.JwtUtils;
 import backend.main.dto.request.LoginRequest;
 import backend.main.dto.request.employer.EmployerRegisterRequest;
 import backend.main.dto.request.employer.EmployerUpdateRequest;
@@ -26,10 +23,13 @@ import backend.main.repository.EmployerRepository;
 import backend.main.repository.VerificationTokenRepository;
 import backend.main.services.EmployerService;
 import backend.main.utils.CloudinaryFileUpload;
+import backend.main.utils.JwtUtils;
 import backend.main.utils.SendEmailHandler;
+import backend.main.utils.ValidationUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
