@@ -43,7 +43,11 @@ public enum Code {
     CREATE_JOB_SUCCESSFULL(CodeEnum.success.toString(), "Tạo việc làm thành công"),
     UPDATE_JOB_SUCCESSFULL(CodeEnum.success.toString(), "Cập nhật việc làm thành công"),
     EMAIL_INVALID_FORMAT(CodeEnum.error.toString(), "Email không đúng định dạng"),
-    PASSWORD_INVALID_FORMAT(CodeEnum.error.toString(), "Mật khẩu không hợp lệ")
+    PASSWORD_INVALID_FORMAT(CodeEnum.error.toString(), "Mật khẩu không hợp lệ"),
+
+    // Mã mới cho chức năng quên mật khẩu
+    FORGOT_PASSWORD_SUCCESS(CodeEnum.success.toString(), "Nếu email của bạn tồn tại trong hệ thống, chúng tôi đã gửi một mã OTP."),
+    RESET_PASSWORD_SUCCESS(CodeEnum.success.toString(), "Mật khẩu của bạn đã được đặt lại thành công.")
     ;
 
     String code;
