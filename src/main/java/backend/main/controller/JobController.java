@@ -55,8 +55,8 @@ public class JobController {
             @RequestParam(defaultValue = "asc") String direction) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sortBy));
         return ResponseEntity.ok(ApiResponse.builder()
-                .code(Code.CREATE_JOB_SUCCESSFULL.getCode())
-                .message(Code.CREATE_JOB_SUCCESSFULL.getMessage())
+                .code(Code.GET_JOB_SUCCESSFULL.getCode())
+                .message(Code.GET_JOB_SUCCESSFULL.getMessage())
                 .result(jobService.findAll(pageable))
                 .build());
     }
@@ -67,7 +67,7 @@ public class JobController {
         return job.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping
     public ResponseEntity<ApiResponse<Object>> deleteJob(@RequestBody DeleteRequest request) {
         jobService.deleteAllById(request.getIds());
         return ResponseEntity.ok(ApiResponse.builder()
