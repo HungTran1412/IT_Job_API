@@ -42,6 +42,7 @@ public enum Code {
     JOB_APROVED(CodeEnum.success.toString(), "Đã duyệt việc làm"),
     CREATE_JOB_SUCCESSFULL(CodeEnum.success.toString(), "Tạo việc làm thành công"),
     UPDATE_JOB_SUCCESSFULL(CodeEnum.success.toString(), "Cập nhật việc làm thành công"),
+    GET_JOB_SUCCESSFULL(CodeEnum.success.toString(), "Lấy việc làm thành công"),
     EMAIL_INVALID_FORMAT(CodeEnum.error.toString(), "Email không đúng định dạng"),
     PASSWORD_INVALID_FORMAT(CodeEnum.error.toString(), "Mật khẩu không hợp lệ"),
 
@@ -50,7 +51,8 @@ public enum Code {
     RESET_PASSWORD_SUCCESS(CodeEnum.success.toString(), "Mật khẩu của bạn đã được đặt lại thành công."),
     LIKED_JOB_ADDED(CodeEnum.error.toString(), "Thêm việc yêu thích thành công"),
     DELETED_SUCCESSFULLY(CodeEnum.success.toString(),"Xóa thành công"),
-    UNVALID_VALUE(CodeEnum.error.toString(),"Lỗi dữ liệu")
+    UNVALID_VALUE(CodeEnum.error.toString(),"Lỗi dữ liệu"),
+    UNAUTHORIZED(CodeEnum.error.toString(),"Lỗi")
     
     ;
 

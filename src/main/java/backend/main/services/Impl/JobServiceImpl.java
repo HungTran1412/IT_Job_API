@@ -105,8 +105,8 @@ public class JobServiceImpl implements JobService {
 
     @Override
     @Transactional
-    public Optional<Job> findById(String jobId) {
-        return jobRepository.findById(jobId);
+    public Job findById(String jobId) {
+        return jobRepository.findById(jobId).orElseThrow(() -> new AppException(Code.JOB_NOT_FOUND));
     }
 
     @Override
@@ -210,6 +210,72 @@ public class JobServiceImpl implements JobService {
 		}
 
         return false;
+    }
+
+    @Override
+    @Transactional
+    public Page<JobResponse> findJobsByEmployer(String employerId, Pageable pageable) {
+        Page<Job> jobs = jobRepository.findByEmployer_EmployerId(employerId, pageable);
+        return jobs.map(job -> new JobResponse(
+                job.getJobId(),
+                job.getTitle(),
+                job.getDescription(),
+                job.getSalaryMin(),
+                job.getSalaryMax(),
+                job.getPosition(),
+                job.getTechnologies(),
+                job.getWorkingFrom(),
+                job.getLocation(),
+                job.getDeadline(),
+                job.getStatus(),
+                job.getEmployer().getEmployerId(),
+                job.getEmployer().getCompanyName(),
+                job.getEmployer().getLogo()
+        ));
+    }
+
+    @Override
+    @Transactional
+    public Page<JobResponse> findJobsByEmployerAndStatus(String employerId, JobStatus status, Pageable pageable) {
+        Page<Job> jobs = jobRepository.findByEmployer_EmployerIdAndStatus(employerId, status, pageable);
+        return jobs.map(job -> new JobResponse(
+                job.getJobId(),
+                job.getTitle(),
+                job.getDescription(),
+                job.getSalaryMin(),
+                job.getSalaryMax(),
+                job.getPosition(),
+                job.getTechnologies(),
+                job.getWorkingFrom(),
+                job.getLocation(),
+                job.getDeadline(),
+                job.getStatus(),
+                job.getEmployer().getEmployerId(),
+                job.getEmployer().getCompanyName(),
+                job.getEmployer().getLogo()
+        ));
+    }
+
+    @Override
+    @Transactional
+    public Page<JobResponse> searchJobsByEmployer(String employerId, String keyword, Pageable pageable) {
+        Page<Job> jobs = jobRepository.findByEmployer_EmployerIdAndTitleContaining(employerId, keyword, pageable);
+        return jobs.map(job -> new JobResponse(
+                job.getJobId(),
+                job.getTitle(),
+                job.getDescription(),
+                job.getSalaryMin(),
+                job.getSalaryMax(),
+                job.getPosition(),
+                job.getTechnologies(),
+                job.getWorkingFrom(),
+                job.getLocation(),
+                job.getDeadline(),
+                job.getStatus(),
+                job.getEmployer().getEmployerId(),
+                job.getEmployer().getCompanyName(),
+                job.getEmployer().getLogo()
+        ));
     }
 
 }

@@ -15,7 +15,7 @@ import backend.main.enums.JobStatus;
 public interface JobService {
     JobResponse save(JobRequest jobRequest);
     Page<JobResponse> findAll(Pageable pageable );
-    Optional<Job> findById(String jobId);
+    Job findById(String jobId);
     Optional<Job> findByTitle(String title);
     void deleteAllById(List<String> jobId);
     JobResponse updateJob(String jobId, JobRequest jobRequest);
@@ -23,5 +23,8 @@ public interface JobService {
     Page<Job> findAllByStatus(JobStatus status, Pageable pageable);
     Page<JobResponse> findAllByStatusApproved(Pageable pageable);
     boolean reviewJob(JobReviewRequest request);
+    Page<JobResponse> findJobsByEmployer(String employerId, Pageable pageable);
+    Page<JobResponse> findJobsByEmployerAndStatus(String employerId, JobStatus status, Pageable pageable);
+    Page<JobResponse> searchJobsByEmployer(String employerId, String keyword, Pageable pageable);
 
 }
