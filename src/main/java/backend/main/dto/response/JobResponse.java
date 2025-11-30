@@ -25,10 +25,9 @@ public class JobResponse {
     String position;
     List<String> technologies;
     String workingFrom;
-    String location;
+    List<String> location;
     LocalDate deadline;
     JobStatus status;
     String employerId;
     String employerName;
-    String logo;
 }
