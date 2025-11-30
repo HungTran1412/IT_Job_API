@@ -14,6 +14,7 @@ import backend.main.enums.JobStatus;
 
 public interface JobService {
     JobResponse save(JobRequest jobRequest);
+    JobResponse getJob(String id);
     Page<JobResponse> findAll(Pageable pageable );
     Job findById(String jobId);
     Optional<Job> findByTitle(String title);

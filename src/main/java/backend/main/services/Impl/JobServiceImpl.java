@@ -278,4 +278,24 @@ public class JobServiceImpl implements JobService {
         ));
     }
 
+	@Override
+	public JobResponse getJob(String id) {
+		Job job = jobRepository.findById(id).orElseThrow((() -> new AppException(Code.JOB_NOT_FOUND)));
+		return new JobResponse(
+                job.getJobId(),
+                job.getTitle(),
+                job.getDescription(),
+                job.getSalaryMin(),
+                job.getSalaryMax(),
+                job.getPosition(),
+                job.getTechnologies(),
+                job.getWorkingFrom(),
+                job.getLocation(),
+                job.getDeadline(),
+                job.getStatus(),
+                job.getEmployer().getEmployerId(),
+                job.getEmployer().getCompanyName(),
+                job.getEmployer().getLogo());
+	}
+
 }

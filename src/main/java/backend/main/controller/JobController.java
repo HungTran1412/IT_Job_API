@@ -75,6 +75,16 @@ public class JobController {
                 .message(Code.DELETED_SUCCESSFULLY.getMessage())
                 .build()); 
     }
+    
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<JobResponse>> getJob(@PathVariable String id) {
+        JobResponse gotJob = jobService.getJob(id);
+        return ResponseEntity.ok(ApiResponse.<JobResponse>builder()
+                .code(Code.UPDATE_JOB_SUCCESSFULL.getCode())
+                .message(Code.UPDATE_JOB_SUCCESSFULL.getMessage())
+                .result(gotJob)
+                .build());
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<JobResponse>> updateJob(@PathVariable String id, @RequestBody JobRequest jobRequest) {
