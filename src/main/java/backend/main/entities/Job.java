@@ -44,7 +44,7 @@ public class Job extends BaseModel{
     String position;
     List<String> technologies;
     String workingFrom;
-    String location;
+    List<String> location;
     LocalDate deadline;
 
     @Builder.Default
