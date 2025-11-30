@@ -11,24 +11,30 @@ import backend.main.repository.CandidateRepository;
 import backend.main.repository.EmployerRepository;
 import backend.main.repository.VerificationTokenRepository;
 import backend.main.services.ForgotPasswordService;
+import backend.main.utils.SendEmailHandler;
+import backend.main.utils.ValidationUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
 public class ForgotPasswordServiceImpl implements ForgotPasswordService {
-
-    private final EmployerRepository employerRepository;
-    private final CandidateRepository candidateRepository;
-    private final VerificationTokenRepository verificationTokenRepository;
-    private final JavaMailSender mailSender;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    EmployerRepository employerRepository;
+    @Autowired
+    CandidateRepository candidateRepository;
+    @Autowired
+    VerificationTokenRepository verificationTokenRepository;
+    @Autowired
+    SendEmailHandler sendEmailHandler;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Override
     public void sendOtp(ForgotPasswordRequest request) {
@@ -41,7 +47,9 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
             return;
         }
 
-        String token = UUID.randomUUID().toString().substring(0, 6).toUpperCase(); // Tạo OTP 6 ký tự chữ hoa
+        // Tạo mã OTP gồm 6 chữ số
+        String token = String.format("%06d", new Random().nextInt(1000000));
+
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
         verificationToken.setExpirationTime(LocalDateTime.now().plusMinutes(5)); // Hết hạn sau 5 phút
@@ -54,11 +62,8 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
         verificationTokenRepository.save(verificationToken);
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
-        message.setSubject("Yêu cầu đặt lại mật khẩu");
-        message.setText("Mã OTP để đặt lại mật khẩu của bạn là: " + token + ". Mã này sẽ hết hạn sau 5 phút.");
-        mailSender.send(message);
+        // Gọi đến SendEmailHandler để gửi email OTP
+        sendEmailHandler.sendOTPEmail(email, token);
     }
 
     @Override
@@ -74,7 +79,9 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
         Candidate candidate = verificationToken.getCandidate();
         Employer employer = verificationToken.getEmployer();
 
-        String newPasswordEncoded = passwordEncoder.encode(request.getNewPassword());
+        String newPassword = request.getNewPassword();
+        ValidationUtils.validatePassword(newPassword);
+        String newPasswordEncoded = passwordEncoder.encode(newPassword);
 
         if (candidate != null) {
             candidate.setPassword(newPasswordEncoded);
