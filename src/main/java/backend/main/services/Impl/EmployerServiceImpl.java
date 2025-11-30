@@ -1,9 +1,13 @@
 package backend.main.services.Impl;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -196,20 +200,24 @@ public class EmployerServiceImpl implements EmployerService {
         Employer e = employerRepository.findById(id)
                 .orElseThrow(() -> new AppException(Code.EMPLOYER_NOT_FOUND));
 
-        System.out.println("CompanyName: " + request.getCompanyName());
-        System.out.println("Address: " + request.getAddress());
-        System.out.println("Phone: " + request.getPhone());
-        System.out.println("City: " + request.getCity());
-        System.out.println("CompanyModel: " + request.getCompanyModel());
-        System.out.println("CompanyEmployees: " + request.getCompanyEmployees());
-        System.out.println("WorkingTime: " + request.getWorkingTime());
-        System.out.println("WorkingOvertime: " + request.getWorkingOvertime());
-        System.out.println("Description: " + request.getDescription());
-
         e.setCompanyName(request.getCompanyName());
         e.setAddress(request.getAddress());
         e.setPhone(request.getPhone());
-        e.setCity(request.getCity());
+
+        // Parse city from JSON string to List<String>
+        if (request.getCity() != null && !request.getCity().isEmpty()) {
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                List<String> cityList = objectMapper.readValue(request.getCity(), new TypeReference<List<String>>() {});
+                e.setCity(cityList);
+            } catch (JsonProcessingException jsonException) {
+                log.error("Error parsing city JSON string: {}. Setting city to empty list.", request.getCity(), jsonException);
+                e.setCity(Collections.emptyList());
+            }
+        } else {
+            e.setCity(Collections.emptyList());
+        }
+
         e.setCompanyModel(request.getCompanyModel());
         e.setCompanyEmployees(request.getCompanyEmployees());
         e.setWorkingTime(request.getWorkingTime());
@@ -219,14 +227,8 @@ public class EmployerServiceImpl implements EmployerService {
 
         //Kiem tra xem nguoi dung co cap nhat anh khong
         if(request.getLogo() != null && !request.getLogo().isEmpty()){
-            System.out.println("Image: " + request.getLogo().getOriginalFilename());
             String imgUrl = cloudinaryFileUpload.uploadImage(request.getLogo());
             e.setLogo(imgUrl);
-            System.out.println("Logo: " + imgUrl);
-        }else{
-            String imgUrl = e.getLogo();
-            e.setLogo(imgUrl);
-            System.out.println("Logo: " + imgUrl);
         }
 
         return saveEmployer(e);

@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 public class EmployerUpdateRequest {
     String companyName;
-    List<String> city;
+    String city; // Sửa từ List<String> thành String
     String address;
     String companyModel;
     String companyEmployees;
