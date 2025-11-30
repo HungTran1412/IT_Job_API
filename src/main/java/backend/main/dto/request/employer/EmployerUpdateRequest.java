@@ -7,18 +7,19 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
 @Setter
 public class EmployerUpdateRequest {
     String companyName;
-    String city;
+    List<String> city;
     String address;
     String companyModel;
     String companyEmployees;
     String workingTime;
-    LocalDateTime workingOvertime;
+    String workingOvertime;
     String description;
     String phone;
     MultipartFile logo;

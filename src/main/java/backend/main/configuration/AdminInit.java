@@ -18,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+
 
 @Configuration
 @RequiredArgsConstructor
@@ -66,7 +68,12 @@ public class AdminInit {
 								.employerId("demoEmployer")
                                 .password(encoder.encode("Company@123"))
                                 .email("company@dev2.com")
-                                .city("HAnoi")
+                                .city(new ArrayList<String>(){
+                                    {
+                                        add("HaNoi");
+                                        add("HCM");
+                                    }
+                                })
                                 .role(Role.ROLE_EMPLOYER)
                                 .enabled(true)
                                 .build();

@@ -37,6 +37,7 @@ public class Job extends BaseModel{
     String jobId;
     
     String title;
+    @Column(columnDefinition = "LONGTEXT")
     String description;
     int salaryMin;
     int salaryMax;

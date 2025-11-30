@@ -61,11 +61,11 @@ public class JobController {
                 .build());
     }
 
-    @GetMapping("/{title}")
-    public ResponseEntity<Job> getJobByTitle(@PathVariable String title) {
-        Optional<Job> job = jobService.findByTitle(title);
-        return job.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
+//    @GetMapping("/{title}")
+//    public ResponseEntity<Job> getJobByTitle(@PathVariable String title) {
+//        Optional<Job> job = jobService.findByTitle(title);
+//        return job.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+//    }
 
     @DeleteMapping
     public ResponseEntity<ApiResponse<Object>> deleteJob(@RequestBody DeleteRequest request) {

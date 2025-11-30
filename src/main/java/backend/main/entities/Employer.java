@@ -31,7 +31,7 @@ public class Employer extends User {
     String companyName;
 
     @Column(name = "city")
-    String city;
+    List<String> city;
 
     @Column(name = "address")
     String address;
@@ -46,7 +46,7 @@ public class Employer extends User {
     String workingTime;
 
     @Column(name = "working_overtime")
-    LocalDateTime workingOvertime;
+    String workingOvertime;
 
     @Column(name = "description")
     String description;
