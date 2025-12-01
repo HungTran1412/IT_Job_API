@@ -23,26 +23,31 @@ public class ApplicationServiceImpl implements ApplicationService {
     private ApplicationRepository applicationRepository;
 
     @Override
+    @Transactional
     public Application save(Application application) {
         return applicationRepository.save(application);
     }
 
     @Override
+    @Transactional
     public List<Application> findAll() {
         return applicationRepository.findAll();
     }
 
     @Override
+    @Transactional
     public Optional<Application> findById(String applicationId) {
         return applicationRepository.findById(applicationId);
     }
 
     @Override
+    @Transactional
     public List<Application> findByCandidate(Candidate candidate) {
         return applicationRepository.findByCandidate(candidate);
     }
 
     @Override
+    @Transactional
     public List<Application> findByJob(Job job) {
         return applicationRepository.findByJob(job);
     }
@@ -59,6 +64,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
+    @Transactional
     public void delete(String applicationId) {
         applicationRepository.deleteById(applicationId);
     }

@@ -240,10 +240,11 @@ public class EmployerServiceImpl implements EmployerService {
     }
     
     @Override
-   public List<Job> getListJob(String jwt){
+    @Transactional
+    public List<Job> getListJob(String jwt){
 	   String id = jwtUtils.extractId(jwt);
        Employer employer = employerRepository.findById(id)
                .orElseThrow(() -> new AppException(Code.EMAIL_DOES_NOT_EXIST));
 	   return employer.getJobs();
-   }
+    }
 }

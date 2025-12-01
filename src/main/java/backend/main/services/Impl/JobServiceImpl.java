@@ -41,6 +41,7 @@ public class JobServiceImpl implements JobService {
     @Autowired
     private EmployerRepository employerRepository;
 
+    @Transactional
     @Override
     public JobResponse save(JobRequest jobRequest) {
         String context = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -272,6 +273,7 @@ public class JobServiceImpl implements JobService {
     }
 
 	@Override
+    @Transactional
 	public JobResponse getJob(String id) {
 		Job job = jobRepository.findById(id).orElseThrow((() -> new AppException(Code.JOB_NOT_FOUND)));
 		return new JobResponse(

@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Random;
@@ -36,6 +37,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Transactional
     @Override
     public void sendOtp(ForgotPasswordRequest request) {
         String email = request.getEmail();
@@ -66,6 +68,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
         sendEmailHandler.sendOTPEmail(email, token);
     }
 
+    @Transactional
     @Override
     public void resetPassword(ResetPasswordRequest request) {
         VerificationToken verificationToken = verificationTokenRepository.findByToken(request.getToken())
@@ -76,10 +79,13 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
             throw new AppException(Code.TOKEN_EXPIRED);
         }
 
+        //tao moi doi tuong
         Candidate candidate = verificationToken.getCandidate();
         Employer employer = verificationToken.getEmployer();
 
         String newPassword = request.getNewPassword();
+
+        //kiểm tra tính hợp lệ của mật khẩu
         ValidationUtils.validatePassword(newPassword);
         String newPasswordEncoded = passwordEncoder.encode(newPassword);
 
