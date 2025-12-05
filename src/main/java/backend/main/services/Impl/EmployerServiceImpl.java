@@ -1,16 +1,25 @@
 package backend.main.services.Impl;
 
 import java.time.LocalDateTime;
+<<<<<<< HEAD
 import java.util.List;
 import java.util.UUID;
 
+=======
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+>>>>>>> 47fc9314ac8633e043cb4c92d637b83ca6f1cb25
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import backend.main.configuration.AppProperties;
-import backend.main.configuration.JwtUtils;
 import backend.main.dto.request.LoginRequest;
 import backend.main.dto.request.employer.EmployerRegisterRequest;
 import backend.main.dto.request.employer.EmployerUpdateRequest;
@@ -24,11 +33,18 @@ import backend.main.repository.EmployerRepository;
 import backend.main.repository.VerificationTokenRepository;
 import backend.main.services.EmployerService;
 import backend.main.utils.CloudinaryFileUpload;
+import backend.main.utils.JwtUtils;
 import backend.main.utils.SendEmailHandler;
+import backend.main.utils.ValidationUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+<<<<<<< HEAD
+=======
+import lombok.extern.slf4j.Slf4j;
+>>>>>>> 47fc9314ac8633e043cb4c92d637b83ca6f1cb25
 
+@Slf4j
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
@@ -56,6 +72,9 @@ public class EmployerServiceImpl implements EmployerService {
     @Override
     @Transactional
     public Employer register(EmployerRegisterRequest employerRequest) {
+        ValidationUtils.validateEmail(employerRequest.getEmail());
+        ValidationUtils.validatePassword(employerRequest.getPassword());
+
         if(employerRepository.findByEmail(employerRequest.getEmail()).isPresent()){
             throw new AppException(Code.EMAIL_EXISTED);
         }
@@ -165,6 +184,9 @@ public class EmployerServiceImpl implements EmployerService {
     @Transactional
     @Override
     public String login(LoginRequest request) {
+        ValidationUtils.validateEmail(request.getEmail());
+        ValidationUtils.validatePassword(request.getPassword());
+
         Employer e = employerRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(Code.EMAIL_DOES_NOT_EXIST));
 
@@ -178,7 +200,7 @@ public class EmployerServiceImpl implements EmployerService {
             throw new AppException(Code.ACCOUNT_UNENABLED);
         }
 
-        return jwtUtils.generateToken(e.getEmployerId(), e.getEmail(), e.getRole());
+        return jwtUtils.generateToken(e.getEmployerId(), e.getEmail(), e.getRole(), request.isRememberMe());
     }
 
     @Override
@@ -200,7 +222,25 @@ public class EmployerServiceImpl implements EmployerService {
         e.setCompanyName(request.getCompanyName());
         e.setAddress(request.getAddress());
         e.setPhone(request.getPhone());
+<<<<<<< HEAD
         e.setCity(request.getCity());
+=======
+
+        // Parse city from JSON string to List<String>
+        if (request.getCity() != null && !request.getCity().isEmpty()) {
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                List<String> cityList = objectMapper.readValue(request.getCity(), new TypeReference<List<String>>() {});
+                e.setCity(cityList);
+            } catch (JsonProcessingException jsonException) {
+                log.error("Error parsing city JSON string: {}. Setting city to empty list.", request.getCity(), jsonException);
+                e.setCity(Collections.emptyList());
+            }
+        } else {
+            e.setCity(Collections.emptyList());
+        }
+
+>>>>>>> 47fc9314ac8633e043cb4c92d637b83ca6f1cb25
         e.setCompanyModel(request.getCompanyModel());
         e.setCompanyEmployees(request.getCompanyEmployees());
         e.setWorkingTime(request.getWorkingTime());
@@ -210,7 +250,6 @@ public class EmployerServiceImpl implements EmployerService {
 
         //Kiem tra xem nguoi dung co cap nhat anh khong
         if(request.getLogo() != null && !request.getLogo().isEmpty()){
-            System.out.println("Image: " + request.getLogo().getOriginalFilename());
             String imgUrl = cloudinaryFileUpload.uploadImage(request.getLogo());
             e.setLogo(imgUrl);
             System.out.println("Logo: " + imgUrl);
@@ -229,10 +268,19 @@ public class EmployerServiceImpl implements EmployerService {
     }
     
     @Override
+<<<<<<< HEAD
    public List<Job> getListJob(String jwt){
+=======
+    @Transactional
+    public List<Job> getListJob(String jwt){
+>>>>>>> 47fc9314ac8633e043cb4c92d637b83ca6f1cb25
 	   String id = jwtUtils.extractId(jwt);
        Employer employer = employerRepository.findById(id)
                .orElseThrow(() -> new AppException(Code.EMAIL_DOES_NOT_EXIST));
 	   return employer.getJobs();
+<<<<<<< HEAD
    }
+=======
+    }
+>>>>>>> 47fc9314ac8633e043cb4c92d637b83ca6f1cb25
 }

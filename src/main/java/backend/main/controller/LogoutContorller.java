@@ -2,6 +2,7 @@ package backend.main.controller;
 
 import backend.main.dto.response.ApiResponse;
 import backend.main.enums.Code;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/logout")
+@Tag(name = "Logout")
 public class LogoutContorller {
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> logout(HttpServletResponse res) {

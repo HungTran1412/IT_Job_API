@@ -23,4 +23,5 @@ public class Admin extends User{
 
     @Column(name = "name")
     String name;
+
 }

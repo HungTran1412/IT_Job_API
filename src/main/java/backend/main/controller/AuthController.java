@@ -5,6 +5,7 @@ import backend.main.entities.Candidate;
 import backend.main.enums.Code;
 import backend.main.exception.AppException;
 import backend.main.services.AuthService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth/check")
+@Tag(name = "Auth", description = "check token")
 public class AuthController {
     @Autowired
     private AuthService authService;

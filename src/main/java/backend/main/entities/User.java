@@ -27,4 +27,7 @@ public class User extends BaseModel{
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     Role role;
+
+    @Column(name = "remember_me")
+    Boolean rememberMe;
 }

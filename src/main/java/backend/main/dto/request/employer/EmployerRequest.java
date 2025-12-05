@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
@@ -15,12 +16,12 @@ import java.time.LocalDateTime;
 public class EmployerRequest {
     String email;
     String companyName;
-    String city;
+    List<String> city;
     String address;
     String companyModel;
     String companyEmployees;
     LocalDateTime workingTime;
-    LocalDateTime workingOvertime;
+    String workingOvertime;
     String description;
     String phone;
     MultipartFile logo;

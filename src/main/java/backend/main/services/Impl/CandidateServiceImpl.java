@@ -1,30 +1,36 @@
 package backend.main.services.Impl;
 
-import backend.main.configuration.AppProperties;
-import backend.main.configuration.JwtUtils;
-import backend.main.dto.request.LoginRequest;
-import backend.main.dto.request.candidate.CandidateRegisterRequest;
-import backend.main.dto.request.candidate.CandidateRequest;
-import backend.main.entities.Candidate;
-import backend.main.entities.VerificationToken;
-import backend.main.enums.Code;
-import backend.main.enums.Role;
-import backend.main.exception.AppException;
-import backend.main.repository.CandidateRepository;
-import backend.main.repository.VerificationTokenRepository;
-import backend.main.services.CandidateService;
-import backend.main.utils.CloudinaryFileUpload;
-import backend.main.utils.SendEmailHandler;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
+import backend.main.configuration.AppProperties;
+import backend.main.dto.request.LoginRequest;
+import backend.main.dto.request.candidate.CandidateRegisterRequest;
+import backend.main.dto.request.candidate.CandidateRequest;
+import backend.main.entities.Application;
+import backend.main.entities.Candidate;
+import backend.main.entities.Job;
+import backend.main.entities.VerificationToken;
+import backend.main.enums.Code;
+import backend.main.enums.Role;
+import backend.main.exception.AppException;
+import backend.main.repository.CandidateRepository;
+import backend.main.repository.JobRepository;
+import backend.main.repository.VerificationTokenRepository;
+import backend.main.services.CandidateService;
+import backend.main.utils.CloudinaryFileUpload;
+import backend.main.utils.JwtUtils;
+import backend.main.utils.SendEmailHandler;
+import backend.main.utils.ValidationUtils;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,  makeFinal = true)
@@ -44,6 +50,8 @@ public class CandidateServiceImpl implements CandidateService {
     VerificationTokenRepository verificationTokenRepository;
     @Autowired
     AppProperties appProperties;
+    @Autowired
+    JobRepository jobRepository;
 
     private String generateCandidateID() {
         return "USER" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
@@ -52,6 +60,10 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     @Transactional
     public Candidate register(CandidateRegisterRequest candidateRequest) {
+        //kiem tra tinh hop le
+        ValidationUtils.validateEmail(candidateRequest.getEmail());
+        ValidationUtils.validatePassword(candidateRequest.getPassword());
+
         if(candidateRepository.findByEmail(candidateRequest.getEmail()).isPresent()){
             throw new AppException(Code.EMAIL_EXISTED);
         }
@@ -63,6 +75,8 @@ public class CandidateServiceImpl implements CandidateService {
                 .password(passwordEncoder.encode(candidateRequest.getPassword())) // Mã hóa mật khẩu
                 .role(Role.ROLE_CANDIDATE)
                 .createdAt(LocalDateTime.now())
+                .likedJobs(new ArrayList<Job>())
+                .applications(new ArrayList<Application>())
                 .enabled(false)
                 .isPrivate(true)
                 .build();
@@ -162,6 +176,9 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     @Transactional
     public String login(LoginRequest request) {
+        ValidationUtils.validateEmail(request.getEmail());
+        ValidationUtils.validatePassword(request.getPassword());
+
         // Tìm ứng viên theo email, nếu không có thì ném lỗi
         Candidate c = candidateRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(Code.EMAIL_DOES_NOT_EXIST));
@@ -176,7 +193,7 @@ public class CandidateServiceImpl implements CandidateService {
         }
 
         // Trả về thông tin ứng viên (không bao gồm mật khẩu)
-        return jwtUtils.generateToken(c.getCandidateId(),c.getEmail(), c.getRole());
+        return jwtUtils.generateToken(c.getCandidateId(),c.getEmail(), c.getRole(), request.isRememberMe());
     }
 
     @Override
@@ -221,4 +238,13 @@ public class CandidateServiceImpl implements CandidateService {
     private Candidate saveCandidate(Candidate c) {
         return candidateRepository.save(c);
     }
+
+	@Override
+	@Transactional
+	public boolean addLikedJob(String jobId, String candicateId) {
+		Job job = jobRepository.findById(jobId).orElseThrow(() -> new AppException(Code.JOB_NOT_FOUND));
+		Candidate candidate = candidateRepository.findById(candicateId).orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
+		job.setCandicateLiked(candidate);
+		return jobRepository.save(job) != null;
+	}
 }
