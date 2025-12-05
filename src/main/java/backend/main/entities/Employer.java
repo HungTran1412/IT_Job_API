@@ -14,6 +14,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.JoinColumn;
+
 
 @Entity
 @Table(name = "tbl_employer")
@@ -30,6 +34,8 @@ public class Employer extends User {
     @Column(name = "company_name")
     String companyName;
 
+    @ElementCollection
+    @CollectionTable(name = "employer_city", joinColumns = @JoinColumn(name = "employer_id"))
     @Column(name = "city")
     List<String> city;
 

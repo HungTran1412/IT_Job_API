@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.net.URI;
 
 @Slf4j
-@Component
 public class OpenSwaggerUI {
     private final String baseUrl;
 
