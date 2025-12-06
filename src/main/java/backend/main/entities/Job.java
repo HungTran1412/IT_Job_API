@@ -35,7 +35,7 @@ public class Job extends BaseModel{
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "job_id")
     String jobId;
-    
+
     String title;
     @Column(columnDefinition = "LONGTEXT")
     String description;
@@ -54,7 +54,7 @@ public class Job extends BaseModel{
     @JoinColumn(name = "employer_id")
     @JsonIgnore
     Employer employer;
-    
+
     @ManyToOne
     @JoinColumn(name = "candicate_id")
     @JsonIgnore
