@@ -1,5 +1,6 @@
 package backend.main.services.Impl;
 
+import backend.main.dto.NotificationMessage;
 import backend.main.repository.NotificationRepository;
 import backend.main.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,17 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Transactional
-    public void sendNotification(String receiverId, String content, String type) {
+    public void sendNotification(String receiverId, String content, String sender) {
+        NotificationMessage notificationMessage = new NotificationMessage(receiverId, sender, content);
 
+        if ("admins".equals(receiverId)) {
+            // Gửi thông báo chung cho tất cả admin
+            messagingTemplate.convertAndSend("/topic/admins", notificationMessage);
+        } else {
+            // Gửi thông báo riêng cho người dùng cụ thể
+            messagingTemplate.convertAndSendToUser(receiverId, "/queue/notifications", notificationMessage);
+        }
+        // Bạn có thể thêm logic để lưu notification vào DB ở đây nếu cần
+        // notificationRepository.save(...)
     }
 }

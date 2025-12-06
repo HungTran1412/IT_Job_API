@@ -1,11 +1,6 @@
 package backend.main.services.Impl;
 
 import java.time.LocalDateTime;
-<<<<<<< HEAD
-import java.util.List;
-import java.util.UUID;
-
-=======
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -13,7 +8,6 @@ import java.util.UUID;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
->>>>>>> 47fc9314ac8633e043cb4c92d637b83ca6f1cb25
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,10 +33,7 @@ import backend.main.utils.ValidationUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-<<<<<<< HEAD
-=======
 import lombok.extern.slf4j.Slf4j;
->>>>>>> 47fc9314ac8633e043cb4c92d637b83ca6f1cb25
 
 @Slf4j
 @RequiredArgsConstructor
@@ -148,7 +139,7 @@ public class EmployerServiceImpl implements EmployerService {
             e.setPassword(passwordEncoder.encode(newPassword));
             saveEmployer(e);
             return true;
-        } catch (AppException e) {
+        } catch (AppException ex) {
             return false;
         }
     }
@@ -222,9 +213,6 @@ public class EmployerServiceImpl implements EmployerService {
         e.setCompanyName(request.getCompanyName());
         e.setAddress(request.getAddress());
         e.setPhone(request.getPhone());
-<<<<<<< HEAD
-        e.setCity(request.getCity());
-=======
 
         // Parse city from JSON string to List<String>
         if (request.getCity() != null && !request.getCity().isEmpty()) {
@@ -240,7 +228,6 @@ public class EmployerServiceImpl implements EmployerService {
             e.setCity(Collections.emptyList());
         }
 
->>>>>>> 47fc9314ac8633e043cb4c92d637b83ca6f1cb25
         e.setCompanyModel(request.getCompanyModel());
         e.setCompanyEmployees(request.getCompanyEmployees());
         e.setWorkingTime(request.getWorkingTime());
@@ -268,19 +255,11 @@ public class EmployerServiceImpl implements EmployerService {
     }
     
     @Override
-<<<<<<< HEAD
-   public List<Job> getListJob(String jwt){
-=======
     @Transactional
     public List<Job> getListJob(String jwt){
->>>>>>> 47fc9314ac8633e043cb4c92d637b83ca6f1cb25
 	   String id = jwtUtils.extractId(jwt);
        Employer employer = employerRepository.findById(id)
                .orElseThrow(() -> new AppException(Code.EMAIL_DOES_NOT_EXIST));
 	   return employer.getJobs();
-<<<<<<< HEAD
-   }
-=======
     }
->>>>>>> 47fc9314ac8633e043cb4c92d637b83ca6f1cb25
 }

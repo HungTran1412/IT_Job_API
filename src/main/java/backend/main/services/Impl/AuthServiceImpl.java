@@ -1,19 +1,9 @@
 package backend.main.services.Impl;
 
-<<<<<<< HEAD
-import backend.main.configuration.JwtUtils;
-import backend.main.dto.response.AdminResponse;
-import backend.main.dto.response.CandidateResponse;
-import backend.main.dto.response.EmployerResponse;
-import backend.main.entities.Admin;
-import backend.main.entities.Candidate;
-import backend.main.entities.Employer;
-=======
 import backend.main.utils.JwtUtils;
 import backend.main.dto.response.AdminResponse;
 import backend.main.dto.response.CandidateResponse;
 import backend.main.dto.response.EmployerResponse;
->>>>>>> 47fc9314ac8633e043cb4c92d637b83ca6f1cb25
 import backend.main.enums.Code;
 import backend.main.exception.AppException;
 import backend.main.repository.AdminRepository;
@@ -26,13 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-<<<<<<< HEAD
-
-import static backend.main.enums.Role.ROLE_EMPLOYER;
-
-=======
 @Slf4j
->>>>>>> 47fc9314ac8633e043cb4c92d637b83ca6f1cb25
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuthServiceImpl implements AuthService {
@@ -93,15 +77,11 @@ public class AuthServiceImpl implements AuthService {
                                 c.getCv(),
                                 c.getIsPrivate(),
                                 c.getRole(),
-<<<<<<< HEAD
-                                c.getGender()
-=======
                                 c.getGender(),
                                 c.getExperience(),
                                 c.getTechnologies(),
                                 c.getSoftSkill(),
                                 c.getDesiredSalary()
->>>>>>> 47fc9314ac8633e043cb4c92d637b83ca6f1cb25
                         )).orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
             }
             case "ROLE_ADMIN" ->{
