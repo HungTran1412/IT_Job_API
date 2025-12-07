@@ -1,31 +1,66 @@
 package backend.main.services.Impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import backend.main.dto.request.application.ApplicationRequest;
 import backend.main.entities.Application;
 import backend.main.entities.Candidate;
 import backend.main.entities.Job;
 import backend.main.enums.ApplicationStatus;
+import backend.main.enums.Code;
+import backend.main.exception.AppException;
 import backend.main.repository.ApplicationRepository;
+import backend.main.repository.CandidateRepository;
+import backend.main.repository.JobRepository;
 import backend.main.services.ApplicationService;
 import jakarta.transaction.Transactional;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class ApplicationServiceImpl implements ApplicationService {
 
-    @Autowired
-    private ApplicationRepository applicationRepository;
+    
+    ApplicationRepository applicationRepository;
+    JobRepository jobRepository;
+    CandidateRepository candidateRepository;
+    
 
     @Override
     @Transactional
-    public Application save(Application application) {
-        return applicationRepository.save(application);
+    public Application save(ApplicationRequest request) {
+    	
+    	try {
+			Job job = jobRepository.findById(request.getJobId()).orElseThrow((() -> new AppException(Code.JOB_NOT_FOUND)));
+			
+			String context = SecurityContextHolder.getContext().getAuthentication().getName();
+
+			Candidate candidate = candidateRepository.findByEmail(context).orElseThrow(()-> new AppException(Code.USER_NOT_FOUND));
+			
+			Application application = Application.builder()
+					.appliedDate(LocalDateTime.now())
+					.coverLetter(request.getCoverLetter())
+					.cv(request.getCv())
+					.candidate(candidate)
+					.job(job)
+					.build();
+			
+			return applicationRepository.save(application);
+		} catch (AppException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return null;
     }
 
     @Override

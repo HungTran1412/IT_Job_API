@@ -4,12 +4,15 @@ import java.time.LocalDateTime;
 
 import backend.main.enums.ApplicationStatus;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder.Default;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -22,12 +25,19 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class Application {
+public class Application extends BaseModel {
+	
 	@Id
+	@GeneratedValue(strategy = GenerationType.UUID)
 	String applicationId;
+	
 	LocalDateTime appliedDate;
 	String coverLetter;
-	ApplicationStatus status;
+	
+	@Default
+	ApplicationStatus status = ApplicationStatus.REVIEWING;
+	
+	String cv;
 	
 	@ManyToOne
 	@JoinColumn(name = "candicate_id")
