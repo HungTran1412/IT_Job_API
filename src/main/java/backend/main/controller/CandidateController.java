@@ -13,15 +13,15 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import backend.main.dto.request.ChangePasswordRequest;
 import backend.main.dto.request.candidate.CandidateRequest;
-import backend.main.dto.request.candidate.LikedJobRequest;
 import backend.main.dto.response.ApiResponse;
 import backend.main.dto.response.CandidateResponse;
-import backend.main.entities.Application;
 import backend.main.entities.Candidate;
+import backend.main.entities.Job;
 import backend.main.enums.Code;
 import backend.main.exception.AppException;
 import backend.main.repository.CandidateRepository;
@@ -157,14 +157,14 @@ public class CandidateController {
 
 	@PostMapping("/liked-job")
 	public ResponseEntity<ApiResponse> addLikedJob(@CookieValue(value = "jwt", required = false) String token,
-			@RequestBody LikedJobRequest req) {
+			@RequestParam String jobId) {
 		//Kiem tra token
 		if (token == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.<Candidate>builder()
 					.code(Code.TOKEN_INVALID.getCode()).message("Missing token or user not logged in").build());
 		}
-
-		boolean success = candidateService.addLikedJob(req.getJobId(),req.getCandicateId());
+		String id = jwtUtils.extractId(token);
+		boolean success = candidateService.addLikedJob(jobId,id);
 
 		if (success == true) {
 			return ResponseEntity.ok(ApiResponse.builder().code(Code.LIKED_JOB_ADDED.getCode())
@@ -183,7 +183,26 @@ public class CandidateController {
 					.code(Code.TOKEN_INVALID.getCode()).message("Missing token or user not logged in").build());
 		}
 
-		List<Application> success = candidateService.getApplied();
+		List<Job> success = candidateService.getApplied();
+
+		if (success != null) {
+			return ResponseEntity.ok(ApiResponse.builder().code(Code.GET_INFO_SUCCEEDED.getCode())
+					.message(Code.GET_INFO_SUCCEEDED.getMessage()).result(success).build());
+		} else {
+			return ResponseEntity.ok(ApiResponse.builder().code(Code.UNCATEGORIZED_EXCEPTION.getCode())
+					.message(Code.UNCATEGORIZED_EXCEPTION.getMessage()).build());
+		}
+	}
+	
+	@PostMapping("/get-liked")
+	public ResponseEntity<ApiResponse> getLikedJobs(@CookieValue(value = "jwt", required = false) String token) {
+		//Kiem tra token
+		if (token == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.<Candidate>builder()
+					.code(Code.TOKEN_INVALID.getCode()).message("Missing token or user not logged in").build());
+		}
+
+		List<Job> success = candidateService.getLikedJobs();
 
 		if (success != null) {
 			return ResponseEntity.ok(ApiResponse.builder().code(Code.GET_INFO_SUCCEEDED.getCode())

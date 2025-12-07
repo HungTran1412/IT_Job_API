@@ -5,8 +5,8 @@ import java.util.List;
 import backend.main.dto.request.LoginRequest;
 import backend.main.dto.request.candidate.CandidateRegisterRequest;
 import backend.main.dto.request.candidate.CandidateRequest;
-import backend.main.entities.Application;
 import backend.main.entities.Candidate;
+import backend.main.entities.Job;
 
 public interface CandidateService {
     Candidate register(CandidateRegisterRequest candidateRequest);
@@ -16,6 +16,7 @@ public interface CandidateService {
     Candidate verifyCandidate(String token);
     boolean changePassword(String email, String oldPassword, String newPassword);
     boolean addLikedJob(String jobId, String candicateId);
-    List<Application> getApplied();
+    List<Job> getApplied();
+    List<Job> getLikedJobs();
 
 }
