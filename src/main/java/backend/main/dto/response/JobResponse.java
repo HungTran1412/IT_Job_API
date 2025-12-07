@@ -3,6 +3,7 @@ package backend.main.dto.response;
 import java.time.LocalDate;
 import java.util.List;
 
+import backend.main.entities.Employer;
 import backend.main.enums.JobStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,6 @@ public class JobResponse {
     List<String> location;
     LocalDate deadline;
     JobStatus status;
-    String employerId;
-    String employerName;
+    String logo;
+    Employer employer;
 }
