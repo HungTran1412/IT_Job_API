@@ -23,6 +23,9 @@ public class VerificationToken {
     @Column(name = "expiration_time", nullable = false)
     LocalDateTime expirationTime;
 
+    @Column(name = "verified", nullable = false)
+    private boolean verified = false;
+
     @OneToOne
     @JoinColumn(name = "candidate_id", referencedColumnName = "id")
     Candidate candidate;

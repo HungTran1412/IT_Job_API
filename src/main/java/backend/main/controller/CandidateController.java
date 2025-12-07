@@ -69,7 +69,7 @@ public class CandidateController {
 		Candidate c = candidateRepository.findById(id).orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
 
 		// Tạo response
-		CandidateResponse response = new CandidateResponse(c.getFullname(), c.getEmail(), c.getAddress(),
+		CandidateResponse response = new CandidateResponse(c.getCandidateId(),c.getFullname(), c.getEmail(), c.getAddress(),
 				c.getDateOfBirth(), c.getPhone(), c.getAvatar(), c.getCv(), c.getIsPrivate(), c.getRole(),
 				c.getGender(), c.getExperience(), c.getTechnologies(), c.getSoftSkill(), c.getDesiredSalary());
 

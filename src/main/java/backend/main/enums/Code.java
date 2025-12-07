@@ -16,6 +16,8 @@ public enum Code {
     EMPLOYER_NOT_FOUND(CodeEnum.error.toString(), "Không tìm thấy nhà tuyển dụng!"),
     CANDIDATE_NOT_FOUND(CodeEnum.error.toString(), "Không tìm thấy ứng viên!"),
     TOKEN_INVALID(CodeEnum.error.toString(), "Token không hợp lệ!"),
+    TOKEN_NOT_VERIFIED(CodeEnum.error.toString(), "Token chưa được xác thực!"),
+    TOKEN_NOT_FOUND_IN_COOKIE(CodeEnum.error.toString(), "Không tìm thấy token trong cookie. Vui lòng xác thực lại OTP."),
     ACCOUNT_UNENABLED(CodeEnum.error.toString(), "Tài khoản chưa xác thực!"),
     ID_EXISTED(CodeEnum.error.toString(), "ID đã ồn tại!"),
     FILE_UPLOAD_FAILED(CodeEnum.error.toString(), "File Upload thất bại!"),
@@ -49,6 +51,7 @@ public enum Code {
 
     // Mã mới cho chức năng quên mật khẩu
     FORGOT_PASSWORD_SUCCESS(CodeEnum.success.toString(), "Nếu email của bạn tồn tại trong hệ thống, chúng tôi đã gửi một mã OTP."),
+    VERIFY_OTP_SUCCESS(CodeEnum.success.toString(), "Xác thực OTP thành công."),
     RESET_PASSWORD_SUCCESS(CodeEnum.success.toString(), "Mật khẩu của bạn đã được đặt lại thành công."),
     LIKED_JOB_ADDED(CodeEnum.error.toString(), "Thêm việc yêu thích thành công"),
     DELETED_SUCCESSFULLY(CodeEnum.success.toString(),"Xóa thành công"),
@@ -60,7 +63,7 @@ public enum Code {
     String code;
     String message;
 
-    public enum CodeEnum {
+    private enum CodeEnum {
         success,
         error,
     }

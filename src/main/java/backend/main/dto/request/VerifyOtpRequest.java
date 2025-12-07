@@ -1,13 +1,15 @@
 package backend.main.dto.request;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResetPasswordRequest {
-    private String otp;
-    private String newPassword;
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class VerifyOtpRequest {
+    String otp;
 }

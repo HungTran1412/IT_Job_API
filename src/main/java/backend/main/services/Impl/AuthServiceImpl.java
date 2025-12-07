@@ -68,6 +68,7 @@ public class AuthServiceImpl implements AuthService {
             case "ROLE_CANDIDATE" ->{
                 return candidateRepository.findByEmail(email)
                         .map(c -> new CandidateResponse(
+                                c.getCandidateId(),
                                 c.getFullname(),
                                 c.getEmail(),
                                 c.getAddress(),
