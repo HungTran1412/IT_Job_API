@@ -6,6 +6,7 @@ import backend.main.dto.request.VerifyOtpRequest;
 import backend.main.dto.response.ApiResponse;
 import backend.main.enums.Code;
 import backend.main.services.ForgotPasswordService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Tag(name = "Forgot password:", description = "Các phương thức của chức năng quên mật khẩu")
 public class ForgotPasswordController {
 
     private final ForgotPasswordService forgotPasswordService;
