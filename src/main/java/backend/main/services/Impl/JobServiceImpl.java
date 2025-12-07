@@ -58,6 +58,7 @@ public class JobServiceImpl implements JobService {
                 .location(employer.getCity())
                 .technologies(jobRequest.getTechnologies())
                 .deadline(jobRequest.getDeadline())
+                .logo(employer.getLogo())
                 .build();
 
         job.setEmployer(employer);
@@ -76,8 +77,8 @@ public class JobServiceImpl implements JobService {
                 job.getLocation(),
                 job.getDeadline(),
                 job.getStatus(),
-                employer.getEmployerId(),
-                employer.getCompanyName());
+                job.getLogo(),
+                employer);
     }
 
     @Override
@@ -97,8 +98,8 @@ public class JobServiceImpl implements JobService {
                 job.getLocation(),
                 job.getDeadline(),
                 job.getStatus(),
-                job.getEmployer().getEmployerId(),
-                job.getEmployer().getCompanyName()
+                job.getLogo(),
+                job.getEmployer()
         ));
     }
 
@@ -156,8 +157,8 @@ public class JobServiceImpl implements JobService {
                 job.getLocation(),
                 job.getDeadline(),
                 job.getStatus(),
-                job.getEmployer().getEmployerId(),
-                job.getEmployer().getCompanyName());
+                job.getLogo(),
+                job.getEmployer());
     }
 
     @Override
@@ -183,8 +184,8 @@ public class JobServiceImpl implements JobService {
                 job.getLocation(),
                 job.getDeadline(),
                 job.getStatus(),
-                job.getEmployer().getEmployerId(),
-                job.getEmployer().getCompanyName()
+                job.getLogo(),
+                job.getEmployer()
         ));
     }
 
@@ -225,8 +226,8 @@ public class JobServiceImpl implements JobService {
                 job.getLocation(),
                 job.getDeadline(),
                 job.getStatus(),
-                job.getEmployer().getEmployerId(),
-                job.getEmployer().getCompanyName()
+                job.getLogo(),
+                job.getEmployer()
         ));
     }
 
@@ -246,8 +247,8 @@ public class JobServiceImpl implements JobService {
                 job.getLocation(),
                 job.getDeadline(),
                 job.getStatus(),
-                job.getEmployer().getEmployerId(),
-                job.getEmployer().getCompanyName()
+                job.getLogo(),
+                job.getEmployer()
         ));
     }
 
@@ -267,8 +268,8 @@ public class JobServiceImpl implements JobService {
                 job.getLocation(),
                 job.getDeadline(),
                 job.getStatus(),
-                job.getEmployer().getEmployerId(),
-                job.getEmployer().getCompanyName()
+                job.getLogo(),
+                job.getEmployer()
         ));
     }
 
@@ -288,8 +289,8 @@ public class JobServiceImpl implements JobService {
                 job.getLocation(),
                 job.getDeadline(),
                 job.getStatus(),
-                job.getEmployer().getEmployerId(),
-                job.getEmployer().getCompanyName());
+                job.getLogo(),
+                job.getEmployer());
     }
 
 }

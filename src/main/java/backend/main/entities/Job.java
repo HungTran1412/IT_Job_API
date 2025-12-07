@@ -46,6 +46,7 @@ public class Job extends BaseModel{
     String workingFrom;
     List<String> location;
     LocalDate deadline;
+    String logo;
 
     @Builder.Default
     JobStatus status = JobStatus.PENDING;
