@@ -48,6 +48,7 @@ public enum Code {
     APPLY_SUCCESSFUL(CodeEnum.success.toString(),"Ứng tuyển thành công"),
     APPLY_FAIL(CodeEnum.error.toString(),"Ứng tuyển thất bại"),
 
+
     EMAIL_INVALID_FORMAT(CodeEnum.error.toString(), "Email không đúng định dạng"),
     PASSWORD_INVALID_FORMAT(CodeEnum.error.toString(), "Mật khẩu không hợp lệ"),
 
