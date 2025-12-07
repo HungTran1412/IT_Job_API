@@ -2,9 +2,11 @@ package backend.main.services.Impl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -247,4 +249,14 @@ public class CandidateServiceImpl implements CandidateService {
 		job.setCandicateLiked(candidate);
 		return jobRepository.save(job) != null;
 	}
+	
+	@Override
+    public List<Application> getApplied(){
+    	String context = SecurityContextHolder.getContext().getAuthentication().getName();
+
+		Candidate candidate = candidateRepository.findByEmail(context).orElseThrow(()-> new AppException(Code.USER_NOT_FOUND));
+		
+		return candidate.getApplications();
+		
+    }
 }

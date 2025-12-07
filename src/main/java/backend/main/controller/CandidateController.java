@@ -1,5 +1,7 @@
 package backend.main.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,6 +20,7 @@ import backend.main.dto.request.candidate.CandidateRequest;
 import backend.main.dto.request.candidate.LikedJobRequest;
 import backend.main.dto.response.ApiResponse;
 import backend.main.dto.response.CandidateResponse;
+import backend.main.entities.Application;
 import backend.main.entities.Candidate;
 import backend.main.enums.Code;
 import backend.main.exception.AppException;
@@ -166,6 +169,25 @@ public class CandidateController {
 		if (success == true) {
 			return ResponseEntity.ok(ApiResponse.builder().code(Code.LIKED_JOB_ADDED.getCode())
 					.message(Code.LIKED_JOB_ADDED.getMessage()).build());
+		} else {
+			return ResponseEntity.ok(ApiResponse.builder().code(Code.UNCATEGORIZED_EXCEPTION.getCode())
+					.message(Code.UNCATEGORIZED_EXCEPTION.getMessage()).build());
+		}
+	}
+	
+	@PostMapping("/get-applied")
+	public ResponseEntity<ApiResponse> getApplied(@CookieValue(value = "jwt", required = false) String token) {
+		//Kiem tra token
+		if (token == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.<Candidate>builder()
+					.code(Code.TOKEN_INVALID.getCode()).message("Missing token or user not logged in").build());
+		}
+
+		List<Application> success = candidateService.getApplied();
+
+		if (success != null) {
+			return ResponseEntity.ok(ApiResponse.builder().code(Code.GET_INFO_SUCCEEDED.getCode())
+					.message(Code.GET_INFO_SUCCEEDED.getMessage()).result(success).build());
 		} else {
 			return ResponseEntity.ok(ApiResponse.builder().code(Code.UNCATEGORIZED_EXCEPTION.getCode())
 					.message(Code.UNCATEGORIZED_EXCEPTION.getMessage()).build());
