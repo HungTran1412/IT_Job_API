@@ -2,6 +2,8 @@ package backend.main.entities;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import backend.main.enums.ApplicationStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,6 +37,7 @@ public class Application extends BaseModel {
 	String coverLetter;
 	
 	@Default
+    @JsonIgnore
 	ApplicationStatus status = ApplicationStatus.REVIEWING;
 	
 	String name;
@@ -44,9 +47,12 @@ public class Application extends BaseModel {
 	
 	@ManyToOne
 	@JoinColumn(name = "candicate_id")
+    @JsonIgnore
+
 	Candidate candidate;
 	
 	@ManyToOne
 	@JoinColumn(name = "job_id")
+    @JsonIgnore
 	Job job;
 }
