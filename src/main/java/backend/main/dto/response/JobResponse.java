@@ -25,6 +25,5 @@ public class JobResponse {
     List<String> location;
     LocalDate deadline;
     JobStatus status;
-    String logo;
     Employer employer;
 }
