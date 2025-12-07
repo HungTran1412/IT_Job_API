@@ -46,3 +46,4 @@ app:
   front-end:
     verified-candidate-url: ${VERIFIED_CANDIDATE_URL}
     verified-company-url: ${VERIFIED_EMPLOYER_URL}
+    verified-url: ${VERIFIED_URL}
