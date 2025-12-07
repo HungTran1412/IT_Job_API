@@ -2,6 +2,7 @@ package backend.main.services.Impl;
 
 import backend.main.dto.request.ForgotPasswordRequest;
 import backend.main.dto.request.ResetPasswordRequest;
+import backend.main.dto.request.VerifyOtpRequest;
 import backend.main.entities.Candidate;
 import backend.main.entities.Employer;
 import backend.main.entities.VerificationToken;
@@ -14,8 +15,8 @@ import backend.main.services.ForgotPasswordService;
 import backend.main.utils.SendEmailHandler;
 import backend.main.utils.ValidationUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,7 @@ import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     @Autowired
     EmployerRepository employerRepository;
@@ -45,16 +47,15 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
         Employer employer = employerRepository.findByEmail(email).orElse(null);
 
         if (candidate == null && employer == null) {
-            // Không làm gì cả để bảo mật
             return;
         }
 
-        // Tạo mã OTP gồm 6 chữ số
         String token = String.format("%06d", new Random().nextInt(1000000));
 
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
-        verificationToken.setExpirationTime(LocalDateTime.now().plusMinutes(5)); // Hết hạn sau 5 phút
+        verificationToken.setExpirationTime(LocalDateTime.now().plusMinutes(5));
+        verificationToken.setVerified(false); // Đặt trạng thái chưa xác thực
 
         if (candidate != null) {
             verificationToken.setCandidate(candidate);
@@ -63,15 +64,13 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
         }
 
         verificationTokenRepository.save(verificationToken);
-
-        // Gọi đến SendEmailHandler để gửi email OTP
         sendEmailHandler.sendOTPEmail(email, token);
     }
 
     @Transactional
     @Override
-    public void resetPassword(ResetPasswordRequest request) {
-        VerificationToken verificationToken = verificationTokenRepository.findByToken(request.getToken())
+    public void verifyOtp(VerifyOtpRequest request) {
+        VerificationToken verificationToken = verificationTokenRepository.findByToken(request.getOtp())
                 .orElseThrow(() -> new AppException(Code.TOKEN_INVALID));
 
         if (verificationToken.getExpirationTime().isBefore(LocalDateTime.now())) {
@@ -79,14 +78,27 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
             throw new AppException(Code.TOKEN_EXPIRED);
         }
 
-        //tao moi doi tuong
+        verificationToken.setVerified(true);
+        verificationTokenRepository.save(verificationToken);
+    }
+
+    @Transactional
+    @Override
+    public void resetPassword(ResetPasswordRequest request) {
+        VerificationToken verificationToken = verificationTokenRepository.findByToken(request.getOtp())
+                .orElseThrow(() -> new AppException(Code.TOKEN_INVALID));
+
+        if (!verificationToken.isVerified()) {
+            throw new AppException(Code.TOKEN_NOT_VERIFIED);
+        }
+
         Candidate candidate = verificationToken.getCandidate();
         Employer employer = verificationToken.getEmployer();
-
         String newPassword = request.getNewPassword();
 
-        //kiểm tra tính hợp lệ của mật khẩu
+        log.info("Đang kiểm tra mật khẩu nhận được: '{}'", newPassword);
         ValidationUtils.validatePassword(newPassword);
+
         String newPasswordEncoded = passwordEncoder.encode(newPassword);
 
         if (candidate != null) {
