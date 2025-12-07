@@ -28,6 +28,7 @@ public class AppProperties {
     public static class Frontend {
         private String verifiedCandidateUrl;
         private String verifiedCompanyUrl;
+        private String verifiedUrl;
         private String failedUrl;
     }
 }
