@@ -251,12 +251,24 @@ public class CandidateServiceImpl implements CandidateService {
 	}
 	
 	@Override
-    public List<Application> getApplied(){
+    public List<Job> getLikedJobs(){
     	String context = SecurityContextHolder.getContext().getAuthentication().getName();
 
 		Candidate candidate = candidateRepository.findByEmail(context).orElseThrow(()-> new AppException(Code.USER_NOT_FOUND));
+
+		return candidate.getLikedJobs();
+    }
+	
+	@Override
+    public List<Job> getApplied(){
+    	String context = SecurityContextHolder.getContext().getAuthentication().getName();
+
+		Candidate candidate = candidateRepository.findByEmail(context).orElseThrow(()-> new AppException(Code.USER_NOT_FOUND));
+		List<Job> jobs = new ArrayList<Job>();
+		for (Application app : candidate.getApplications()) {
+			jobs.add(app.getJob());
+		}
 		
-		return candidate.getApplications();
-		
+		return jobs;
     }
 }
