@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import backend.main.dto.request.application.ApplicationRequest;
 import backend.main.dto.response.ApiResponse;
 import backend.main.entities.Application;
 import backend.main.entities.Candidate;
@@ -41,8 +42,10 @@ public class ApplicationController {
 	private JobRepository jobRepository;
 
 	@PostMapping
-	public ResponseEntity<ApiResponse<Object>> createApplication(@RequestBody ApplicationRequest request) {
-		var a = applicationService.save(request);
+	public ResponseEntity<ApiResponse<Object>> createApplication(@RequestParam String name, @RequestParam String phone,
+			@RequestParam String email, @RequestParam MultipartFile cv, @RequestParam String jobId) {
+
+		var a = applicationService.save(name, phone, email, cv, jobId);
 		if (a != null) {
 			return ResponseEntity.ok(ApiResponse.builder().code(Code.APPLY_SUCCESSFUL.getCode())
 					.message(Code.APPLY_SUCCESSFUL.getMessage()).result(a).build());
