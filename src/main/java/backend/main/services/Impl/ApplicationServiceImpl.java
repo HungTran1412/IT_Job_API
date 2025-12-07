@@ -6,8 +6,8 @@ import java.util.Optional;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import backend.main.dto.request.application.ApplicationRequest;
 import backend.main.entities.Application;
 import backend.main.entities.Candidate;
 import backend.main.entities.Job;
@@ -18,6 +18,7 @@ import backend.main.repository.ApplicationRepository;
 import backend.main.repository.CandidateRepository;
 import backend.main.repository.JobRepository;
 import backend.main.services.ApplicationService;
+import backend.main.utils.CloudinaryFileUpload;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -34,23 +35,27 @@ public class ApplicationServiceImpl implements ApplicationService {
     ApplicationRepository applicationRepository;
     JobRepository jobRepository;
     CandidateRepository candidateRepository;
-    
+    CloudinaryFileUpload cloudinaryFileUpload;
 
     @Override
     @Transactional
-    public Application save(ApplicationRequest request) {
+    public Application save(String name, String phone, String email, MultipartFile cv, String jobId) {
     	
     	try {
-			Job job = jobRepository.findById(request.getJobId()).orElseThrow((() -> new AppException(Code.JOB_NOT_FOUND)));
+			Job job = jobRepository.findById(jobId).orElseThrow((() -> new AppException(Code.JOB_NOT_FOUND)));
 			
 			String context = SecurityContextHolder.getContext().getAuthentication().getName();
 
 			Candidate candidate = candidateRepository.findByEmail(context).orElseThrow(()-> new AppException(Code.USER_NOT_FOUND));
 			
+			String cvString = cloudinaryFileUpload.uploadCv(cv);
+			
 			Application application = Application.builder()
 					.appliedDate(LocalDateTime.now())
-					.coverLetter(request.getCoverLetter())
-					.cv(request.getCv())
+					.name(name)
+					.email(email)
+					.phone(phone)
+					.cv(cvString)
 					.candidate(candidate)
 					.job(job)
 					.build();

@@ -2,7 +2,6 @@ package backend.main.dto.request.application;
 
 import java.time.LocalDateTime;
 
-import backend.main.enums.ApplicationStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,8 +15,10 @@ import lombok.experimental.FieldDefaults;
 public class ApplicationRequest {
 	LocalDateTime appliedDate;
 	String coverLetter;
-	ApplicationStatus status;
+	String name;
+	String phone;
 	String cv;
+	String email;
 	String candicateId;
 	String jobId;
 }

@@ -37,7 +37,10 @@ public class Application extends BaseModel {
 	@Default
 	ApplicationStatus status = ApplicationStatus.REVIEWING;
 	
+	String name;
+	String phone;
 	String cv;
+	String email;
 	
 	@ManyToOne
 	@JoinColumn(name = "candicate_id")
