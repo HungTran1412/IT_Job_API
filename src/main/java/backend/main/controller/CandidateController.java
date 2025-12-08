@@ -51,7 +51,7 @@ public class CandidateController {
 	}
 
 	@GetMapping(value = "/info")
-	public ResponseEntity<ApiResponse<CandidateResponse>> getProfile(
+	public ResponseEntity<ApiResponse<?>> getProfile(
 			@CookieValue(value = "jwt", required = false) String token) {
 		// Kiểm tra xem có token không
 		if (token == null) {
@@ -69,15 +69,9 @@ public class CandidateController {
 		String id = jwtUtils.extractId(token);
 
 		// Tim ứng viên theo id
-		Candidate c = candidateRepository.findById(id).orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
-
-		// Tạo response
-		CandidateResponse response = new CandidateResponse(c.getCandidateId(),c.getFullname(), c.getEmail(), c.getAddress(),
-				c.getDateOfBirth(), c.getPhone(), c.getAvatar(), c.getCv(), c.getIsPrivate(), c.getRole(),
-				c.getGender(), c.getExperience(), c.getTechnologies(), c.getSoftSkill(), c.getDesiredSalary());
-
-		return ResponseEntity.ok(ApiResponse.<CandidateResponse>builder().code(Code.GET_INFO_SUCCEEDED.getCode())
-				.message(Code.GET_INFO_SUCCEEDED.getMessage()).result(response).build());
+		
+		return ResponseEntity.ok(ApiResponse.builder().code(Code.GET_INFO_SUCCEEDED.getCode())
+				.message(Code.GET_INFO_SUCCEEDED.getMessage()).result(candidateService.getInfor(id)).build());
 	}
 
 	@PatchMapping(value = "/change-password")

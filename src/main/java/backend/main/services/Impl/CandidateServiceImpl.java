@@ -2,8 +2,10 @@ package backend.main.services.Impl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +17,7 @@ import backend.main.configuration.AppProperties;
 import backend.main.dto.request.LoginRequest;
 import backend.main.dto.request.candidate.CandidateRegisterRequest;
 import backend.main.dto.request.candidate.CandidateRequest;
+import backend.main.dto.response.CandidateResponse;
 import backend.main.entities.Application;
 import backend.main.entities.Candidate;
 import backend.main.entities.Job;
@@ -271,4 +274,33 @@ public class CandidateServiceImpl implements CandidateService {
 		
 		return jobs;
     }
+
+	@Override
+	public CandidateResponse getInfor(String id) {
+		Candidate c = candidateRepository.findById(id).orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
+		
+		List<String> likedIds = c.getLikedJobs() == null ? Collections.emptyList()
+			    : c.getLikedJobs().stream()
+			        .map(Job::getJobId) 
+			        .collect(Collectors.toList());
+
+		return new CandidateResponse(
+                c.getCandidateId(),
+                c.getFullname(),
+                c.getEmail(),
+                c.getAddress(),
+                c.getDateOfBirth(),
+                c.getPhone(),
+                c.getAvatar(),
+                c.getCv(),
+                c.getIsPrivate(),
+                c.getRole(),
+                c.getGender(),
+                c.getExperience(),
+                c.getTechnologies(),
+                c.getSoftSkill(),
+                c.getDesiredSalary(),
+                likedIds
+            );
+	}
 }

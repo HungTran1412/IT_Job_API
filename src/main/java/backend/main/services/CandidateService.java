@@ -5,6 +5,7 @@ import java.util.List;
 import backend.main.dto.request.LoginRequest;
 import backend.main.dto.request.candidate.CandidateRegisterRequest;
 import backend.main.dto.request.candidate.CandidateRequest;
+import backend.main.dto.response.CandidateResponse;
 import backend.main.entities.Candidate;
 import backend.main.entities.Job;
 
@@ -18,5 +19,6 @@ public interface CandidateService {
     boolean addLikedJob(String jobId, String candicateId);
     List<Job> getApplied();
     List<Job> getLikedJobs();
+    CandidateResponse getInfor(String id);
 
 }

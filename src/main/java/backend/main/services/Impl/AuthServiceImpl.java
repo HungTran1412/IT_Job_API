@@ -1,21 +1,27 @@
 package backend.main.services.Impl;
 
-import backend.main.utils.JwtUtils;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import backend.main.dto.response.AdminResponse;
 import backend.main.dto.response.CandidateResponse;
 import backend.main.dto.response.EmployerResponse;
+import backend.main.entities.Job;
 import backend.main.enums.Code;
 import backend.main.exception.AppException;
 import backend.main.repository.AdminRepository;
 import backend.main.repository.CandidateRepository;
 import backend.main.repository.EmployerRepository;
 import backend.main.services.AuthService;
+import backend.main.utils.JwtUtils;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -66,24 +72,32 @@ public class AuthServiceImpl implements AuthService {
                         )).orElseThrow(() -> new AppException(Code.EMPLOYER_NOT_FOUND));
             }
             case "ROLE_CANDIDATE" ->{
-                return candidateRepository.findByEmail(email)
-                        .map(c -> new CandidateResponse(
-                                c.getCandidateId(),
-                                c.getFullname(),
-                                c.getEmail(),
-                                c.getAddress(),
-                                c.getDateOfBirth(),
-                                c.getPhone(),
-                                c.getAvatar(),
-                                c.getCv(),
-                                c.getIsPrivate(),
-                                c.getRole(),
-                                c.getGender(),
-                                c.getExperience(),
-                                c.getTechnologies(),
-                                c.getSoftSkill(),
-                                c.getDesiredSalary()
-                        )).orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
+                var c = candidateRepository.findByEmail(email)
+                        .orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
+                
+                List<String> likedIds = c.getLikedJobs() == null ? Collections.emptyList()
+                	    : c.getLikedJobs().stream()
+                	        .map(Job::getJobId) 
+                	        .collect(Collectors.toList());
+                
+                return new CandidateResponse(
+                        c.getCandidateId(),
+                        c.getFullname(),
+                        c.getEmail(),
+                        c.getAddress(),
+                        c.getDateOfBirth(),
+                        c.getPhone(),
+                        c.getAvatar(),
+                        c.getCv(),
+                        c.getIsPrivate(),
+                        c.getRole(),
+                        c.getGender(),
+                        c.getExperience(),
+                        c.getTechnologies(),
+                        c.getSoftSkill(),
+                        c.getDesiredSalary(),
+                        likedIds
+                    );
             }
             case "ROLE_ADMIN" ->{
                 return adminRepository.findByEmail(email)

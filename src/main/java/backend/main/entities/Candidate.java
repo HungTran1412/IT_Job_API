@@ -3,6 +3,8 @@ package backend.main.entities;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -48,6 +50,7 @@ public class Candidate extends User{
     @Column(name = "cv")
     String cv;
 
+    @JsonIgnore
     @Column(name = "enabled")
     Boolean enabled = false;
 
@@ -66,9 +69,11 @@ public class Candidate extends User{
     @Column(name = "desired_salary")
     String desiredSalary;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "candidate",orphanRemoval = true)
     List<Application> applications;
     
+    @JsonIgnore
     @OneToMany(mappedBy = "candicateLiked",orphanRemoval = true)
     List<Job> likedJobs;
 }
