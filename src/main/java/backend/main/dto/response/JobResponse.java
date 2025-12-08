@@ -26,4 +26,5 @@ public class JobResponse {
     LocalDate deadline;
     JobStatus status;
     Employer employer;
+    LocalDate createAt;
 }

@@ -77,7 +77,8 @@ public class JobServiceImpl implements JobService {
                 job.getLocation(),
                 job.getDeadline(),
                 job.getStatus(),
-                employer);
+                employer,
+                job.getCreatedAt().toLocalDate());
     }
 
     @Override
@@ -98,7 +99,8 @@ public class JobServiceImpl implements JobService {
                 job.getDeadline(),
                 job.getStatus(),
 
-                job.getEmployer()
+                job.getEmployer(),
+                job.getCreatedAt().toLocalDate()
         ));
     }
 
@@ -156,8 +158,8 @@ public class JobServiceImpl implements JobService {
                 job.getLocation(),
                 job.getDeadline(),
                 job.getStatus(),
-
-                job.getEmployer());
+                job.getEmployer(),
+                job.getCreatedAt().toLocalDate());
     }
 
     @Override
@@ -184,7 +186,8 @@ public class JobServiceImpl implements JobService {
                 job.getDeadline(),
                 job.getStatus(),
 
-                job.getEmployer()
+                job.getEmployer(),
+                job.getCreatedAt().toLocalDate()
         ));
     }
 
@@ -226,7 +229,8 @@ public class JobServiceImpl implements JobService {
                 job.getDeadline(),
                 job.getStatus(),
 
-                job.getEmployer()
+                job.getEmployer(),
+                job.getCreatedAt().toLocalDate()
         ));
     }
 
@@ -247,7 +251,8 @@ public class JobServiceImpl implements JobService {
                 job.getDeadline(),
                 job.getStatus(),
 
-                job.getEmployer()
+                job.getEmployer(),
+                job.getCreatedAt().toLocalDate()
         ));
     }
 
@@ -268,7 +273,8 @@ public class JobServiceImpl implements JobService {
                 job.getDeadline(),
                 job.getStatus(),
 
-                job.getEmployer()
+                job.getEmployer(),
+                job.getCreatedAt().toLocalDate()
         ));
     }
 
@@ -289,7 +295,8 @@ public class JobServiceImpl implements JobService {
                 job.getDeadline(),
                 job.getStatus(),
 
-                job.getEmployer());
+                job.getEmployer(),
+                job.getCreatedAt().toLocalDate());
     }
 
 }
