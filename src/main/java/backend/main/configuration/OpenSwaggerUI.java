@@ -1,17 +1,15 @@
 package backend.main.configuration;
 
-import lombok.extern.slf4j.Slf4j;
+import java.awt.Desktop;
+import java.net.URI;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Component;
 
-import java.awt.*;
-import java.io.IOException;
-import java.net.URI;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Component
 public class OpenSwaggerUI {
     private final String baseUrl;
 
