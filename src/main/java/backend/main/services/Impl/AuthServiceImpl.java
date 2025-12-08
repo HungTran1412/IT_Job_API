@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import backend.main.dto.response.AdminResponse;
 import backend.main.dto.response.CandidateResponse;
 import backend.main.dto.response.EmployerResponse;
+import backend.main.entities.Application;
 import backend.main.entities.Job;
 import backend.main.enums.Code;
 import backend.main.exception.AppException;
@@ -80,6 +81,11 @@ public class AuthServiceImpl implements AuthService {
                 	        .map(Job::getJobId) 
                 	        .collect(Collectors.toList());
                 
+                List<String> appliedIds = c.getApplications() == null ? Collections.emptyList()
+                	    : c.getApplications().stream()
+                	        .map(Application::getApplicationId) 
+                	        .collect(Collectors.toList());
+                
                 return new CandidateResponse(
                         c.getCandidateId(),
                         c.getFullname(),
@@ -96,7 +102,8 @@ public class AuthServiceImpl implements AuthService {
                         c.getTechnologies(),
                         c.getSoftSkill(),
                         c.getDesiredSalary(),
-                        likedIds
+                        likedIds,
+                        appliedIds
                     );
             }
             case "ROLE_ADMIN" ->{

@@ -247,11 +247,37 @@ public class CandidateServiceImpl implements CandidateService {
 	@Override
 	@Transactional
 	public boolean addLikedJob(String jobId, String candicateId) {
-		Job job = jobRepository.findById(jobId).orElseThrow(() -> new AppException(Code.JOB_NOT_FOUND));
-		Candidate candidate = candidateRepository.findById(candicateId).orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
-		job.setCandicateLiked(candidate);
-		return jobRepository.save(job) != null;
+	    Job job = jobRepository.findById(jobId)
+	            .orElseThrow(() -> new AppException(Code.JOB_NOT_FOUND));
+
+	    Candidate candidate = candidateRepository.findById(candicateId)
+	            .orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
+
+	    // Nếu đã thích rồi thì khỏi thêm
+	    if (candidate.getLikedJobs().contains(job)) {
+	        return true;
+	    }
+
+	    candidate.getLikedJobs().add(job);
+	    candidateRepository.save(candidate);
+
+	    return true;
 	}
+	
+	@Override
+	@Transactional
+	public boolean unLikedJob(String jobId, String candicateId) {
+	    Job job = jobRepository.findById(jobId)
+	            .orElseThrow(() -> new AppException(Code.JOB_NOT_FOUND));
+
+	    Candidate candidate = candidateRepository.findById(candicateId)
+	            .orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
+
+	    candidate.getLikedJobs().remove(job);
+
+	    return candidateRepository.save(candidate) != null;
+	}
+
 	
 	@Override
     public List<Job> getLikedJobs(){
@@ -283,6 +309,11 @@ public class CandidateServiceImpl implements CandidateService {
 			    : c.getLikedJobs().stream()
 			        .map(Job::getJobId) 
 			        .collect(Collectors.toList());
+		
+        List<String> appliedIds = c.getApplications() == null ? Collections.emptyList()
+        	    : c.getApplications().stream()
+        	        .map(Application::getApplicationId) 
+        	        .collect(Collectors.toList());
 
 		return new CandidateResponse(
                 c.getCandidateId(),
@@ -300,7 +331,8 @@ public class CandidateServiceImpl implements CandidateService {
                 c.getTechnologies(),
                 c.getSoftSkill(),
                 c.getDesiredSalary(),
-                likedIds
+                likedIds,
+                appliedIds
             );
 	}
 }

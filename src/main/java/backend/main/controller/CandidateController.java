@@ -169,6 +169,26 @@ public class CandidateController {
 		}
 	}
 	
+	@PostMapping("/unliked-job")
+	public ResponseEntity<ApiResponse> unLikedJob(@CookieValue(value = "jwt", required = false) String token,
+			@RequestParam String jobId) {
+		//Kiem tra token
+		if (token == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.<Candidate>builder()
+					.code(Code.TOKEN_INVALID.getCode()).message("Missing token or user not logged in").build());
+		}
+		String id = jwtUtils.extractId(token);
+		boolean success = candidateService.unLikedJob(jobId,id);
+
+		if (success == true) {
+			return ResponseEntity.ok(ApiResponse.builder().code(Code.DELETED_SUCCESSFULLY.getCode())
+					.message(Code.DELETED_SUCCESSFULLY.getMessage()).build());
+		} else {
+			return ResponseEntity.ok(ApiResponse.builder().code(Code.UNCATEGORIZED_EXCEPTION.getCode())
+					.message(Code.UNCATEGORIZED_EXCEPTION.getMessage()).build());
+		}
+	}
+	
 	@PostMapping("/get-applied")
 	public ResponseEntity<ApiResponse> getApplied(@CookieValue(value = "jwt", required = false) String token) {
 		//Kiem tra token

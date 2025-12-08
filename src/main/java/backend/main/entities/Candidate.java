@@ -1,6 +1,7 @@
 package backend.main.entities;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -8,10 +9,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder.Default;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -52,9 +57,11 @@ public class Candidate extends User{
 
     @JsonIgnore
     @Column(name = "enabled")
+    @Default
     Boolean enabled = false;
 
     @Column(name = "is_private")
+    @Default
     Boolean isPrivate = true;
 
     @Column(name = "experience")
@@ -74,6 +81,13 @@ public class Candidate extends User{
     List<Application> applications;
     
     @JsonIgnore
-    @OneToMany(mappedBy = "candicateLiked",orphanRemoval = true)
-    List<Job> likedJobs;
+    @Default
+    @ManyToMany
+    @JoinTable(
+            name = "candidate_liked_jobs",
+            joinColumns = @JoinColumn(name = "candidate_id"),
+            inverseJoinColumns = @JoinColumn(name = "job_id")
+    )
+    List<Job> likedJobs = new ArrayList<Job>();
+	
 }

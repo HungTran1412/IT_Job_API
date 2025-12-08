@@ -31,4 +31,5 @@ public class CandidateResponse {
     String softSkill;
     String desiredSalary;
     List<String> likedJobIds;
+    List<String> appliedIds;
 }

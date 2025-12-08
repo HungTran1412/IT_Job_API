@@ -20,5 +20,6 @@ public interface CandidateService {
     List<Job> getApplied();
     List<Job> getLikedJobs();
     CandidateResponse getInfor(String id);
+	boolean unLikedJob(String jobId, String candidateId);
 
 }
