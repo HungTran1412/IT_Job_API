@@ -77,7 +77,6 @@ public class JobServiceImpl implements JobService {
                 job.getLocation(),
                 job.getDeadline(),
                 job.getStatus(),
-                job.getLogo(),
                 employer);
     }
 
@@ -98,7 +97,7 @@ public class JobServiceImpl implements JobService {
                 job.getLocation(),
                 job.getDeadline(),
                 job.getStatus(),
-                job.getLogo(),
+
                 job.getEmployer()
         ));
     }
@@ -157,7 +156,7 @@ public class JobServiceImpl implements JobService {
                 job.getLocation(),
                 job.getDeadline(),
                 job.getStatus(),
-                job.getLogo(),
+
                 job.getEmployer());
     }
 
@@ -184,7 +183,7 @@ public class JobServiceImpl implements JobService {
                 job.getLocation(),
                 job.getDeadline(),
                 job.getStatus(),
-                job.getLogo(),
+
                 job.getEmployer()
         ));
     }
@@ -226,7 +225,7 @@ public class JobServiceImpl implements JobService {
                 job.getLocation(),
                 job.getDeadline(),
                 job.getStatus(),
-                job.getLogo(),
+
                 job.getEmployer()
         ));
     }
@@ -247,7 +246,7 @@ public class JobServiceImpl implements JobService {
                 job.getLocation(),
                 job.getDeadline(),
                 job.getStatus(),
-                job.getLogo(),
+
                 job.getEmployer()
         ));
     }
@@ -268,7 +267,7 @@ public class JobServiceImpl implements JobService {
                 job.getLocation(),
                 job.getDeadline(),
                 job.getStatus(),
-                job.getLogo(),
+
                 job.getEmployer()
         ));
     }
@@ -289,7 +288,7 @@ public class JobServiceImpl implements JobService {
                 job.getLocation(),
                 job.getDeadline(),
                 job.getStatus(),
-                job.getLogo(),
+
                 job.getEmployer());
     }
 

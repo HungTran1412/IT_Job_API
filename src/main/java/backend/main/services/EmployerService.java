@@ -13,6 +13,7 @@ public interface EmployerService {
     String login(LoginRequest employerLoginRequest);
     Employer updateInfo(String id, EmployerUpdateRequest request);
     Employer verifyEmployer(String token);
+    Employer getById(String id);
     boolean changePassword(String email, String oldPassword, String newPassword);
     void resendVerification(String email);
     List<Job> getListJob(String jwt);

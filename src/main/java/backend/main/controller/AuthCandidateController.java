@@ -41,7 +41,7 @@ public class AuthCandidateController {
 
             String userId = verifiedCandidate.getCandidateId();
 
-            String redirectUrl = appProperties.getFrontend().getVerifiedCandidateUrl() + userId;
+            String redirectUrl = appProperties.getFrontend().getVerifiedUrl() + userId;
 
             // 4. Trả về response redirect với URL mới
             return ResponseEntity.status(302)

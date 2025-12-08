@@ -122,6 +122,13 @@ public class EmployerServiceImpl implements EmployerService {
 
     @Override
     @Transactional
+    public Employer getById(String id) {
+        return employerRepository.findById(id)
+                .orElseThrow(() -> new AppException(Code.EMPLOYER_NOT_FOUND));
+    }
+
+    @Override
+    @Transactional
     public boolean changePassword(String email, String oldPassword, String newPassword) {
         try {
             Employer e = employerRepository.findByEmail(email)
