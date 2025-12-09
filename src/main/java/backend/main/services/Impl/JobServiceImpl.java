@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ import backend.main.repository.CandidateRepository;
 import backend.main.repository.EmployerRepository;
 import backend.main.repository.JobRepository;
 import backend.main.services.JobService;
+import backend.main.specification.JobSpec;
 import backend.main.utils.JwtUtils;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -143,11 +145,7 @@ public class JobServiceImpl implements JobService {
         jobRepository.deleteAll(jobs);
     }
 
-    @Override
-    @Transactional
-    public Page<Job> search(String keyword, String location, String salaryRange, Pageable pageable) {
-        return jobRepository.findAllByTitleContaining(keyword, pageable);
-    }
+    
 
 
     @Override
@@ -319,5 +317,19 @@ public class JobServiceImpl implements JobService {
                 job.getEmployer(),
                 job.getCreatedAt().toLocalDate());
     }
+
+	@Override
+	@Transactional
+	public Page<Job> search(String keyword, String location, String salaryRange, String workingFrom, String position,
+			String language, Pageable pageable) {
+		Specification<Job> spec = Specification.where(JobSpec.keyword(keyword))
+	            .and(JobSpec.location(location))
+	            .and(JobSpec.salaryRange(salaryRange))
+	            .and(JobSpec.workingFrom(workingFrom))
+	            .and(JobSpec.position(position))
+	            .and(JobSpec.language(language));
+
+	    return jobRepository.findAll(spec, pageable);
+	}
 
 }

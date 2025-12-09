@@ -20,7 +20,7 @@ public interface JobService {
     Optional<Job> findByTitle(String title);
     void deleteAllById(List<String> jobId);
     JobResponse updateJob(String jobId, JobRequest jobRequest);
-    Page<Job> search(String keyword, String location, String salaryRange, Pageable pageable);
+    Page<Job> search(String keyword, String location, String salaryRange, String workingFrom, String position, String language, Pageable pageable);
     Page<Job> findAllByStatus(JobStatus status, Pageable pageable);
     Page<JobResponse> findAllByStatusApproved(Pageable pageable);
     boolean reviewJob(JobReviewRequest request);

@@ -47,6 +47,7 @@ public enum Code {
     GET_JOB_SUCCESSFULL(CodeEnum.success.toString(), "Lấy việc làm thành công"),
     APPLY_SUCCESSFUL(CodeEnum.success.toString(),"Ứng tuyển thành công"),
     APPLY_FAIL(CodeEnum.error.toString(),"Ứng tuyển thất bại"),
+    SEARCH_RESULT(CodeEnum.success.toString(),"Kết quả tìm kiếm"),
 
 
     EMAIL_INVALID_FORMAT(CodeEnum.error.toString(), "Email không đúng định dạng"),

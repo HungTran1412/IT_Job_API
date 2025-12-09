@@ -1,7 +1,5 @@
 package backend.main.controller;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -97,16 +95,24 @@ public class JobController {
     }
 
     @GetMapping("/search")
-    public Page<Job> searchJobs(
-            @RequestParam String keyword,
-            @RequestParam String location,
-            @RequestParam String salaryRange,
+    public ResponseEntity<ApiResponse<?>> searchJobs(
+    		@RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) String salaryRange,
+            @RequestParam(required = false) String workingFrom,
+            @RequestParam(required = false) String position,
+            @RequestParam(required = false) String language,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "jobId") String sortBy,
             @RequestParam(defaultValue = "asc") String direction) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sortBy));
-        return jobService.search(keyword, location, salaryRange, pageable);
+        return ResponseEntity.ok(ApiResponse.builder()
+                .code(Code.SEARCH_RESULT.getCode())
+                .message(Code.SEARCH_RESULT.getMessage())
+                .result(jobService.search(keyword, location, salaryRange, workingFrom, position, language, pageable))
+                .build());
+       
     }
 
     @GetMapping("/status/{status}")
