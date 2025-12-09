@@ -312,7 +312,8 @@ public class CandidateServiceImpl implements CandidateService {
 		
         List<String> appliedIds = c.getApplications() == null ? Collections.emptyList()
         	    : c.getApplications().stream()
-        	        .map(Application::getApplicationId) 
+        	        .map(app -> app.getJob())
+        	        .map(Job::getJobId)
         	        .collect(Collectors.toList());
 
 		return new CandidateResponse(

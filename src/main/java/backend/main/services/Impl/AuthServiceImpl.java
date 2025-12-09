@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import backend.main.dto.response.AdminResponse;
 import backend.main.dto.response.CandidateResponse;
 import backend.main.dto.response.EmployerResponse;
-import backend.main.entities.Application;
 import backend.main.entities.Job;
 import backend.main.enums.Code;
 import backend.main.exception.AppException;
@@ -83,7 +82,8 @@ public class AuthServiceImpl implements AuthService {
                 
                 List<String> appliedIds = c.getApplications() == null ? Collections.emptyList()
                 	    : c.getApplications().stream()
-                	        .map(Application::getApplicationId) 
+                	        .map(app -> app.getJob())
+                	        .map(Job::getJobId)
                 	        .collect(Collectors.toList());
                 
                 return new CandidateResponse(
