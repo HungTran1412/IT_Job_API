@@ -50,15 +50,21 @@ public class ApplicationServiceImpl implements ApplicationService {
 			
 			String cvString = cloudinaryFileUpload.uploadCv(cv);
 			
-			Application application = Application.builder()
-					.appliedDate(LocalDateTime.now())
-					.name(name)
-					.email(email)
-					.phone(phone)
-					.cv(cvString)
-					.candidate(candidate)
-					.job(job)
-					.build();
+			Application application = applicationRepository.findByJobAndCandidate(job, candidate);
+			
+			if(application!=null) {
+				throw new AppException(Code.APPLY_FAIL);
+			}else {
+				application = Application.builder()
+						.appliedDate(LocalDateTime.now())
+						.name(name)
+						.email(email)
+						.phone(phone)
+						.cv(cvString)
+						.candidate(candidate)
+						.job(job)
+						.build();
+			}
 			
 			return applicationRepository.save(application);
 		} catch (AppException e) {

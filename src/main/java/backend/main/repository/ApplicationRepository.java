@@ -13,4 +13,5 @@ import backend.main.entities.Job;
 public interface ApplicationRepository extends JpaRepository<Application, String> {
     List<Application> findByCandidate(Candidate candidate);
     List<Application> findByJob(Job job);
+    Application findByJobAndCandidate(Job job, Candidate candidate);
 }
