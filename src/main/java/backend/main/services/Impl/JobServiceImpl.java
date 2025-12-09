@@ -16,11 +16,13 @@ import backend.main.dto.request.job.JobRequest;
 import backend.main.dto.request.job.JobReviewRequest;
 import backend.main.dto.response.JobResponse;
 import backend.main.entities.Application;
+import backend.main.entities.Candidate;
 import backend.main.entities.Employer;
 import backend.main.entities.Job;
 import backend.main.enums.Code;
 import backend.main.enums.JobStatus;
 import backend.main.exception.AppException;
+import backend.main.repository.CandidateRepository;
 import backend.main.repository.EmployerRepository;
 import backend.main.repository.JobRepository;
 import backend.main.services.JobService;
@@ -33,6 +35,9 @@ public class JobServiceImpl implements JobService {
 
     @Autowired
     private JobRepository jobRepository;
+    
+    @Autowired
+    private CandidateRepository candidateRepository;
 
     @Autowired
     private JwtUtils jwtUtils;
@@ -119,7 +124,23 @@ public class JobServiceImpl implements JobService {
     @Override
     @Transactional
     public void deleteAllById(List<String> jobId) {
-        jobRepository.deleteAllById(jobId);
+    	List<Job> jobs = (List<Job>) jobRepository.findAllById(jobId);
+
+        for (Job job : jobs) {
+
+            for (Candidate c : job.getCandicateLiked()) {
+                c.getLikedJobs().remove(job);
+            }
+
+            job.getCandicateLiked().clear();
+        }
+
+        candidateRepository.saveAll(
+                jobs.stream()
+                    .flatMap(j -> j.getCandicateLiked().stream())
+                    .toList()
+        );
+        jobRepository.deleteAll(jobs);
     }
 
     @Override

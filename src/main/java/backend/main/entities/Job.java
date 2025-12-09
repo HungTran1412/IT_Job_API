@@ -66,6 +66,6 @@ public class Job extends BaseModel{
     @Default
     List<Candidate> candicateLiked = new ArrayList<Candidate>();
 
-    @OneToMany(mappedBy = "job")
+    @OneToMany(mappedBy = "job", orphanRemoval = true)
     List<Application> applications;
 }
