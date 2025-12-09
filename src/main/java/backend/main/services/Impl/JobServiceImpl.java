@@ -320,10 +320,10 @@ public class JobServiceImpl implements JobService {
 
 	@Override
 	@Transactional
-	public Page<Job> search(String keyword, String location, String salaryRange, String workingFrom, String position,
+	public Page<Job> search(String keyword, List<String> location, String salaryRange, String workingFrom, String position,
 			String language, Pageable pageable) {
 		Specification<Job> spec = Specification.where(JobSpec.keyword(keyword))
-	            .and(JobSpec.location(location))
+	            .and(JobSpec.hasLocations(location))
 	            .and(JobSpec.salaryRange(salaryRange))
 	            .and(JobSpec.workingFrom(workingFrom))
 	            .and(JobSpec.position(position))

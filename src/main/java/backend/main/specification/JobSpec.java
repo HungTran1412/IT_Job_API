@@ -1,8 +1,11 @@
 package backend.main.specification;
 
+import java.util.List;
+
 import org.springframework.data.jpa.domain.Specification;
 
 import backend.main.entities.Job;
+import jakarta.persistence.criteria.Join;
 
 public class JobSpec {
 
@@ -13,12 +16,16 @@ public class JobSpec {
                         : cb.like(cb.lower(root.get("title")), "%" + keyword.toLowerCase() + "%");
     }
 
-    public static Specification<Job> location(String location) {
-        return (root, query, cb) ->
-                location == null || location.isBlank()
-                        ? null
-                        : cb.like(cb.lower(root.get("location")), "%" + location.toLowerCase() + "%");
+    public static Specification<Job> hasLocations(List<String> locations) {
+        return (root, query, cb) -> {
+            if (locations == null || locations.isEmpty()) {
+				return null;
+			}
+            Join<Job, String> joinLocation = root.join("location");
+            return joinLocation.in(locations);
+        };
     }
+
 
     public static Specification<Job> position(String position) {
         return (root, query, cb) ->

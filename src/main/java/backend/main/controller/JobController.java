@@ -1,5 +1,7 @@
 package backend.main.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -97,7 +99,7 @@ public class JobController {
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<?>> searchJobs(
     		@RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String location,
+            @RequestParam(required = false) List<String> location,
             @RequestParam(required = false) String salaryRange,
             @RequestParam(required = false) String workingFrom,
             @RequestParam(required = false) String position,
