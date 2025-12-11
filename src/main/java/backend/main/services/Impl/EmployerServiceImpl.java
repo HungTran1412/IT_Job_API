@@ -5,13 +5,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import backend.main.configuration.AppProperties;
 import backend.main.dto.request.LoginRequest;
@@ -269,4 +272,11 @@ public class EmployerServiceImpl implements EmployerService {
                .orElseThrow(() -> new AppException(Code.EMAIL_DOES_NOT_EXIST));
 	   return employer.getJobs();
     }
+
+	@Override
+	public Page<Employer> findAllOrderByJobs(Pageable pageable) {
+		return employerRepository.findAllOrderByJobs(pageable);
+	}
+    
+    
 }
