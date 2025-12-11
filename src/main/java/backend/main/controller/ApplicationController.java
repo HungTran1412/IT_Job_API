@@ -48,7 +48,7 @@ public class ApplicationController {
 		var a = applicationService.save(name, phone, email, cv, jobId);
 		if (a != null) {
 			return ResponseEntity.ok(ApiResponse.builder().code(Code.APPLY_SUCCESSFUL.getCode())
-					.message(Code.APPLY_SUCCESSFUL.getMessage()).result(a).build());
+					.message(Code.APPLY_SUCCESSFUL.getMessage()).build());
 		} else {
 			return ResponseEntity.ok(ApiResponse.builder().code(Code.APPLY_FAIL.getCode())
 					.message(Code.APPLY_FAIL.getMessage()).build());
