@@ -7,7 +7,9 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import backend.main.enums.JobStatus;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -49,6 +51,9 @@ public class Job extends BaseModel{
     String position;
     List<String> technologies;
     String workingFrom;
+    @ElementCollection
+    @CollectionTable(name = "job_location", joinColumns = @JoinColumn(name = "job_id"))
+    @Column(name = "location")
     List<String> location;
     LocalDate deadline;
     String logo;
