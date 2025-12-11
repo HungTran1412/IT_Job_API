@@ -96,7 +96,7 @@ public class JobController {
                 .build());
     }
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<ApiResponse<?>> searchJobs(
     		@RequestParam(required = false) String keyword,
             @RequestParam(required = false) List<String> location,

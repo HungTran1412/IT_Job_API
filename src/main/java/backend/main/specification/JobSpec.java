@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
 
+import backend.main.entities.Employer;
 import backend.main.entities.Job;
 import jakarta.persistence.criteria.Join;
 
@@ -21,10 +22,14 @@ public class JobSpec {
             if (locations == null || locations.isEmpty()) {
 				return null;
 			}
-            Join<Job, String> joinLocation = root.join("location");
-            return joinLocation.in(locations);
+
+            Join<Job, Employer> emp = root.join("employer");
+            Join<Employer, String> city = emp.join("city");
+
+            return city.in(locations);
         };
     }
+
 
 
     public static Specification<Job> position(String position) {
