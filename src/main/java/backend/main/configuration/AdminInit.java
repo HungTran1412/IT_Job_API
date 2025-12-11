@@ -1,5 +1,7 @@
 package backend.main.configuration;
 
+import java.util.List;
+
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,8 +19,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.ArrayList;
 
 
 @Configuration
@@ -68,12 +68,9 @@ public class AdminInit {
 								.employerId("demoEmployer")
                                 .password(encoder.encode("Company@123"))
                                 .email("company@dev2.com")
-                                .city(new ArrayList<String>(){
-                                    {
-                                        add("HaNoi");
-                                        add("HCM");
-                                    }
-                                })
+                                .city(
+                                		List.of("Hà Nội", "Đà Nẵng")
+                                )
                                 .role(Role.ROLE_EMPLOYER)
                                 .enabled(true)
                                 .build();

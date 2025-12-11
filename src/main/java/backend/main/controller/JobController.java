@@ -1,7 +1,5 @@
 package backend.main.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import backend.main.dto.request.job.DeleteRequest;
 import backend.main.dto.request.job.JobRequest;
 import backend.main.dto.request.job.JobReviewRequest;
+import backend.main.dto.request.job.JobSearchRequest;
 import backend.main.dto.response.ApiResponse;
 import backend.main.dto.response.JobResponse;
 import backend.main.entities.Job;
@@ -98,12 +97,7 @@ public class JobController {
 
     @PostMapping("/search")
     public ResponseEntity<ApiResponse<?>> searchJobs(
-    		@RequestParam(required = false) String keyword,
-            @RequestParam(required = false) List<String> location,
-            @RequestParam(required = false) String salaryRange,
-            @RequestParam(required = false) String workingFrom,
-            @RequestParam(required = false) String position,
-            @RequestParam(required = false) String language,
+    		@RequestBody JobSearchRequest request,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "jobId") String sortBy,
@@ -112,7 +106,7 @@ public class JobController {
         return ResponseEntity.ok(ApiResponse.builder()
                 .code(Code.SEARCH_RESULT.getCode())
                 .message(Code.SEARCH_RESULT.getMessage())
-                .result(jobService.search(keyword, location, salaryRange, workingFrom, position, language, pageable))
+                .result(jobService.search(request,pageable))
                 .build());
        
     }
