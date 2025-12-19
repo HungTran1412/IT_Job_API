@@ -97,12 +97,10 @@ public class JobController {
 
     @PostMapping("/search")
     public ResponseEntity<ApiResponse<?>> searchJobs(
-    		@RequestBody JobSearchRequest request,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "jobId") String sortBy,
-            @RequestParam(defaultValue = "asc") String direction) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sortBy));
+    		@RequestBody JobSearchRequest request) {
+        Pageable pageable = PageRequest.of(request.getPage()
+        		, request.getSize()
+        		, Sort.by(Sort.Direction.DESC, "createAt"));
         return ResponseEntity.ok(ApiResponse.builder()
                 .code(Code.SEARCH_RESULT.getCode())
                 .message(Code.SEARCH_RESULT.getMessage())
