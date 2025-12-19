@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import backend.main.dto.request.job.JobRequest;
 import backend.main.dto.request.job.JobReviewRequest;
+import backend.main.dto.request.job.JobSearchRequest;
 import backend.main.dto.response.JobResponse;
 import backend.main.entities.Application;
 import backend.main.entities.Candidate;
@@ -320,14 +321,13 @@ public class JobServiceImpl implements JobService {
 
 	@Override
 	@Transactional
-	public Page<Job> search(String keyword, List<String> location, String salaryRange, String workingFrom, String position,
-			String language, Pageable pageable) {
-		Specification<Job> spec = Specification.where(JobSpec.keyword(keyword))
-	            .and(JobSpec.hasLocations(location))
-	            .and(JobSpec.salaryRange(salaryRange))
-	            .and(JobSpec.workingFrom(workingFrom))
-	            .and(JobSpec.position(position))
-	            .and(JobSpec.language(language));
+	public Page<Job> search(JobSearchRequest request, Pageable pageable) {
+		Specification<Job> spec = Specification.where(JobSpec.keyword(request.getKeyword()))
+	            .and(JobSpec.hasLocations(request.getLocation()))
+	            .and(JobSpec.salaryRange(request.getSalaryRange()))
+	            .and(JobSpec.workingFrom(request.getWorkingFrom()))
+	            .and(JobSpec.position(request.getPosition()))
+	            .and(JobSpec.language(request.getLanguage()));
 
 	    return jobRepository.findAll(spec, pageable);
 	}

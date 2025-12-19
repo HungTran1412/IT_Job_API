@@ -1,5 +1,7 @@
 package backend.main.configuration;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,8 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-
-import java.util.List;
 
 @EnableMethodSecurity
 @Configuration
@@ -48,7 +48,7 @@ public class SecurityConfig {
                                 "/company/resend", "/auth/check", "/auth/check-admin",
                                 "/admin/register", "/admin/login",
                                 "/api/jobs/*", "/logout","/api/*"
-                                ,"company/{id}").permitAll()
+                                ,"company/{id}","company/all/*").permitAll()
 
                         // Các API dành riêng cho employer
                         .requestMatchers("/company/**").hasAuthority("ROLE_EMPLOYER")
