@@ -45,7 +45,7 @@ public class SecurityConfig {
                         .requestMatchers("/company/login", "/user/login", "/company/register",
                                 "/user/register", "/user/verify",
                                 "/company/verify","/user/resend",
-                                "/company/resend", "/auth/check",
+                                "/company/resend", "/auth/check", "/auth/check-admin",
                                 "/admin/register", "/admin/login",
                                 "/api/jobs/*", "/logout","/api/*"
                                 ,"company/{id}").permitAll()

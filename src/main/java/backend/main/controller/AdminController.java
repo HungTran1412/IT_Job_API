@@ -39,7 +39,7 @@ public class AdminController {
 
         long cookieMaxAge = request.isRememberMe() ? MAX_AGE_REMEMBER : MAX_AGE_DEFAULT;
 
-        ResponseCookie cookie = ResponseCookie.from("jwt", token)
+        ResponseCookie cookie = ResponseCookie.from("nimda", token)
                 .httpOnly(true)
                 .secure(false)
                 .path("/")
@@ -59,7 +59,7 @@ public class AdminController {
     }
 
     @PatchMapping(value = "/change-password")
-    public ResponseEntity<ApiResponse> changePassword(@CookieValue(value = "jwt", required = false) String token,
+    public ResponseEntity<ApiResponse> changePassword(@CookieValue(value = "nimda", required = false) String token,
                                                       @RequestBody ChangePasswordRequest req) {
         //Kiem tra token
         if (token == null) {
