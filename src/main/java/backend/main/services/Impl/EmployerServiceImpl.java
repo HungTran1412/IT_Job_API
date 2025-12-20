@@ -278,6 +278,7 @@ public class EmployerServiceImpl implements EmployerService {
 	public Page<EmployerResponse> findAllOrderByJobs(Pageable pageable) {
 		return employerRepository.findAllOrderByJobs(pageable)
 				 .map(e -> EmployerResponse.builder()
+						 .employerId(e.getEmployerId())
 					        .companyName(e.getCompanyName())
 					        .city(e.getCity())
 					        .address(e.getAddress())
@@ -289,6 +290,7 @@ public class EmployerServiceImpl implements EmployerService {
 					        .phone(e.getPhone())
 					        .logo(e.getLogo())
 					        .role(e.getRole())
+					        .createdJobs(e.getJobs().size())
 					        .build());
 	}
     

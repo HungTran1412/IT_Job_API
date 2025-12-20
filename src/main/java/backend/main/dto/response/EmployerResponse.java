@@ -14,6 +14,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class EmployerResponse {
+	String employerId;
     String companyName;
     List<String> city;
     String address;
