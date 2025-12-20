@@ -100,7 +100,7 @@ public class JobController {
     		@RequestBody JobSearchRequest request) {
         Pageable pageable = PageRequest.of(request.getPage()
         		, request.getSize()
-        		, Sort.by(Sort.Direction.DESC, "createAt"));
+        		, Sort.by(Sort.Direction.DESC, "createdAt"));
         return ResponseEntity.ok(ApiResponse.builder()
                 .code(Code.SEARCH_RESULT.getCode())
                 .message(Code.SEARCH_RESULT.getMessage())
