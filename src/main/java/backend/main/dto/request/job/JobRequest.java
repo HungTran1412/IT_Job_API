@@ -26,4 +26,5 @@ public class JobRequest {
     List<String> location;
     @DateTimeFormat(pattern = "yyyy-M-d")
     LocalDate deadline;
+    boolean checkSalary;
 }

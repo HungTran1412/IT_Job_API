@@ -56,7 +56,10 @@ public class JobServiceImpl implements JobService {
 
         Employer employer = employerRepository.findByEmail(context).orElseThrow(()-> new AppException(Code.USER_NOT_FOUND));
 
-        Job job = Job.builder()
+        Job job = null;
+        
+        if(!jobRequest.isCheckSalary()) {
+        	job = Job.builder()
                 .title(jobRequest.getTitle())
                 .description(jobRequest.getDescription())
                 .salaryMin(jobRequest.getSalaryMin())
@@ -68,6 +71,20 @@ public class JobServiceImpl implements JobService {
                 .deadline(jobRequest.getDeadline())
                 .logo(employer.getLogo())
                 .build();
+        }else {
+        	job = Job.builder()
+                    .title(jobRequest.getTitle())
+                    .description(jobRequest.getDescription())
+                    .salaryMin(-1)
+                    .salaryMax(-1)
+                    .position(jobRequest.getPosition())
+                    .workingFrom(jobRequest.getWorkingFrom())
+                    .location(employer.getCity())
+                    .technologies(jobRequest.getTechnologies())
+                    .deadline(jobRequest.getDeadline())
+                    .logo(employer.getLogo())
+                    .build();
+        }
 
         job.setEmployer(employer);
         job.setApplications(new ArrayList<Application>());
