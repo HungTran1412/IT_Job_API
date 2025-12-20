@@ -20,6 +20,7 @@ import backend.main.configuration.AppProperties;
 import backend.main.dto.request.LoginRequest;
 import backend.main.dto.request.employer.EmployerRegisterRequest;
 import backend.main.dto.request.employer.EmployerUpdateRequest;
+import backend.main.dto.response.EmployerResponse;
 import backend.main.entities.Employer;
 import backend.main.entities.Job;
 import backend.main.entities.VerificationToken;
@@ -274,8 +275,21 @@ public class EmployerServiceImpl implements EmployerService {
     }
 
 	@Override
-	public Page<Employer> findAllOrderByJobs(Pageable pageable) {
-		return employerRepository.findAllOrderByJobs(pageable);
+	public Page<EmployerResponse> findAllOrderByJobs(Pageable pageable) {
+		return employerRepository.findAllOrderByJobs(pageable)
+				 .map(e -> EmployerResponse.builder()
+					        .companyName(e.getCompanyName())
+					        .city(e.getCity())
+					        .address(e.getAddress())
+					        .companyModel(e.getCompanyModel())
+					        .companyEmployees(e.getCompanyEmployees())
+					        .workingTime(e.getWorkingTime())
+					        .workingOvertime(e.getWorkingOvertime())
+					        .description(e.getDescription())
+					        .phone(e.getPhone())
+					        .logo(e.getLogo())
+					        .role(e.getRole())
+					        .build());
 	}
     
     
