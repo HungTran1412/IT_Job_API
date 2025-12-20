@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import backend.main.dto.response.AdminResponse;
 import backend.main.dto.response.CandidateResponse;
 import backend.main.dto.response.EmployerResponse;
+import backend.main.entities.Employer;
 import backend.main.entities.Job;
 import backend.main.enums.Code;
 import backend.main.exception.AppException;
@@ -54,22 +55,26 @@ public class AuthServiceImpl implements AuthService {
 
         switch (role) {
             case "ROLE_EMPLOYER" -> {
-                return employerRepository.findByEmail(email)
-                        .map(e -> new EmployerResponse(
-                                e.getCompanyName(),
-                                e.getCity(),
-                                e.getAddress(),
-                                e.getCompanyModel(),
-                                e.getCompanyEmployees(),
-                                e.getWorkingTime(),
-                                e.getWorkingOvertime(),
-                                e.getDescription(),
-
-
-                                e.getPhone(),
-                                e.getLogo(),
-                                e.getRole()
-                        )).orElseThrow(() -> new AppException(Code.EMPLOYER_NOT_FOUND));
+                Employer e = employerRepository.findByEmail(email).orElseThrow(() -> new AppException(Code.EMPLOYER_NOT_FOUND));
+                
+                int count = e.getJobs().size();
+                
+                return EmployerResponse.builder()
+        			    .companyName(e.getCompanyName())
+        			    .city(e.getCity())
+        			    .address(e.getAddress())
+        			    .companyModel(e.getCompanyModel())
+        			    .companyEmployees(e.getCompanyEmployees())
+        			    .workingTime(e.getWorkingTime())
+        			    .workingOvertime(e.getWorkingOvertime())
+        			    .description(e.getDescription())
+        			    .phone(e.getPhone())
+        			    .logo(e.getLogo())
+        			    .role(e.getRole())
+        			    .createdJobs(count)
+        			    .build();
+                		     		
+             
             }
             case "ROLE_CANDIDATE" ->{
                 var c = candidateRepository.findByEmail(email)

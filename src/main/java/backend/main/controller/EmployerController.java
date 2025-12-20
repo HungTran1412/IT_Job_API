@@ -71,9 +71,20 @@ public class EmployerController {
 		// Tim nha tuyen dung theo id
 		Employer e = employerRepository.findById(id).orElseThrow(() -> new AppException(Code.EMPLOYER_NOT_FOUND));
 
-		EmployerResponse response = new EmployerResponse(e.getCompanyName(), e.getCity(), e.getAddress(),
-				e.getCompanyModel(), e.getCompanyEmployees(), e.getWorkingTime(), e.getWorkingOvertime(),
-				e.getDescription(), e.getPhone(), e.getLogo(), e.getRole());
+		EmployerResponse response = EmployerResponse.builder()
+			    .companyName(e.getCompanyName())
+			    .city(e.getCity())
+			    .address(e.getAddress())
+			    .companyModel(e.getCompanyModel())
+			    .companyEmployees(e.getCompanyEmployees())
+			    .workingTime(e.getWorkingTime())
+			    .workingOvertime(e.getWorkingOvertime())
+			    .description(e.getDescription())
+			    .phone(e.getPhone())
+			    .logo(e.getLogo())
+			    .role(e.getRole())
+			    .build();
+
 
 		return ResponseEntity.ok(ApiResponse.<EmployerResponse>builder().code(Code.GET_INFO_SUCCEEDED.getCode())
 				.message(Code.GET_INFO_SUCCEEDED.getMessage()).result(response).build());
