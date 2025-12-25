@@ -17,6 +17,7 @@ import backend.main.configuration.AppProperties;
 import backend.main.dto.request.LoginRequest;
 import backend.main.dto.request.candidate.CandidateRegisterRequest;
 import backend.main.dto.request.candidate.CandidateRequest;
+import backend.main.dto.request.candidate.CandidateSearchRequest;
 import backend.main.dto.response.CandidateResponse;
 import backend.main.entities.Application;
 import backend.main.entities.Candidate;
@@ -336,4 +337,48 @@ public class CandidateServiceImpl implements CandidateService {
                 appliedIds
             );
 	}
+
+    @Override
+    public List<CandidateResponse> searchCandidates(CandidateSearchRequest request) {
+        List<Candidate> candidates = candidateRepository.searchCandidates(
+                request.getFullname(),
+                request.getEmail(),
+                request.getSoftSkill(),
+                request.getExperience(),
+                request.getTechnologies(),
+                request.getDesiredSalary()
+        );
+        return candidates.stream().map(c -> {
+            List<String> likedIds = c.getLikedJobs() == null ? Collections.emptyList()
+                    : c.getLikedJobs().stream()
+                        .map(Job::getJobId)
+                        .collect(Collectors.toList());
+
+            List<String> appliedIds = c.getApplications() == null ? Collections.emptyList()
+                    : c.getApplications().stream()
+                        .map(app -> app.getJob())
+                        .map(Job::getJobId)
+                        .collect(Collectors.toList());
+
+            return new CandidateResponse(
+                    c.getCandidateId(),
+                    c.getFullname(),
+                    c.getEmail(),
+                    c.getAddress(),
+                    c.getDateOfBirth(),
+                    c.getPhone(),
+                    c.getAvatar(),
+                    c.getCv(),
+                    c.getIsPrivate(),
+                    c.getRole(),
+                    c.getGender(),
+                    c.getExperience(),
+                    c.getTechnologies(),
+                    c.getSoftSkill(),
+                    c.getDesiredSalary(),
+                    likedIds,
+                    appliedIds
+            );
+        }).collect(Collectors.toList());
+    }
 }

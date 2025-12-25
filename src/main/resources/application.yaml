@@ -52,3 +52,16 @@ app:
     verified-candidate-url: ${VERIFIED_CANDIDATE_URL}
     verified-company-url: ${VERIFIED_EMPLOYER_URL}
     verified-url: ${VERIFIED_URL}
+
+vnpay:
+  tmn-code: ${TMN_CODE}
+  api-url: ${API_URL}
+  return-url: ${RETURN_URL}
+  secret-key: ${SECRET_KEY}
+  pay-url: ${PAY_URL}
+  version: 2.1.0
+  command: pay
+  currency-code: VND
+  locale: vn
+
+

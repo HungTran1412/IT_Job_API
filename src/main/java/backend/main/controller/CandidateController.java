@@ -18,11 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import backend.main.dto.request.ChangePasswordRequest;
 import backend.main.dto.request.candidate.CandidateRequest;
+import backend.main.dto.request.candidate.CandidateSearchRequest;
 import backend.main.dto.response.ApiResponse;
 import backend.main.dto.response.CandidateResponse;
 import backend.main.entities.Candidate;
 import backend.main.entities.Job;
 import backend.main.enums.Code;
+import backend.main.enums.Role;
 import backend.main.exception.AppException;
 import backend.main.repository.CandidateRepository;
 import backend.main.services.CandidateService;
@@ -226,5 +228,38 @@ public class CandidateController {
 					.message(Code.UNCATEGORIZED_EXCEPTION.getMessage()).build());
 		}
 	}
+
+    @PostMapping("/search")
+    public ResponseEntity<ApiResponse<List<CandidateResponse>>> searchCandidates(
+            @CookieValue(value = "jwt", required = false) String token,
+            @RequestBody CandidateSearchRequest request) {
+        
+        // Kiểm tra token
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.<List<CandidateResponse>>builder()
+                    .code(Code.TOKEN_INVALID.getCode()).message("Missing token or user not logged in").build());
+        }
+
+        // Xác thực token
+        if (!jwtUtils.validateToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.<List<CandidateResponse>>builder()
+                    .code(Code.TOKEN_INVALID.getCode()).message(Code.TOKEN_INVALID.getMessage()).build());
+        }
+
+        // Kiểm tra quyền (chỉ ROLE_EMPLOYER mới được phép)
+        String role = jwtUtils.extractRole(token);
+        if (!Role.ROLE_EMPLOYER.name().equals(role)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiResponse.<List<CandidateResponse>>builder()
+                    .code(Code.ACCESS_DENIED.getCode()).message(Code.ACCESS_DENIED.getMessage()).build());
+        }
+
+        List<CandidateResponse> result = candidateService.searchCandidates(request);
+        
+        return ResponseEntity.ok(ApiResponse.<List<CandidateResponse>>builder()
+                .code(Code.GET_INFO_SUCCEEDED.getCode())
+                .message(Code.GET_INFO_SUCCEEDED.getMessage())
+                .result(result)
+                .build());
+    }
 
 }
