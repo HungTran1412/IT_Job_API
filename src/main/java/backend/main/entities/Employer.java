@@ -72,5 +72,9 @@ public class Employer extends User {
     @OneToMany(mappedBy = "employer",orphanRemoval = true)
     @JsonIgnore
     List<Job> jobs;
+
+    @OneToMany(mappedBy = "employer", orphanRemoval = true)
+    @JsonIgnore
+    List<EmployerSubscription> subscriptions;
     
 }

@@ -60,8 +60,9 @@ public enum Code {
     LIKED_JOB_ADDED(CodeEnum.success.toString(), "Thêm việc yêu thích thành công"),
     DELETED_SUCCESSFULLY(CodeEnum.success.toString(),"Xóa thành công"),
     INVALID_VALUE(CodeEnum.error.toString(),"Lỗi dữ liệu"),
-    UNAUTHORIZED(CodeEnum.error.toString(),"Lỗi")
+    UNAUTHORIZED(CodeEnum.error.toString(),"Lỗi"),
 
+    ACCESS_DENIED(CodeEnum.error.toString(), "Từ chối truy cập")
     ;
 
     String code;

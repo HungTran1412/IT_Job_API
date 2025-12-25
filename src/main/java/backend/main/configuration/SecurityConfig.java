@@ -51,7 +51,7 @@ public class SecurityConfig {
                                 ,"company/{id}","company/all/*","sse/**").permitAll()
 
                         // Các API dành riêng cho employer
-                        .requestMatchers("/company/**").hasAuthority("ROLE_EMPLOYER")
+                        .requestMatchers("/company/**", "/user/search").hasAuthority("ROLE_EMPLOYER")
 
                         // Các API dành riêng cho candidate
                         .requestMatchers("/user/**").hasAuthority("ROLE_CANDIDATE")
