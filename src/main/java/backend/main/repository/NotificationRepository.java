@@ -1,10 +1,11 @@
 package backend.main.repository;
 
-import backend.main.entities.Notification;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.List;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import backend.main.entities.Notification;
+
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
-    List<Notification> findByReceiverIdOrderByCreateAtDesc(String receiverId);
+    List<Notification> findByNotiIdOrderByCreatedAtDesc(Long notiId);
 }

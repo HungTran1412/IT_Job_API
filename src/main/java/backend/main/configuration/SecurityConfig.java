@@ -48,7 +48,7 @@ public class SecurityConfig {
                                 "/company/resend", "/auth/check", "/auth/check-admin",
                                 "/admin/register", "/admin/login",
                                 "/api/jobs/*", "/logout","/api/*"
-                                ,"company/{id}","company/all/*").permitAll()
+                                ,"company/{id}","company/all/*","sse/**").permitAll()
 
                         // Các API dành riêng cho employer
                         .requestMatchers("/company/**").hasAuthority("ROLE_EMPLOYER")

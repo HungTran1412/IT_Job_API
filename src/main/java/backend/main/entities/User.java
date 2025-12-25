@@ -35,4 +35,5 @@ public class User extends BaseModel{
     @JsonIgnore
     @Column(name = "remember_me")
     Boolean rememberMe;
+    
 }
