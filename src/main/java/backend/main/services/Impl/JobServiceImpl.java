@@ -1,8 +1,10 @@
 package backend.main.services.Impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,15 +23,19 @@ import backend.main.entities.Application;
 import backend.main.entities.Candidate;
 import backend.main.entities.Employer;
 import backend.main.entities.Job;
+import backend.main.entities.Notification;
 import backend.main.enums.Code;
 import backend.main.enums.JobStatus;
+import backend.main.enums.Role;
 import backend.main.exception.AppException;
 import backend.main.repository.CandidateRepository;
 import backend.main.repository.EmployerRepository;
 import backend.main.repository.JobRepository;
+import backend.main.repository.NotificationRepository;
 import backend.main.services.JobService;
 import backend.main.specification.JobSpec;
 import backend.main.utils.JwtUtils;
+import backend.main.utils.SseUtils;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
@@ -48,6 +54,12 @@ public class JobServiceImpl implements JobService {
 
     @Autowired
     private EmployerRepository employerRepository;
+    
+    @Autowired
+    private NotificationRepository notificationRepository;
+    
+    @Autowired
+    private SseUtils sseUtils;
 
     @Transactional
     @Override
@@ -241,6 +253,21 @@ public class JobServiceImpl implements JobService {
 
             jobs.forEach(job -> job.setStatus(request.getJobStatus()));
             jobRepository.saveAll(jobs);
+            Set<String> companyEmails = new HashSet<String>();
+            jobs.forEach(j -> companyEmails.add(j.getEmployer().getEmail()));
+            companyEmails.forEach(t -> {
+            	Notification notification = Notification.builder()
+	            		.content("Bài tuyển dụng đã được duyệt")
+	            		.isRead(false)
+	            		.userId(t)
+	            		.role(Role.ROLE_EMPLOYER)
+	            		.type("Duyet")
+	            		.from("admin")
+	            		.build();
+            	notificationRepository.save(notification);
+	            sseUtils.sendToUser(t, "Bài tuyển dụng đã được duyệt"); 
+            	
+            });     
             return true;
         } catch (Exception e) {
             e.printStackTrace();

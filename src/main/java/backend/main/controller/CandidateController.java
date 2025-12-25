@@ -45,6 +45,7 @@ public class CandidateController {
 	@Autowired
 	JwtUtils jwtUtils;
 
+
 	public CandidateController(CandidateService candidateService, CandidateRepository candidateRepository,
 			JwtUtils jwtUtils) {
 		this.candidateService = candidateService;
