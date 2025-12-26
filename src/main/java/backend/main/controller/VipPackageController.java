@@ -39,7 +39,7 @@ public class VipPackageController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<VipPackage>> updateVipPackage(@PathVariable String id, @RequestBody VipPackageRequest request) {
+    public ResponseEntity<ApiResponse<VipPackage>> updateVipPackage(@PathVariable Integer id, @RequestBody VipPackageRequest request) {
         VipPackage result = vipPackageService.updateVipPackage(id, request);
         return ResponseEntity.ok(ApiResponse.<VipPackage>builder()
                 .code("200")
@@ -50,7 +50,7 @@ public class VipPackageController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<Void>> deleteVipPackage(@PathVariable String id) {
+    public ResponseEntity<ApiResponse<Void>> deleteVipPackage(@PathVariable Integer id) {
         vipPackageService.deleteVipPackage(id);
         return ResponseEntity.ok(ApiResponse.<Void>builder()
                 .code("204")
@@ -60,7 +60,7 @@ public class VipPackageController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYER')")
-    public ResponseEntity<ApiResponse<VipPackage>> getVipPackageById(@PathVariable String id) {
+    public ResponseEntity<ApiResponse<VipPackage>> getVipPackageById(@PathVariable Integer id) {
         VipPackage result = vipPackageService.getVipPackageById(id);
         return ResponseEntity.ok(ApiResponse.<VipPackage>builder()
                 .code("200")

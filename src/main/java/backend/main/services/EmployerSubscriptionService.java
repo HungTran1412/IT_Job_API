@@ -7,7 +7,7 @@ import backend.main.entities.EmployerSubscription;
 
 public interface EmployerSubscriptionService {
     EmployerSubscription createSubscription(EmployerSubscriptionRequest request);
-    EmployerSubscription getSubscriptionById(String id);
+    EmployerSubscription getSubscriptionById(Integer id);
     List<EmployerSubscription> getSubscriptionsByEmployerId(String employerId);
     List<EmployerSubscription> getAllSubscriptions();
 }

@@ -34,7 +34,7 @@ public class EmployerSubscriptionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<EmployerSubscription>> getSubscriptionById(@PathVariable String id) {
+    public ResponseEntity<ApiResponse<EmployerSubscription>> getSubscriptionById(@PathVariable Integer id) {
         EmployerSubscription result = employerSubscriptionService.getSubscriptionById(id);
         return ResponseEntity.ok(ApiResponse.<EmployerSubscription>builder()
                 .code("200")

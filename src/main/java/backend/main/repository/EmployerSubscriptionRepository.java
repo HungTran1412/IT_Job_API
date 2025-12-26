@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import backend.main.entities.EmployerSubscription;
 
 @Repository
-public interface EmployerSubscriptionRepository extends JpaRepository<EmployerSubscription, String> {
+public interface EmployerSubscriptionRepository extends JpaRepository<EmployerSubscription, Integer> {
     List<EmployerSubscription> findByEmployer_EmployerId(String employerId);
 }

@@ -26,9 +26,9 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class Order extends BaseModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    String id;
+    Integer id;
 
     @ManyToOne
     @JoinColumn(name = "employer_id", nullable = false)
@@ -42,17 +42,17 @@ public class Order extends BaseModel {
     Double amount;
 
     @Column(name = "status")
-    String status; // PENDING, SUCCESS, FAILED, CANCELLED
+    String status; 
 
     @Column(name = "vnp_txn_ref")
-    String vnpTxnRef; // Mã đơn hàng gửi sang VNPay (có thể dùng chính ID hoặc sinh mã riêng)
+    String vnpTxnRef; 
 
     @Column(name = "vnp_transaction_no")
-    String vnpTransactionNo; // Mã giao dịch ghi nhận tại hệ thống VNPay
+    String vnpTransactionNo; 
 
     @Column(name = "bank_code")
-    String bankCode; // Mã ngân hàng thanh toán
+    String bankCode; 
 
     @Column(name = "order_info")
-    String orderInfo; // Nội dung thanh toán
+    String orderInfo; 
 }

@@ -39,14 +39,14 @@ public class EmployerSubscriptionServiceImpl implements EmployerSubscriptionServ
                 .vipPackage(vipPackage)
                 .startDate(now)
                 .endDate(endDate)
-                .status("ACTIVE") // Mặc định là ACTIVE khi tạo mới (giả sử đã thanh toán hoặc admin tạo)
+                .status("ACTIVE") 
                 .build();
 
         return employerSubscriptionRepository.save(subscription);
     }
 
     @Override
-    public EmployerSubscription getSubscriptionById(String id) {
+    public EmployerSubscription getSubscriptionById(Integer id) {
         return employerSubscriptionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Subscription not found"));
     }

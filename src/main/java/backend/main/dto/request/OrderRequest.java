@@ -14,7 +14,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderRequest {
     String employerId;
-    String vipPackageId;
-    Double amount; // Có thể null nếu muốn lấy giá từ VipPackage
+    Integer vipPackageId;
+    Double amount; 
     String orderInfo;
 }

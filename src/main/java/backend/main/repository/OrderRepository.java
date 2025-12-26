@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import backend.main.entities.Order;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, String> {
+public interface OrderRepository extends JpaRepository<Order, Integer> {
     List<Order> findByEmployer_EmployerId(String employerId);
     Optional<Order> findByVnpTxnRef(String vnpTxnRef);
 }

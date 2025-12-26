@@ -31,7 +31,7 @@ public class VipPackageServiceImpl implements VipPackageService {
     }
 
     @Override
-    public VipPackage updateVipPackage(String id, VipPackageRequest request) {
+    public VipPackage updateVipPackage(Integer id, VipPackageRequest request) {
         VipPackage vipPackage = getVipPackageById(id);
         
         if (request.getName() != null) vipPackage.setName(request.getName());
@@ -46,7 +46,7 @@ public class VipPackageServiceImpl implements VipPackageService {
     }
 
     @Override
-    public void deleteVipPackage(String id) {
+    public void deleteVipPackage(Integer id) {
         if (!vipPackageRepository.existsById(id)) {
             throw new RuntimeException("Vip Package not found");
         }
@@ -54,7 +54,7 @@ public class VipPackageServiceImpl implements VipPackageService {
     }
 
     @Override
-    public VipPackage getVipPackageById(String id) {
+    public VipPackage getVipPackageById(Integer id) {
         return vipPackageRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Vip Package not found"));
     }

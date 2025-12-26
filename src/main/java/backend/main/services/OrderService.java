@@ -7,8 +7,8 @@ import backend.main.entities.Order;
 
 public interface OrderService {
     Order createOrder(OrderRequest request);
-    Order getOrderById(String id);
+    Order getOrderById(Integer id);
     List<Order> getOrdersByEmployerId(String employerId);
     List<Order> getAllOrders();
-    Order updateOrderStatus(String id, String status); // Dùng để update thủ công hoặc test
+    Order updateOrderStatus(Integer id, String status); 
 }

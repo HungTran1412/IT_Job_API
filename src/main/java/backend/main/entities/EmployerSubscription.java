@@ -30,9 +30,9 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class EmployerSubscription extends BaseModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    String id;
+    Integer id;
 
     @ManyToOne
     @JoinColumn(name = "employer_id", nullable = false)
@@ -53,5 +53,5 @@ public class EmployerSubscription extends BaseModel {
     String status; // ACTIVE, EXPIRED, CANCELLED
 
     @Column(name = "payment_transaction_id")
-    String paymentTransactionId; // Mã giao dịch thanh toán (VNPay) để đối soát
+    String paymentTransactionId; 
 }

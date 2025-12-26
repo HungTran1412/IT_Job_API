@@ -7,8 +7,8 @@ import backend.main.entities.VipPackage;
 
 public interface VipPackageService {
     VipPackage createVipPackage(VipPackageRequest request);
-    VipPackage updateVipPackage(String id, VipPackageRequest request);
-    void deleteVipPackage(String id);
-    VipPackage getVipPackageById(String id);
+    VipPackage updateVipPackage(Integer id, VipPackageRequest request);
+    void deleteVipPackage(Integer id);
+    VipPackage getVipPackageById(Integer id);
     List<VipPackage> getAllVipPackages();
 }

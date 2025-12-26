@@ -48,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order getOrderById(String id) {
+    public Order getOrderById(Integer id) {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
     }
@@ -64,7 +64,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order updateOrderStatus(String id, String status) {
+    public Order updateOrderStatus(Integer id, String status) {
         Order order = getOrderById(id);
         order.setStatus(status);
         return orderRepository.save(order);

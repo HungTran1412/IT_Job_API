@@ -14,5 +14,5 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EmployerSubscriptionRequest {
     String employerId;
-    String vipPackageId;
+    Integer vipPackageId;
 }

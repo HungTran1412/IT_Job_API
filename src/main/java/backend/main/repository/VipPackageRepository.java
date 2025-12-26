@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import backend.main.entities.VipPackage;
 
 @Repository
-public interface VipPackageRepository extends JpaRepository<VipPackage, String> {
+public interface VipPackageRepository extends JpaRepository<VipPackage, Integer> {
 }

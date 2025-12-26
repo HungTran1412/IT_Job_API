@@ -39,7 +39,7 @@ public class OrderController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYER')")
-    public ResponseEntity<ApiResponse<Order>> getOrderById(@PathVariable String id) {
+    public ResponseEntity<ApiResponse<Order>> getOrderById(@PathVariable Integer id) {
         Order result = orderService.getOrderById(id);
         return ResponseEntity.ok(ApiResponse.<Order>builder()
                 .code("200")
@@ -73,7 +73,7 @@ public class OrderController {
     // API này dùng để test update status thủ công (sau này sẽ do VNPay callback gọi)
     @PutMapping("/{id}/status")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<Order>> updateOrderStatus(@PathVariable String id, @RequestParam String status) {
+    public ResponseEntity<ApiResponse<Order>> updateOrderStatus(@PathVariable Integer id, @RequestParam String status) {
         Order result = orderService.updateOrderStatus(id, status);
         return ResponseEntity.ok(ApiResponse.<Order>builder()
                 .code("200")
