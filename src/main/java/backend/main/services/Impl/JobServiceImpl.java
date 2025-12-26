@@ -11,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -242,11 +241,14 @@ public class JobServiceImpl implements JobService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    //@PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public boolean reviewJob(JobReviewRequest request) {
         try {
             List<Job> jobs = (List<Job>) jobRepository.findAllById(request.getJobId());
 
+            System.out.println(jobs.size());
+            System.out.println(request.getJobId().size());
+            
             if (jobs.size() != request.getJobId().size()) {
                 throw new AppException(Code.JOB_NOT_FOUND);
             }
@@ -256,6 +258,7 @@ public class JobServiceImpl implements JobService {
             Set<String> companyEmails = new HashSet<String>();
             jobs.forEach(j -> companyEmails.add(j.getEmployer().getEmail()));
             companyEmails.forEach(t -> {
+            	System.out.println(t);
             	Notification notification = Notification.builder()
 	            		.content("Bài tuyển dụng đã được duyệt")
 	            		.isRead(false)
@@ -374,6 +377,27 @@ public class JobServiceImpl implements JobService {
 	            .and(JobSpec.language(request.getLanguage()));
 
 	    return jobRepository.findAll(spec, pageable);
+	}
+
+	@Override
+	public Page<JobResponse> findAllByStatusPending(Pageable pageable) {
+		Page<Job> jobs = jobRepository.findAllByStatus(JobStatus.PENDING, pageable);
+        return jobs.map(job -> new JobResponse(
+                job.getJobId(),
+                job.getTitle(),
+                job.getDescription(),
+                job.getSalaryMin(),
+                job.getSalaryMax(),
+                job.getPosition(),
+                job.getTechnologies(),
+                job.getWorkingFrom(),
+                job.getLocation(),
+                job.getDeadline(),
+                job.getStatus(),
+
+                job.getEmployer(),
+                job.getCreatedAt().toLocalDate()
+        ));
 	}
 
 }

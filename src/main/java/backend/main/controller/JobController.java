@@ -129,6 +129,16 @@ public class JobController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sortBy));
         return jobService.findAllByStatusApproved(pageable);
     }
+    
+    @GetMapping("/pending")
+    public Page<JobResponse> getPendingJobs(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "jobId") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sortBy));
+        return jobService.findAllByStatusPending(pageable);
+    }
 
     @PutMapping("/review")
     public ResponseEntity<ApiResponse<Job>> reviewJob(@RequestBody JobReviewRequest request) {

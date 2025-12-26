@@ -24,6 +24,7 @@ public interface JobService {
     Page<Job> search(JobSearchRequest request, Pageable pageable);
     Page<Job> findAllByStatus(JobStatus status, Pageable pageable);
     Page<JobResponse> findAllByStatusApproved(Pageable pageable);
+    Page<JobResponse> findAllByStatusPending(Pageable pageable);
     boolean reviewJob(JobReviewRequest request);
     Page<JobResponse> findJobsByEmployer(String employerId, Pageable pageable);
     Page<JobResponse> findJobsByEmployerAndStatus(String employerId, JobStatus status, Pageable pageable);
