@@ -1,0 +1,20 @@
+package backend.main.dto.request;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class OrderRequest {
+    String employerId;
+    String vipPackageId;
+    Double amount; // Có thể null nếu muốn lấy giá từ VipPackage
+    String orderInfo;
+}
