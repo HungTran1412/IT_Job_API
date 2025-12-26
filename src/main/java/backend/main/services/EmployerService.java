@@ -2,6 +2,7 @@ package backend.main.services;
 
 import java.util.List;
 
+import backend.main.entities.Candidate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -22,4 +23,5 @@ public interface EmployerService {
     void resendVerification(String email);
     List<Job> getListJob(String jwt);
     Page<EmployerResponse> findAllOrderByJobs(Pageable pageable);
+//    List<Candidate> searchCandidate(String keyword);
 }

@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import backend.main.entities.Candidate;
+import backend.main.repository.CandidateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,6 +49,8 @@ public class EmployerServiceImpl implements EmployerService {
     @Autowired
     EmployerRepository employerRepository;
     @Autowired
+    CandidateRepository candidateRepository;
+    @Autowired
     PasswordEncoder passwordEncoder;
     @Autowired
     JwtUtils jwtUtils;
@@ -60,7 +64,7 @@ public class EmployerServiceImpl implements EmployerService {
     AppProperties appProperties;
 
     private String generateEmployerID() {
-       return "EMPL" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        return "EMPL" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
     //dang ky
@@ -70,7 +74,7 @@ public class EmployerServiceImpl implements EmployerService {
         ValidationUtils.validateEmail(employerRequest.getEmail());
         ValidationUtils.validatePassword(employerRequest.getPassword());
 
-        if(employerRepository.findByEmail(employerRequest.getEmail()).isPresent()){
+        if (employerRepository.findByEmail(employerRequest.getEmail()).isPresent()) {
             throw new AppException(Code.EMAIL_EXISTED);
         }
 
@@ -92,12 +96,12 @@ public class EmployerServiceImpl implements EmployerService {
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
         verificationToken.setExpirationTime(LocalDateTime.now().plusMinutes(5));
-        verificationToken.setEmployer( employer );
+        verificationToken.setEmployer(employer);
 
         verificationTokenRepository.save(verificationToken);
 
         //gan link + token vua sinh, gui email
-        String verifyLink = appProperties.getBaseUrl() + appProperties.getVerify().getEmployer()+ token;
+        String verifyLink = appProperties.getBaseUrl() + appProperties.getVerify().getEmployer() + token;
         sendEmailHandler.sendVerificationEmail(employer.getEmail(), verifyLink);
 
 
@@ -106,11 +110,11 @@ public class EmployerServiceImpl implements EmployerService {
 
     @Override
     @Transactional
-    public Employer verifyEmployer(String token){
+    public Employer verifyEmployer(String token) {
         VerificationToken vt = verificationTokenRepository.findByToken(token)
                 .orElseThrow(() -> new AppException(Code.TOKEN_INVALID));
 
-        if(vt.getExpirationTime().isBefore(LocalDateTime.now())){
+        if (vt.getExpirationTime().isBefore(LocalDateTime.now())) {
             Employer e = vt.getEmployer();
             verificationTokenRepository.delete(vt);
             employerRepository.delete(e);
@@ -138,12 +142,12 @@ public class EmployerServiceImpl implements EmployerService {
             Employer e = employerRepository.findByEmail(email)
                     .orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
 
-            if(e.getPassword() == null){
+            if (e.getPassword() == null) {
                 throw new AppException(Code.PASSWORD_IS_NULL);
             }
 
             //kiểm tra mật khẩu cũ trước khi đổi
-            if(!passwordEncoder.matches(oldPassword,e.getPassword())){
+            if (!passwordEncoder.matches(oldPassword, e.getPassword())) {
                 throw new AppException(Code.OLD_PASSWORD_NOT_MATCH);
             }
 
@@ -156,7 +160,7 @@ public class EmployerServiceImpl implements EmployerService {
     }
 
     @Override
-	@Transactional
+    @Transactional
     public void resendVerification(String email) {
         Employer e = employerRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
@@ -193,12 +197,12 @@ public class EmployerServiceImpl implements EmployerService {
                 .orElseThrow(() -> new AppException(Code.EMAIL_DOES_NOT_EXIST));
 
         //So sanh mat khau
-        if(!passwordEncoder.matches(request.getPassword(), e.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), e.getPassword())) {
             throw new AppException(Code.WRONG_PASSWORD);
         }
 
         //kiem tra xem tai khoan da duoc kich hoat chua
-        if(e.getEnabled() == false){
+        if (e.getEnabled() == false) {
             throw new AppException(Code.ACCOUNT_UNENABLED);
         }
 
@@ -229,7 +233,8 @@ public class EmployerServiceImpl implements EmployerService {
         if (request.getCity() != null && !request.getCity().isEmpty()) {
             try {
                 ObjectMapper objectMapper = new ObjectMapper();
-                List<String> cityList = objectMapper.readValue(request.getCity(), new TypeReference<List<String>>() {});
+                List<String> cityList = objectMapper.readValue(request.getCity(), new TypeReference<List<String>>() {
+                });
                 e.setCity(cityList);
             } catch (JsonProcessingException jsonException) {
                 log.error("Error parsing city JSON string: {}. Setting city to empty list.", request.getCity(), jsonException);
@@ -247,11 +252,11 @@ public class EmployerServiceImpl implements EmployerService {
         e.setUpdateAt(LocalDateTime.now());
 
         //Kiem tra xem nguoi dung co cap nhat anh khong
-        if(request.getLogo() != null && !request.getLogo().isEmpty()){
+        if (request.getLogo() != null && !request.getLogo().isEmpty()) {
             String imgUrl = cloudinaryFileUpload.uploadImage(request.getLogo());
             e.setLogo(imgUrl);
             System.out.println("Logo: " + imgUrl);
-        }else{
+        } else {
             String imgUrl = e.getLogo();
             e.setLogo(imgUrl);
             System.out.println("Logo: " + imgUrl);
@@ -264,35 +269,35 @@ public class EmployerServiceImpl implements EmployerService {
         e.setUpdateAt(LocalDateTime.now());
         return employerRepository.save(e);
     }
-    
+
     @Override
     @Transactional
-    public List<Job> getListJob(String jwt){
-	   String id = jwtUtils.extractId(jwt);
-       Employer employer = employerRepository.findById(id)
-               .orElseThrow(() -> new AppException(Code.EMAIL_DOES_NOT_EXIST));
-	   return employer.getJobs();
+    public List<Job> getListJob(String jwt) {
+        String id = jwtUtils.extractId(jwt);
+        Employer employer = employerRepository.findById(id)
+                .orElseThrow(() -> new AppException(Code.EMAIL_DOES_NOT_EXIST));
+        return employer.getJobs();
     }
 
-	@Override
-	public Page<EmployerResponse> findAllOrderByJobs(Pageable pageable) {
-		return employerRepository.findAllOrderByJobs(pageable)
-				 .map(e -> EmployerResponse.builder()
-						 .employerId(e.getEmployerId())
-					        .companyName(e.getCompanyName())
-					        .city(e.getCity())
-					        .address(e.getAddress())
-					        .companyModel(e.getCompanyModel())
-					        .companyEmployees(e.getCompanyEmployees())
-					        .workingTime(e.getWorkingTime())
-					        .workingOvertime(e.getWorkingOvertime())
-					        .description(e.getDescription())
-					        .phone(e.getPhone())
-					        .logo(e.getLogo())
-					        .role(e.getRole())
-					        .createdJobs(e.getJobs().size())
-					        .build());
-	}
-    
-    
+    @Override
+    public Page<EmployerResponse> findAllOrderByJobs(Pageable pageable) {
+        return employerRepository.findAllOrderByJobs(pageable)
+                .map(e -> EmployerResponse.builder()
+                        .employerId(e.getEmployerId())
+                        .companyName(e.getCompanyName())
+                        .city(e.getCity())
+                        .address(e.getAddress())
+                        .companyModel(e.getCompanyModel())
+                        .companyEmployees(e.getCompanyEmployees())
+                        .workingTime(e.getWorkingTime())
+                        .workingOvertime(e.getWorkingOvertime())
+                        .description(e.getDescription())
+                        .phone(e.getPhone())
+                        .logo(e.getLogo())
+                        .role(e.getRole())
+                        .createdJobs(e.getJobs().size())
+                        .build());
+    }
+
+
 }
