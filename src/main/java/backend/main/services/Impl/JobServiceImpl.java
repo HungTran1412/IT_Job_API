@@ -62,10 +62,10 @@ public class JobServiceImpl implements JobService {
 
     @Transactional
     @Override
-    public JobResponse save(JobRequest jobRequest) {
-        String context = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        Employer employer = employerRepository.findByEmail(context).orElseThrow(()-> new AppException(Code.USER_NOT_FOUND));
+    public JobResponse save(JobRequest jobRequest, String email) {
+//        String context = SecurityContextHolder.getContext().getAuthentication().getName();
+//        System.out.println("Context: " + context);
+        Employer employer = employerRepository.findByEmail(email).orElseThrow(()-> new AppException(Code.USER_NOT_FOUND));
 
         Job job = null;
         
