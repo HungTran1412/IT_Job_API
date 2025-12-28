@@ -30,6 +30,8 @@ public class Order extends BaseModel {
     @Column(name = "id")
     Integer id;
 
+    //TODO: thêm trường code cho order
+
     @ManyToOne
     @JoinColumn(name = "employer_id", nullable = false)
     Employer employer;

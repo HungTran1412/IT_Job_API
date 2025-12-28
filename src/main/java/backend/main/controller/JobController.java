@@ -1,20 +1,15 @@
 package backend.main.controller;
 
+import backend.main.entities.Candidate;
+import backend.main.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import backend.main.dto.request.job.DeleteRequest;
 import backend.main.dto.request.job.JobRequest;
@@ -32,13 +27,27 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequestMapping("/api/jobs")
 @Tag(name = "Job:", description = "CRUD các bài tuyển dụng, và duyệt bài tuyển dụng")
 public class JobController {
-
+    @Autowired
+    JwtUtils jwtUtils;
     @Autowired
     private JobService jobService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Object>> createJob(@RequestBody JobRequest jobRequest) {
-        var j = jobService.save(jobRequest);
+    public ResponseEntity<ApiResponse<Object>> createJob(@CookieValue(value = "jwt", required = false) String token,
+                                                         @RequestBody JobRequest jobRequest) {
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.<Object>builder()
+                    .code(Code.TOKEN_INVALID.getCode()).message("Missing token or user not logged in").build());
+        }
+//        System.out.println("Token: " + token);
+        if (!jwtUtils.validateToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.<Object>builder()
+                    .code(Code.TOKEN_INVALID.getCode()).message(Code.TOKEN_INVALID.getMessage()).build());
+        }
+        String email = jwtUtils.extractEmail(token);
+
+        var j = jobService.save(jobRequest, email);
+
         return ResponseEntity.ok(ApiResponse.builder()
                         .code(Code.CREATE_JOB_SUCCESSFULL.getCode())
                         .message(Code.CREATE_JOB_SUCCESSFULL.getMessage())

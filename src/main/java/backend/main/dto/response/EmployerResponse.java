@@ -15,6 +15,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class EmployerResponse {
 	String employerId;
+    String email;
     String companyName;
     List<String> city;
     String address;

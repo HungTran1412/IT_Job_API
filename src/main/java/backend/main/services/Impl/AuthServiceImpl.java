@@ -60,6 +60,8 @@ public class AuthServiceImpl implements AuthService {
                 int count = e.getJobs().size();
                 
                 return EmployerResponse.builder()
+                        .employerId(e.getEmployerId())
+                        .email(e.getEmail())
         			    .companyName(e.getCompanyName())
         			    .city(e.getCity())
         			    .address(e.getAddress())
