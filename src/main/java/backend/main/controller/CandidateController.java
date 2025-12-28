@@ -3,6 +3,10 @@ package backend.main.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -231,32 +235,37 @@ public class CandidateController {
 	}
 
     @PostMapping("/search")
-    public ResponseEntity<ApiResponse<List<CandidateResponse>>> searchCandidates(
+    public ResponseEntity<ApiResponse<Page<CandidateResponse>>> searchCandidates(
             @CookieValue(value = "jwt", required = false) String token,
-            @RequestBody CandidateSearchRequest request) {
+            @RequestBody CandidateSearchRequest request,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "candidateId") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction) {
         
         // Kiểm tra token
         if (token == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.<List<CandidateResponse>>builder()
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.<Page<CandidateResponse>>builder()
                     .code(Code.TOKEN_INVALID.getCode()).message("Missing token or user not logged in").build());
         }
 
         // Xác thực token
         if (!jwtUtils.validateToken(token)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.<List<CandidateResponse>>builder()
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.<Page<CandidateResponse>>builder()
                     .code(Code.TOKEN_INVALID.getCode()).message(Code.TOKEN_INVALID.getMessage()).build());
         }
 
         // Kiểm tra quyền (chỉ ROLE_EMPLOYER mới được phép)
         String role = jwtUtils.extractRole(token);
         if (!Role.ROLE_EMPLOYER.name().equals(role)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiResponse.<List<CandidateResponse>>builder()
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiResponse.<Page<CandidateResponse>>builder()
                     .code(Code.ACCESS_DENIED.getCode()).message(Code.ACCESS_DENIED.getMessage()).build());
         }
 
-        List<CandidateResponse> result = candidateService.searchCandidates(request);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sortBy));
+        Page<CandidateResponse> result = candidateService.searchCandidates(request, pageable);
         
-        return ResponseEntity.ok(ApiResponse.<List<CandidateResponse>>builder()
+        return ResponseEntity.ok(ApiResponse.<Page<CandidateResponse>>builder()
                 .code(Code.GET_INFO_SUCCEEDED.getCode())
                 .message(Code.GET_INFO_SUCCEEDED.getMessage())
                 .result(result)

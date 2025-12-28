@@ -8,6 +8,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,6 +33,7 @@ import backend.main.repository.CandidateRepository;
 import backend.main.repository.JobRepository;
 import backend.main.repository.VerificationTokenRepository;
 import backend.main.services.CandidateService;
+import backend.main.specification.CandidateSpec;
 import backend.main.utils.CloudinaryFileUpload;
 import backend.main.utils.JwtUtils;
 import backend.main.utils.SendEmailHandler;
@@ -339,16 +343,18 @@ public class CandidateServiceImpl implements CandidateService {
 	}
 
     @Override
-    public List<CandidateResponse> searchCandidates(CandidateSearchRequest request) {
-        List<Candidate> candidates = candidateRepository.searchCandidates(
-                request.getFullname(),
-                request.getEmail(),
-                request.getSoftSkill(),
-                request.getExperience(),
-                request.getTechnologies(),
-                request.getDesiredSalary()
-        );
-        return candidates.stream().map(c -> {
+    public Page<CandidateResponse> searchCandidates(CandidateSearchRequest request, Pageable pageable) {
+        Specification<Candidate> spec = Specification.where(CandidateSpec.isPrivate(false))
+                .and(CandidateSpec.fullname(request.getFullname()))
+                .and(CandidateSpec.email(request.getEmail()))
+                .and(CandidateSpec.softSkill(request.getSoftSkill()))
+                .and(CandidateSpec.experience(request.getExperience()))
+                .and(CandidateSpec.technologies(request.getTechnologies()))
+                .and(CandidateSpec.desiredSalary(request.getDesiredSalary()));
+
+        Page<Candidate> candidates = candidateRepository.findAll(spec, pageable);
+        
+        return candidates.map(c -> {
             List<String> likedIds = c.getLikedJobs() == null ? Collections.emptyList()
                     : c.getLikedJobs().stream()
                         .map(Job::getJobId)
@@ -379,6 +385,6 @@ public class CandidateServiceImpl implements CandidateService {
                     likedIds,
                     appliedIds
             );
-        }).collect(Collectors.toList());
+        });
     }
 }

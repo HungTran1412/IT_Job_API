@@ -295,7 +295,6 @@ public class JobServiceImpl implements JobService {
                 job.getLocation(),
                 job.getDeadline(),
                 job.getStatus(),
-
                 job.getEmployer(),
                 job.getCreatedAt().toLocalDate()
         ));

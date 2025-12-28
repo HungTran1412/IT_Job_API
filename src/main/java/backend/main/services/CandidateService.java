@@ -2,6 +2,9 @@ package backend.main.services;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import backend.main.dto.request.LoginRequest;
 import backend.main.dto.request.candidate.CandidateRegisterRequest;
 import backend.main.dto.request.candidate.CandidateRequest;
@@ -22,5 +25,5 @@ public interface CandidateService {
     List<Job> getLikedJobs();
     CandidateResponse getInfor(String id);
 	boolean unLikedJob(String jobId, String candidateId);
-    List<CandidateResponse> searchCandidates(CandidateSearchRequest request);
+    Page<CandidateResponse> searchCandidates(CandidateSearchRequest request, Pageable pageable);
 }
