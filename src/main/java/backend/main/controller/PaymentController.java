@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import backend.main.dto.response.ApiResponse;
+import backend.main.enums.Code;
 import backend.main.services.VNPayService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -34,12 +35,19 @@ public class PaymentController {
     public ResponseEntity<ApiResponse<Map<String, Object>>> vnpayCallback(HttpServletRequest request) {
         Map<String, Object> result = vnPayService.processPaymentCallback(request);
         String status = (String) result.get("status");
-        String code = "SUCCESS".equals(status) ? "200" : "400";
         
-        return ResponseEntity.ok(ApiResponse.<Map<String, Object>>builder()
-                .code(code)
-                .message((String) result.get("message"))
-                .result(result)
-                .build());
+        if ("SUCCESS".equals(status)) {
+            return ResponseEntity.ok(ApiResponse.<Map<String, Object>>builder()
+                    .code(Code.PAYMENT_SUCCESS.getCode())
+                    .message(Code.PAYMENT_SUCCESS.getMessage())
+                    .result(result)
+                    .build());
+        } else {
+            return ResponseEntity.ok(ApiResponse.<Map<String, Object>>builder()
+                    .code(Code.PAYMENT_FAILED.getCode())
+                    .message((String) result.get("message"))
+                    .result(result)
+                    .build());
+        }
     }
 }

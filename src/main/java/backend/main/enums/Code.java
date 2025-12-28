@@ -62,7 +62,11 @@ public enum Code {
     INVALID_VALUE(CodeEnum.error.toString(),"Lỗi dữ liệu"),
     UNAUTHORIZED(CodeEnum.error.toString(),"Lỗi"),
 
-    ACCESS_DENIED(CodeEnum.error.toString(), "Từ chối truy cập")
+    ACCESS_DENIED(CodeEnum.error.toString(), "Từ chối truy cập"),
+    
+    // Payment
+    PAYMENT_SUCCESS(CodeEnum.success.toString(), "Thanh toán thành công"),
+    PAYMENT_FAILED(CodeEnum.error.toString(), "Thanh toán thất bại")
     ;
 
     String code;
