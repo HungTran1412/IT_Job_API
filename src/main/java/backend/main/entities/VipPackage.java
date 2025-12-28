@@ -24,29 +24,29 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class VipPackage extends BaseModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    String id;
+    Integer id;
 
     @Column(name = "name", nullable = false)
-    String name; // Tên gói (VD: VIP Silver, VIP Gold)
+    String name; 
 
     @Column(name = "price", nullable = false)
-    Double price; // Giá gói
+    Double price; 
 
     @Column(name = "duration_days")
-    Integer durationDays; // Thời hạn của gói (VD: 30 ngày)
+    Integer durationDays; 
 
     @Column(name = "post_limit")
-    Integer postLimit; // Số lượng bài đăng cho phép trong gói này
+    Integer postLimit; 
 
     @Column(name = "job_post_duration_days")
-    Integer jobPostDurationDays; // Bài đăng thuộc gói này sẽ tồn tại bao lâu (VD: 15 ngày, 30 ngày)
+    Integer jobPostDurationDays; 
 
     @Column(name = "description", columnDefinition = "TEXT")
-    String description; // Mô tả quyền lợi
+    String description; 
 
     @Column(name = "is_active")
     @lombok.Builder.Default
-    Boolean isActive = true; // Trạng thái gói (đang bán hay ngừng bán)
+    Boolean isActive = true; 
 }

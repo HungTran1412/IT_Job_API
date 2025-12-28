@@ -1,9 +1,5 @@
 package backend.main.entities;
 
-import java.time.LocalDateTime;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,14 +17,14 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
 @Entity
-@Table(name = "tbl_employer_subscription")
+@Table(name = "tbl_order")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Data
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class EmployerSubscription extends BaseModel {
+public class Order extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -36,22 +32,27 @@ public class EmployerSubscription extends BaseModel {
 
     @ManyToOne
     @JoinColumn(name = "employer_id", nullable = false)
-    @JsonIgnore
     Employer employer;
 
     @ManyToOne
     @JoinColumn(name = "vip_package_id", nullable = false)
     VipPackage vipPackage;
 
-    @Column(name = "start_date", nullable = false)
-    LocalDateTime startDate;
-
-    @Column(name = "end_date", nullable = false)
-    LocalDateTime endDate;
+    @Column(name = "amount", nullable = false)
+    Double amount;
 
     @Column(name = "status")
-    String status; // ACTIVE, EXPIRED, CANCELLED
+    String status; 
 
-    @Column(name = "payment_transaction_id")
-    String paymentTransactionId; 
+    @Column(name = "vnp_txn_ref")
+    String vnpTxnRef; 
+
+    @Column(name = "vnp_transaction_no")
+    String vnpTransactionNo; 
+
+    @Column(name = "bank_code")
+    String bankCode; 
+
+    @Column(name = "order_info")
+    String orderInfo; 
 }

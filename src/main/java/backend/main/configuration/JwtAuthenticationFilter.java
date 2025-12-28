@@ -29,29 +29,45 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // Lấy header 'Authorization' từ nơi chưa JWT
-        String authHeader = request.getHeader("Authorization");
         String token = null;
+        String authHeader = request.getHeader("Authorization");
 
-        //Ưu tiên lấy từ header Authorization
+        // 1. Ưu tiên lấy từ Header Authorization
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
-        }else {
-            //Nếu không có header thì lấy ở cookie
-            if(request.getCookies() != null){
-                for(Cookie cookie: request.getCookies()){
-                    if("jwt".equals(cookie.getName())){
-                        token = cookie.getValue();
-                        break;
+        } 
+        // 2. Nếu không có Header, tìm trong Cookie
+        else if (request.getCookies() != null) {
+            // Tìm cookie 'nimda' (Admin) trước
+            for (Cookie cookie : request.getCookies()) {
+                if ("nimda".equals(cookie.getName())) {
+                    String tempToken = cookie.getValue();
+                    if (jwtUtils.validateToken(tempToken)) {
+                        token = tempToken;
+                        break; // Tìm thấy token Admin hợp lệ thì dừng luôn
+                    }
+                }
+            }
+
+            // Nếu chưa tìm thấy token hợp lệ từ 'nimda', tìm tiếp 'jwt' (User/Employer)
+            if (token == null) {
+                for (Cookie cookie : request.getCookies()) {
+                    if ("jwt".equals(cookie.getName())) {
+                        String tempToken = cookie.getValue();
+                        if (jwtUtils.validateToken(tempToken)) {
+                            token = tempToken;
+                            break; // Tìm thấy token User hợp lệ thì dừng
+                        }
                     }
                 }
             }
         }
 
-        if(token != null && jwtUtils.validateToken(token)) {
+        // 3. Xác thực nếu có token hợp lệ
+        if (token != null && jwtUtils.validateToken(token)) {
             String email = jwtUtils.extractEmail(token);
-            String id  = jwtUtils.extractId(token);
-            String role  = jwtUtils.extractRole(token);
+            String id = jwtUtils.extractId(token);
+            String role = jwtUtils.extractRole(token);
 
             SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role);
             UsernamePasswordAuthenticationToken auth =
