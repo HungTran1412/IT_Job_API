@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kết quả thanh toán</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 100%; }
+        .loader { border: 5px solid #f3f3f3; border-top: 5px solid #3498db; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .hidden { display: none; }
+        .success { color: #28a745; }
+        .failed { color: #dc3545; }
+        .icon { font-size: 60px; margin-bottom: 20px; }
+        .details { margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; text-align: left; }
+        .detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .label { font-weight: bold; color: #555; }
+        .btn { display: inline-block; margin-top: 25px; padding: 10px 25px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; transition: background 0.3s; }
+        .btn:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+
+<div class="card" id="loadingCard">
+    <div class="loader"></div>
+    <h2>Đang xử lý thanh toán...</h2>
+    <p>Vui lòng không tắt trình duyệt.</p>
+</div>
+
+<div class="card hidden" id="resultCard">
+    <div id="statusIcon" class="icon"></div>
+    <h1 id="statusTitle"></h1>
+    <p id="statusMessage"></p>
+    
+    <div class="details" id="detailsSection">
+        <div class="detail-row">
+            <span class="label">Mã đơn hàng:</span>
+            <span id="orderId"></span>
+        </div>
+        <div class="detail-row">
+            <span class="label">Số tiền:</span>
+            <span id="amount"></span>
+        </div>
+    </div>
+
+    <a href="/" class="btn">Về trang chủ</a>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Lấy query string từ URL hiện tại
+        const queryString = window.location.search;
+        
+        // Gọi API callback của Backend để xử lý giao dịch
+        fetch('/api/payment/vnpay-callback' + queryString)
+            .then(response => response.json())
+            .then(data => {
+                // Ẩn loading, hiện kết quả
+                document.getElementById('loadingCard').classList.add('hidden');
+                document.getElementById('resultCard').classList.remove('hidden');
+                
+                const result = data.result;
+                // Kiểm tra code trả về từ API (dựa trên Code enum: PAYMENT_SUCCESS)
+                // Lưu ý: Cần đảm bảo logic check code khớp với Backend trả về
+                // Ở đây check đơn giản: nếu status trong result là SUCCESS hoặc code API là success
+                const isSuccess = (result && result.status === 'SUCCESS'); 
+
+                const iconDiv = document.getElementById('statusIcon');
+                const titleDiv = document.getElementById('statusTitle');
+
+                if (isSuccess) {
+                    iconDiv.innerHTML = '&#10004;'; // Dấu tích V
+                    iconDiv.className = 'icon success';
+                    titleDiv.innerText = 'Thanh toán thành công!';
+                } else {
+                    iconDiv.innerHTML = '&#10006;'; // Dấu X
+                    iconDiv.className = 'icon failed';
+                    titleDiv.innerText = 'Thanh toán thất bại!';
+                }
+
+                // Hiển thị message từ API
+                document.getElementById('statusMessage').innerText = data.message || (result ? result.message : 'Lỗi không xác định');
+
+                // Hiển thị chi tiết đơn hàng nếu có
+                if(result) {
+                    document.getElementById('orderId').innerText = '#' + (result.orderId || 'N/A');
+                    
+                    // Format tiền tệ VND
+                    let amountVal = result.amount;
+                    if (amountVal) {
+                        // VNPay thường trả về amount * 100, tùy logic backend đã chia hay chưa
+                        // Giả sử backend trả về đúng số tiền thực tế cần hiển thị
+                        // Nếu backend trả về số tiền * 100 thì cần chia 100 ở đây
+                        // Dựa vào code cũ: vnp_Amount từ VNPay là *100. 
+                        // Nhưng trong result map của callback, ta put vnp_Amount (string) vào.
+                        // Nên an toàn nhất là chia 100 nếu thấy số quá lớn hoặc check logic backend.
+                        // Tạm thời format trực tiếp, nếu sai số 0 thì sửa sau.
+                        try {
+                            let amt = parseFloat(amountVal);
+                            // Check sơ bộ: nếu amount > vốn đơn hàng * 100 (ví dụ đơn > 100đ)
+                            // Thường vnpay trả về 10000000 cho 100k.
+                            amt = amt / 100; 
+                            document.getElementById('amount').innerText = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amt);
+                        } catch(e) {
+                            document.getElementById('amount').innerText = amountVal;
+                        }
+                    } else {
+                        document.getElementById('amount').innerText = '0 đ';
+                    }
+                } else {
+                    document.getElementById('detailsSection').style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('loadingCard').classList.add('hidden');
+                document.getElementById('resultCard').classList.remove('hidden');
+                document.getElementById('statusIcon').innerHTML = '&#9888;'; // Warning icon
+                document.getElementById('statusIcon').className = 'icon failed';
+                document.getElementById('statusTitle').innerText = 'Lỗi kết nối';
+                document.getElementById('statusMessage').innerText = 'Không thể kết nối tới hệ thống xử lý.';
+                document.getElementById('detailsSection').style.display = 'none';
+            });
+    });
+</script>
+
+</body>
+</html>

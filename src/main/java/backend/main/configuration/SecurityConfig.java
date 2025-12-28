@@ -27,7 +27,7 @@ public class SecurityConfig {
     private static final String[] WHITE_LIST_URL = { "/api/v1/auth/**", "/v2/api-docs", "/v3/api-docs",
             "/v3/api-docs/**", "/swagger-resources", "/swagger-resources/**", "/configuration/ui",
             "/configuration/security", "/swagger-ui/**", "/webjars/**", "/swagger-ui.html", "/api/auth/**",
-            "/api/test/**", "/authenticate" };
+            "/api/test/**", "/authenticate", "/api/payment/**" };
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);
@@ -48,7 +48,7 @@ public class SecurityConfig {
                                 "/company/resend", "/auth/check", "/auth/check-admin",
                                 "/admin/register", "/admin/login",
                                 "/api/jobs/*", "/logout","/api/*"
-                                ,"company/{id}","company/all/*","sse/**", "/api/payment/**").permitAll()
+                                ,"company/{id}","company/all/*","sse/**").permitAll()
 
                         // Các API dành riêng cho employer
                         .requestMatchers("/company/**", "/user/search").hasAuthority("ROLE_EMPLOYER")
