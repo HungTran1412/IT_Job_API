@@ -1,10 +1,10 @@
 package backend.main.services.Impl;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -255,12 +255,12 @@ public class JobServiceImpl implements JobService {
 
             jobs.forEach(job -> job.setStatus(request.getJobStatus()));
             jobRepository.saveAll(jobs);
-            Set<String> companyEmails = new HashSet<String>();
-            jobs.forEach(j -> companyEmails.add(j.getEmployer().getEmail()));
-            companyEmails.forEach(t -> {
-            	System.out.println(t);
+            Map<String,String> companyEmails = new HashMap<String,String>();
+            jobs.forEach(j -> companyEmails.put(j.getEmployer().getEmail(), j.getStatus().getMessage()));
+
+            companyEmails.forEach((t ,u)-> {
             	Notification notification = Notification.builder()
-	            		.content("Bài tuyển dụng đã được duyệt")
+	            		.content(u)
 	            		.isRead(false)
 	            		.userId(t)
 	            		.role(Role.ROLE_EMPLOYER)
@@ -268,7 +268,7 @@ public class JobServiceImpl implements JobService {
 	            		.from("admin")
 	            		.build();
             	notificationRepository.save(notification);
-	            sseUtils.sendToUser(t, "Bài tuyển dụng đã được duyệt"); 
+	            sseUtils.sendToUser(t, u); 
             	
             });     
             return true;
