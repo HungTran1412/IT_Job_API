@@ -48,6 +48,8 @@ public enum Code {
     APPLY_SUCCESSFUL(CodeEnum.success.toString(),"Ứng tuyển thành công"),
     APPLY_FAIL(CodeEnum.error.toString(),"Ứng tuyển thất bại"),
     SEARCH_RESULT(CodeEnum.success.toString(),"Kết quả tìm kiếm"),
+    GET_NOTI_SUCCESSFULL(CodeEnum.success.toString(),"Lấy thông báo thành công"),
+    READ_NOTI(CodeEnum.success.toString(),"Lấy thông báo thành công"),
 
 
     EMAIL_INVALID_FORMAT(CodeEnum.error.toString(), "Email không đúng định dạng"),
