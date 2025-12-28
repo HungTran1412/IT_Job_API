@@ -22,15 +22,32 @@ public class SendEmailHandler {
         String subject = "Xác nhận đăng ký tài khoản ITJob";
 
         String content = """
-            <div style="font-family: Arial, sans-serif; color: #333;">
-                <h2>Chào mừng bạn đến với ITJob!</h2>
-                <p>Cảm ơn bạn đã đăng ký tài khoản.</p>
-                <p>Vui lòng xác nhận tài khoản của bạn bằng cách nhấn vào nút bên dưới:</p>
-                <a href="%s" style="display:inline-block;background-color:#28a745;color:white;padding:12px 24px;text-decoration:none;border-radius:5px;font-weight:bold;">Xác nhận tài khoản</a>
-                <p>Liên kết này sẽ hết hạn sau 5 phút.</p>
-                <p>Nếu bạn không thực hiện đăng ký này, vui lòng bỏ qua email này.</p>
-            </div>
-            """.formatted(verifyLink);
+        <div style="font-family: Arial, sans-serif; color: #333;">
+            <h2>Chào mừng bạn đến với ITJob!</h2>
+            <p>Cảm ơn bạn đã đăng ký tài khoản.</p>
+            <p>Vui lòng xác nhận tài khoản của bạn bằng cách nhấn vào nút bên dưới:</p>
+
+            <p>
+                        <a href="%s"
+                           style="display:inline-block;background-color:#28a745;color:white;
+                                  padding:12px 24px;text-decoration:none;border-radius:5px;
+                                  font-weight:bold;">
+                            Xác nhận tài khoản
+                   </a>
+             </p>
+                
+
+            <p>Nếu nút trên không hoạt động, vui lòng sao chép và dán liên kết sau vào trình duyệt:</p>
+            <p>
+                <a href="%s" style="color:#0056b3; word-break: break-all;">
+                    %s
+                </a>
+            </p>
+
+            <p>Liên kết này sẽ hết hạn sau 5 phút.</p>
+            <p>Nếu bạn không thực hiện đăng ký này, vui lòng bỏ qua email này.</p>
+        </div>
+        """.formatted(verifyLink, verifyLink, verifyLink);
 
         try {
             MimeMessage message = mailSender.createMimeMessage();
@@ -43,6 +60,7 @@ public class SendEmailHandler {
             throw new RuntimeException(e);
         }
     }
+
 
     public void sendOTPEmail(String email, String otp) {
         String subject = "Yêu cầu đặt lại mật khẩu - Mã OTP của bạn";
