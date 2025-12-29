@@ -1,32 +1,41 @@
 package backend.main.services.Impl;
 
-import java.util.List;
-
+import backend.main.dto.NotificationMessage;
+import backend.main.repository.NotificationRepository;
+import backend.main.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+<<<<<<< Updated upstream
+=======
+import backend.main.controller.LogoutContorller;
 import backend.main.dto.request.NotificationMessageRequest;
 import backend.main.dto.request.noti.ReadNotiRequest;
 import backend.main.entities.Notification;
 import backend.main.repository.NotificationRepository;
 import backend.main.services.NotificationService;
 
+>>>>>>> Stashed changes
 @Service
 public class NotificationServiceImpl implements NotificationService {
+
+    private final LogoutContorller logoutContorller;
     @Autowired
     NotificationRepository notificationRepository;
 
     @Autowired
     SimpMessagingTemplate messagingTemplate;
 
+    NotificationServiceImpl(LogoutContorller logoutContorller) {
+        this.logoutContorller = logoutContorller;
+    }
+
     @Override
     @Transactional
     public void sendNotification(String receiverId, String content, String sender) {
-        NotificationMessageRequest notificationMessage = new NotificationMessageRequest(receiverId, sender, content);
+        NotificationMessage notificationMessage = new NotificationMessage(receiverId, sender, content);
 
         if ("admins".equals(receiverId)) {
             // Gửi thông báo chung cho tất cả admin
@@ -38,6 +47,8 @@ public class NotificationServiceImpl implements NotificationService {
         // Bạn có thể thêm logic để lưu notification vào DB ở đây nếu cần
         // notificationRepository.save(...)
     }
+<<<<<<< Updated upstream
+=======
 
 	@Override
 	public Page<Notification> getNotiByUser(String userId,Pageable pageable) {
@@ -49,7 +60,7 @@ public class NotificationServiceImpl implements NotificationService {
 	public boolean readNoti(ReadNotiRequest notiRequest) {
 		try {
 			List<Notification> notifications = notificationRepository.findAllById(notiRequest.getNotiIds());
-			notifications.forEach(t -> t.setIsRead(notiRequest.isRead()));
+			notifications.forEach(t -> t.setIsRead(true));
 			notificationRepository.saveAll(notifications);
 			return true;
 		} catch (Exception e) {
@@ -57,4 +68,5 @@ public class NotificationServiceImpl implements NotificationService {
 		}
 		return false;
 	}
+>>>>>>> Stashed changes
 }
