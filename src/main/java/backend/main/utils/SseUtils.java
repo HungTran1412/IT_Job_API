@@ -22,12 +22,13 @@ public class SseUtils {
         return emitter;
     }
 	
-    public void sendToUser(String username, Object data) {
+    public void sendToUser(String username, Object data, Object id) {
         SseEmitter emitter = emitters.get(username);
         if (emitter != null) {
             try {
                 emitter.send(SseEmitter.event()
                     .name("message")
+                    .data(id)
                     .data(data));
             } catch (Exception e) {
                 emitters.remove(username);

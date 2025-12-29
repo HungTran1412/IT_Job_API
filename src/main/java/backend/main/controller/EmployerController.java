@@ -90,6 +90,32 @@ public class EmployerController {
 		return ResponseEntity.ok(ApiResponse.<EmployerResponse>builder().code(Code.GET_INFO_SUCCEEDED.getCode())
 				.message(Code.GET_INFO_SUCCEEDED.getMessage()).result(response).build());
 	}
+	
+	@GetMapping("/info/public")
+	public ResponseEntity<ApiResponse<EmployerResponse>> getEmployerPublic(
+			@RequestParam String companyName) {
+
+		Employer e = employerRepository.findByCompanyName(companyName).orElseThrow(() -> new AppException(Code.EMPLOYER_NOT_FOUND));
+
+		EmployerResponse response = EmployerResponse.builder()
+			    .companyName(e.getCompanyName())
+			    .city(e.getCity())
+			    .address(e.getAddress())
+			    .companyModel(e.getCompanyModel())
+			    .companyEmployees(e.getCompanyEmployees())
+			    .workingTime(e.getWorkingTime())
+			    .workingOvertime(e.getWorkingOvertime())
+			    .description(e.getDescription())
+			    .phone(e.getPhone())
+			    .logo(e.getLogo())
+			    .role(e.getRole())
+			    .jobList(e.getJobs())
+			    .build();
+
+
+		return ResponseEntity.ok(ApiResponse.<EmployerResponse>builder().code(Code.GET_INFO_SUCCEEDED.getCode())
+				.message(Code.GET_INFO_SUCCEEDED.getMessage()).result(response).build());
+	}
 
 	@PatchMapping(value = "/update", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
 	public ResponseEntity<ApiResponse<Employer>> updateInfo(@ModelAttribute EmployerUpdateRequest request,
