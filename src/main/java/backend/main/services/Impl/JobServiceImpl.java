@@ -11,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import backend.main.dto.request.job.JobRequest;
@@ -246,18 +245,22 @@ public class JobServiceImpl implements JobService {
         try {
             List<Job> jobs = (List<Job>) jobRepository.findAllById(request.getJobId());
 
-            System.out.println(jobs.size());
-            System.out.println(request.getJobId().size());
             
             if (jobs.size() != request.getJobId().size()) {
                 throw new AppException(Code.JOB_NOT_FOUND);
             }
-
+            
             jobs.forEach(job -> job.setStatus(request.getJobStatus()));
             jobRepository.saveAll(jobs);
+            
             Map<String,String> companyEmails = new HashMap<String,String>();
-            jobs.forEach(j -> companyEmails.put(j.getEmployer().getEmail(), j.getStatus().getMessage()));
-
+            
+            jobs.forEach(j -> {
+            	String content = String.format(j.getStatus().getMessage(), j.getTitle());
+            	companyEmails.put(j.getEmployer().getEmail(),content);
+            });
+     
+            
             companyEmails.forEach((t ,u)-> {
             	Notification notification = Notification.builder()
 	            		.content(u)
