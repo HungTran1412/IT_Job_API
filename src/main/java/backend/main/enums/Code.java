@@ -45,11 +45,13 @@ public enum Code {
     CREATE_JOB_SUCCESSFULL(CodeEnum.success.toString(), "Tạo việc làm thành công"),
     UPDATE_JOB_SUCCESSFULL(CodeEnum.success.toString(), "Cập nhật việc làm thành công"),
     GET_JOB_SUCCESSFULL(CodeEnum.success.toString(), "Lấy việc làm thành công"),
+
     APPLY_SUCCESSFUL(CodeEnum.success.toString(),"Ứng tuyển thành công"),
     APPLY_FAIL(CodeEnum.error.toString(),"Ứng tuyển thất bại"),
     SEARCH_RESULT(CodeEnum.success.toString(),"Kết quả tìm kiếm"),
     GET_NOTI_SUCCESSFULL(CodeEnum.success.toString(),"Lấy thông báo thành công"),
-    READ_NOTI(CodeEnum.success.toString(),"Lấy thông báo thành công"),
+    READ_NOTI(CodeEnum.success.toString(),"Đã đọc tin nhắn"),
+
 
 
     EMAIL_INVALID_FORMAT(CodeEnum.error.toString(), "Email không đúng định dạng"),
@@ -59,7 +61,7 @@ public enum Code {
     FORGOT_PASSWORD_SUCCESS(CodeEnum.success.toString(), "Nếu email của bạn tồn tại trong hệ thống, chúng tôi đã gửi một mã OTP."),
     VERIFY_OTP_SUCCESS(CodeEnum.success.toString(), "Xác thực OTP thành công."),
     RESET_PASSWORD_SUCCESS(CodeEnum.success.toString(), "Mật khẩu của bạn đã được đặt lại thành công."),
-    LIKED_JOB_ADDED(CodeEnum.success.toString(), "Thêm việc yêu thích thành công"),
+    LIKED_JOB_ADDED(CodeEnum.error.toString(), "Thêm việc yêu thích thành công"),
     DELETED_SUCCESSFULLY(CodeEnum.success.toString(),"Xóa thành công"),
     INVALID_VALUE(CodeEnum.error.toString(),"Lỗi dữ liệu"),
     UNAUTHORIZED(CodeEnum.error.toString(),"Lỗi"),
