@@ -2,6 +2,7 @@ package backend.main.controller;
 
 import java.util.List;
 
+import backend.main.enums.Code;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,55 +28,66 @@ public class VipPackageController {
     private final VipPackageService vipPackageService;
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<VipPackage>> createVipPackage(@RequestBody VipPackageRequest request) {
         VipPackage result = vipPackageService.createVipPackage(request);
         return ResponseEntity.ok(ApiResponse.<VipPackage>builder()
-                .code("200")
-                .message("Create Vip Package successfully")
+                .code(Code.CREATE_VIP_PACKAGE_SUCCESS.getCode())
+                .message(Code.CREATE_VIP_PACKAGE_SUCCESS.getMessage())
                 .result(result)
                 .build());
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<VipPackage>> updateVipPackage(@PathVariable Integer id, @RequestBody VipPackageRequest request) {
         VipPackage result = vipPackageService.updateVipPackage(id, request);
         return ResponseEntity.ok(ApiResponse.<VipPackage>builder()
-                .code("200")
-                .message("Update Vip Package successfully")
+                .code(Code.UPDATE_VIP_PACKAGE_SUCCESS.getCode())
+                .message(Code.UPDATE_VIP_PACKAGE_SUCCESS.getMessage())
                 .result(result)
                 .build());
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<Void>> deleteVipPackage(@PathVariable Integer id) {
         vipPackageService.deleteVipPackage(id);
         return ResponseEntity.ok(ApiResponse.<Void>builder()
-                .code("204")
-                .message("Delete Vip Package successfully")
+                .code(Code.DELETE_VIP_PACKAGE_SUCCESS.getCode())
+                .message(Code.DELETE_VIP_PACKAGE_SUCCESS.getMessage())
                 .build());
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYER')")
     public ResponseEntity<ApiResponse<VipPackage>> getVipPackageById(@PathVariable Integer id) {
         VipPackage result = vipPackageService.getVipPackageById(id);
         return ResponseEntity.ok(ApiResponse.<VipPackage>builder()
-                .code("200")
-                .message("Get Vip Package successfully")
+                .code(Code.GET_VIP_PACKAGE_SUCCESS.getCode())
+                .message(Code.GET_VIP_PACKAGE_SUCCESS.getMessage())
                 .result(result)
                 .build());
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYER')")
     public ResponseEntity<ApiResponse<List<VipPackage>>> getAllVipPackages() {
         List<VipPackage> result = vipPackageService.getAllVipPackages();
         return ResponseEntity.ok(ApiResponse.<List<VipPackage>>builder()
-                .code("200")
-                .message("Get all Vip Packages successfully")
+                .code(Code.GET_VIP_PACKAGE_SUCCESS.getCode())
+                .message(Code.GET_VIP_PACKAGE_SUCCESS.getMessage())
+                .result(result)
+                .build());
+    }
+
+    @GetMapping("/active")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYER')")
+    public ResponseEntity<ApiResponse<List<VipPackage>>> getActiveVipPackages() {
+        List<VipPackage> result = vipPackageService.getActiveVipPackages();
+        return ResponseEntity.ok(ApiResponse.<List<VipPackage>>builder()
+                .code(Code.GET_VIP_PACKAGE_SUCCESS.getCode())
+                .message(Code.GET_VIP_PACKAGE_SUCCESS.getMessage())
                 .result(result)
                 .build());
     }

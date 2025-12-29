@@ -65,4 +65,9 @@ public class VipPackageServiceImpl implements VipPackageService {
     public List<VipPackage> getAllVipPackages() {
         return vipPackageRepository.findAll();
     }
+
+    @Override
+    public List<VipPackage> getActiveVipPackages() {
+        return vipPackageRepository.findByIsActiveTrue();
+    }
 }

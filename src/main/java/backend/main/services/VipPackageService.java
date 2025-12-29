@@ -11,4 +11,5 @@ public interface VipPackageService {
     void deleteVipPackage(Integer id);
     VipPackage getVipPackageById(Integer id);
     List<VipPackage> getAllVipPackages();
+    List<VipPackage> getActiveVipPackages();
 }
