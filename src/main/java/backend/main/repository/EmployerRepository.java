@@ -11,6 +11,7 @@ import backend.main.entities.Employer;
 
 public interface EmployerRepository extends CrudRepository<Employer, String> {
     Optional<Employer> findByEmail(String email);
+    Optional<Employer> findByCompanyName(String name);
     
     @Query("""
             SELECT e 
