@@ -4,7 +4,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,7 +38,7 @@ public class NotificationController {
                 .build());
     }
 	
-	@PutMapping("/read")
+	@PostMapping("/read")
 	public ResponseEntity<ApiResponse<Object>> readNoti(
 			@RequestBody ReadNotiRequest readNotiRequest){
         return ResponseEntity.ok(ApiResponse.builder()
