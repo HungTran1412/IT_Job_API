@@ -271,7 +271,7 @@ public class JobServiceImpl implements JobService {
 	            		.from("admin")
 	            		.build();
             	notificationRepository.save(notification);
-	            sseUtils.sendToUser(t, u); 
+	            sseUtils.sendToUser(t, u,notification.getNotiId()); 
             	
             });     
             return true;
