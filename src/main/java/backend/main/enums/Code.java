@@ -45,6 +45,15 @@ public enum Code {
     CREATE_JOB_SUCCESSFULL(CodeEnum.success.toString(), "Tạo việc làm thành công"),
     UPDATE_JOB_SUCCESSFULL(CodeEnum.success.toString(), "Cập nhật việc làm thành công"),
     GET_JOB_SUCCESSFULL(CodeEnum.success.toString(), "Lấy việc làm thành công"),
+<<<<<<< Updated upstream
+=======
+    APPLY_SUCCESSFUL(CodeEnum.success.toString(),"Ứng tuyển thành công"),
+    APPLY_FAIL(CodeEnum.error.toString(),"Ứng tuyển thất bại"),
+    SEARCH_RESULT(CodeEnum.success.toString(),"Kết quả tìm kiếm"),
+    GET_NOTI_SUCCESSFULL(CodeEnum.success.toString(),"Lấy thông báo thành công"),
+    READ_NOTI(CodeEnum.success.toString(),"Đã đọc tin nhắn"),
+
+>>>>>>> Stashed changes
 
     EMAIL_INVALID_FORMAT(CodeEnum.error.toString(), "Email không đúng định dạng"),
     PASSWORD_INVALID_FORMAT(CodeEnum.error.toString(), "Mật khẩu không hợp lệ"),
