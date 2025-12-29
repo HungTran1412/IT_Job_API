@@ -31,8 +31,8 @@ public class PaymentController {
     public ResponseEntity<ApiResponse<String>> createPayment(HttpServletRequest request, @RequestParam Integer orderId) {
         String paymentUrl = vnPayService.createPaymentUrl(request, orderId);
         return ResponseEntity.ok(ApiResponse.<String>builder()
-                .code("200")
-                .message("Create payment URL successfully")
+                .code(Code.CREATE_PAYMENT_URL_SUCCESSFUL.getCode())
+                .message(Code.CREATE_PAYMENT_URL_SUCCESSFUL.getMessage())
                 .result(paymentUrl)
                 .build());
     }
@@ -52,7 +52,7 @@ public class PaymentController {
         } else {
             return ResponseEntity.ok(ApiResponse.<Map<String, Object>>builder()
                     .code(Code.PAYMENT_FAILED.getCode())
-                    .message((String) result.get("message"))
+                    .message(Code.PAYMENT_FAILED.getMessage() + " - " + (String) result.get("message"))
                     .result(result)
                     .build());
         }

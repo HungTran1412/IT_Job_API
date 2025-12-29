@@ -2,6 +2,8 @@ package backend.main.services.Impl;
 
 import java.util.List;
 
+import backend.main.enums.Code;
+import backend.main.exception.AppException;
 import org.springframework.stereotype.Service;
 
 import backend.main.dto.request.VipPackageRequest;
@@ -48,7 +50,7 @@ public class VipPackageServiceImpl implements VipPackageService {
     @Override
     public void deleteVipPackage(Integer id) {
         if (!vipPackageRepository.existsById(id)) {
-            throw new RuntimeException("Vip Package not found");
+            throw new AppException(Code.VIP_PACKAGE_NOT_FOUND);
         }
         vipPackageRepository.deleteById(id);
     }
@@ -56,7 +58,7 @@ public class VipPackageServiceImpl implements VipPackageService {
     @Override
     public VipPackage getVipPackageById(Integer id) {
         return vipPackageRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Vip Package not found"));
+                .orElseThrow(() -> new AppException(Code.VIP_PACKAGE_NOT_FOUND));
     }
 
     @Override

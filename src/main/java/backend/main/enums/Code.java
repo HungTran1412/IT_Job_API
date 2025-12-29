@@ -68,7 +68,10 @@ public enum Code {
     
     // Payment
     PAYMENT_SUCCESS(CodeEnum.success.toString(), "Thanh toán thành công"),
-    PAYMENT_FAILED(CodeEnum.error.toString(), "Thanh toán thất bại")
+    PAYMENT_FAILED(CodeEnum.error.toString(), "Thanh toán thất bại"),
+    VIP_PACKAGE_NOT_FOUND(CodeEnum.error.toString(), "Không tìm thấy gói VIP!"),
+    ORDER_NOT_FOUND(CodeEnum.error.toString(), "Không tìm thấy đơn hàng!"),
+    CREATE_PAYMENT_URL_SUCCESSFUL(CodeEnum.success.toString(), "Tạo URL thanh toán thành công")
     ;
 
     String code;

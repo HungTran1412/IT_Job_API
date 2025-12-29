@@ -3,6 +3,8 @@ package backend.main.services.Impl;
 import java.util.List;
 import java.util.UUID;
 
+import backend.main.enums.Code;
+import backend.main.exception.AppException;
 import org.springframework.stereotype.Service;
 
 import backend.main.dto.request.OrderRequest;
@@ -26,10 +28,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order createOrder(OrderRequest request) {
         Employer employer = employerRepository.findById(request.getEmployerId())
-                .orElseThrow(() -> new RuntimeException("Employer not found"));
+                .orElseThrow(() -> new AppException(Code.EMPLOYER_NOT_FOUND));
 
         VipPackage vipPackage = vipPackageRepository.findById(request.getVipPackageId())
-                .orElseThrow(() -> new RuntimeException("Vip Package not found"));
+                .orElseThrow(() -> new AppException(Code.VIP_PACKAGE_NOT_FOUND));
 
         // Nếu request không gửi amount thì lấy giá của gói VIP
         Double amount = request.getAmount() != null ? request.getAmount() : vipPackage.getPrice();
@@ -50,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order getOrderById(Integer id) {
         return orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new AppException(Code.ORDER_NOT_FOUND));
     }
 
     @Override

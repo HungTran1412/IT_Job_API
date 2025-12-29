@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
+import backend.main.enums.Code;
+import backend.main.exception.AppException;
 import org.springframework.stereotype.Service;
 
 import backend.main.configuration.VNPayConfig;
@@ -36,7 +38,7 @@ public class VNPayServiceImpl implements VNPayService {
     @Override
     public String createPaymentUrl(HttpServletRequest request, Integer orderId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new AppException(Code.ORDER_NOT_FOUND));
 
         String vnp_Version = vnpayConfig.getVersion();
         String vnp_Command = vnpayConfig.getCommand();
