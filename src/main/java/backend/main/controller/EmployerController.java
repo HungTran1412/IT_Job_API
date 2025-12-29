@@ -83,6 +83,7 @@ public class EmployerController {
 			    .phone(e.getPhone())
 			    .logo(e.getLogo())
 			    .role(e.getRole())
+			    .jobList(e.getJobs())
 			    .build();
 
 

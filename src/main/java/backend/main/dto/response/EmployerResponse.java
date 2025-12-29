@@ -2,6 +2,7 @@ package backend.main.dto.response;
 
 import java.util.List;
 
+import backend.main.entities.Job;
 import backend.main.enums.Role;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -28,4 +29,5 @@ public class EmployerResponse {
     String logo;
     Role role;
     int createdJobs;
+    List<Job> jobList;
 }

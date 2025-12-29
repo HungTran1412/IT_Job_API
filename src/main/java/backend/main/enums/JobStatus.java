@@ -2,10 +2,10 @@ package backend.main.enums;
 
 public enum JobStatus {
 
-    APPROVED("Việc đã được duyệt"),
-    REJECTED("Việc đã bị từ chối"),
-    CANCELLED("Việc đã bị hủy"),
-    PENDING("Việc đang chờ xét duyệt");
+    APPROVED("Việc %s đã được duyệt"),
+    REJECTED("Việc %s đã bị từ chối"),
+    CANCELLED("Việc %s đã bị hủy"),
+    PENDING("Việc %s đang chờ xét duyệt");
 
     private final String message;
 
