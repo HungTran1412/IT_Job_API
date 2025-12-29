@@ -27,7 +27,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYER')")
     public ResponseEntity<ApiResponse<Order>> createOrder(@RequestBody OrderRequest request) {
         Order result = orderService.createOrder(request);
         return ResponseEntity.ok(ApiResponse.<Order>builder()
@@ -38,7 +38,7 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYER')")
     public ResponseEntity<ApiResponse<Order>> getOrderById(@PathVariable Integer id) {
         Order result = orderService.getOrderById(id);
         return ResponseEntity.ok(ApiResponse.<Order>builder()
@@ -49,7 +49,7 @@ public class OrderController {
     }
 
     @GetMapping("/employer/{employerId}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYER')")
     public ResponseEntity<ApiResponse<List<Order>>> getOrdersByEmployerId(@PathVariable String employerId) {
         List<Order> result = orderService.getOrdersByEmployerId(employerId);
         return ResponseEntity.ok(ApiResponse.<List<Order>>builder()
@@ -60,7 +60,7 @@ public class OrderController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<List<Order>>> getAllOrders() {
         List<Order> result = orderService.getAllOrders();
         return ResponseEntity.ok(ApiResponse.<List<Order>>builder()
@@ -72,7 +72,7 @@ public class OrderController {
     
     // API này dùng để test update status thủ công (sau này sẽ do VNPay callback gọi)
     @PutMapping("/{id}/status")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<Order>> updateOrderStatus(@PathVariable Integer id, @RequestParam String status) {
         Order result = orderService.updateOrderStatus(id, status);
         return ResponseEntity.ok(ApiResponse.<Order>builder()

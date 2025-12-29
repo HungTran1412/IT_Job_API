@@ -15,6 +15,7 @@ import java.util.TimeZone;
 
 import backend.main.enums.Code;
 import backend.main.exception.AppException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import backend.main.configuration.VNPayConfig;
@@ -34,6 +35,9 @@ public class VNPayServiceImpl implements VNPayService {
     private final VNPayConfig vnpayConfig;
     private final OrderRepository orderRepository;
     private final EmployerSubscriptionService employerSubscriptionService;
+
+    @Value("${app.front-end.fe-url}")
+    private String feUrl;
 
     @Override
     public String createPaymentUrl(HttpServletRequest request, Integer orderId) {
@@ -175,7 +179,9 @@ public class VNPayServiceImpl implements VNPayService {
                     result.put("status", "FAILED");
                 }
                 result.put("orderId", order.getId());
+                result.put("orderCode", order.getCode());
                 result.put("amount", vnp_Amount);
+                result.put("feUrl", feUrl);
             } else {
                 result.put("message", "Invalid Checksum");
                 result.put("status", "ERROR");
