@@ -36,7 +36,7 @@
     <div class="details" id="detailsSection">
         <div class="detail-row">
             <span class="label">Mã đơn hàng:</span>
-            <span id="orderId"></span>
+            <span id="orderCode"></span>
         </div>
         <div class="detail-row">
             <span class="label">Số tiền:</span>
@@ -44,7 +44,7 @@
         </div>
     </div>
 
-    <a href="/" class="btn">Về trang chủ</a>
+    <a href="/" class="btn" id="homeBtn">Về trang chủ</a>
 </div>
 
 <script>
@@ -84,22 +84,13 @@
 
                 // Hiển thị chi tiết đơn hàng nếu có
                 if(result) {
-                    document.getElementById('orderId').innerText = '#' + (result.orderId || 'N/A');
+                    document.getElementById('orderCode').innerText = '#' + (result.orderCode || 'N/A');
                     
                     // Format tiền tệ VND
                     let amountVal = result.amount;
                     if (amountVal) {
-                        // VNPay thường trả về amount * 100, tùy logic backend đã chia hay chưa
-                        // Giả sử backend trả về đúng số tiền thực tế cần hiển thị
-                        // Nếu backend trả về số tiền * 100 thì cần chia 100 ở đây
-                        // Dựa vào code cũ: vnp_Amount từ VNPay là *100. 
-                        // Nhưng trong result map của callback, ta put vnp_Amount (string) vào.
-                        // Nên an toàn nhất là chia 100 nếu thấy số quá lớn hoặc check logic backend.
-                        // Tạm thời format trực tiếp, nếu sai số 0 thì sửa sau.
                         try {
                             let amt = parseFloat(amountVal);
-                            // Check sơ bộ: nếu amount > vốn đơn hàng * 100 (ví dụ đơn > 100đ)
-                            // Thường vnpay trả về 10000000 cho 100k.
                             amt = amt / 100; 
                             document.getElementById('amount').innerText = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amt);
                         } catch(e) {
@@ -107,6 +98,11 @@
                         }
                     } else {
                         document.getElementById('amount').innerText = '0 đ';
+                    }
+
+                    // Cập nhật link về trang chủ từ feUrl trả về
+                    if (result.feUrl) {
+                        document.getElementById('homeBtn').href = result.feUrl;
                     }
                 } else {
                     document.getElementById('detailsSection').style.display = 'none';

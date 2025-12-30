@@ -13,10 +13,12 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class VipPackageRequest {
+    String code;
     String name;
     Double price;
     Integer durationDays;
     Integer postLimit;
+    Integer weeklyPostLimit;
     Integer jobPostDurationDays;
     String description;
     Boolean isActive;

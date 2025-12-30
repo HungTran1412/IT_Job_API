@@ -2,6 +2,7 @@ package backend.main.services.Impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -59,5 +60,11 @@ public class EmployerSubscriptionServiceImpl implements EmployerSubscriptionServ
     @Override
     public List<EmployerSubscription> getAllSubscriptions() {
         return employerSubscriptionRepository.findAll();
+    }
+
+    @Override
+    public Optional<EmployerSubscription> getCurrentActiveSubscription(String employerId) {
+        return employerSubscriptionRepository.findFirstByEmployer_EmployerIdAndStatusAndEndDateAfterOrderByEndDateDesc(
+                employerId, "ACTIVE", LocalDateTime.now());
     }
 }

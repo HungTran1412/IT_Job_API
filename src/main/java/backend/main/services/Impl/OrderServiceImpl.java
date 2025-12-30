@@ -43,7 +43,9 @@ public class OrderServiceImpl implements OrderService {
                 .status("PENDING")
                 .orderInfo(request.getOrderInfo())
                 // Tạo mã giao dịch unique cho VNPay
-                .vnpTxnRef(UUID.randomUUID().toString()) 
+                .vnpTxnRef(UUID.randomUUID().toString())
+                // Tạo mã đơn hàng unique
+                .code(UUID.randomUUID().toString())
                 .build();
 
         return orderRepository.save(order);

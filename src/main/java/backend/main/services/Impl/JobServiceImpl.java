@@ -1,5 +1,8 @@
 package backend.main.services.Impl;
 
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,14 +23,17 @@ import backend.main.dto.response.JobResponse;
 import backend.main.entities.Application;
 import backend.main.entities.Candidate;
 import backend.main.entities.Employer;
+import backend.main.entities.EmployerSubscription;
 import backend.main.entities.Job;
 import backend.main.entities.Notification;
+import backend.main.entities.VipPackage;
 import backend.main.enums.Code;
 import backend.main.enums.JobStatus;
 import backend.main.enums.Role;
 import backend.main.exception.AppException;
 import backend.main.repository.CandidateRepository;
 import backend.main.repository.EmployerRepository;
+import backend.main.repository.EmployerSubscriptionRepository;
 import backend.main.repository.JobRepository;
 import backend.main.repository.NotificationRepository;
 import backend.main.services.JobService;
@@ -58,6 +64,9 @@ public class JobServiceImpl implements JobService {
     
     @Autowired
     private SseUtils sseUtils;
+    
+    @Autowired
+    private EmployerSubscriptionRepository employerSubscriptionRepository;
 
     @Transactional
     @Override
@@ -65,6 +74,9 @@ public class JobServiceImpl implements JobService {
 //        String context = SecurityContextHolder.getContext().getAuthentication().getName();
 //        System.out.println("Context: " + context);
         Employer employer = employerRepository.findByEmail(email).orElseThrow(()-> new AppException(Code.USER_NOT_FOUND));
+
+        // Kiểm tra giới hạn bài đăng theo gói VIP
+        checkJobPostLimit(employer);
 
         Job job = null;
         
@@ -114,6 +126,52 @@ public class JobServiceImpl implements JobService {
                 job.getStatus(),
                 employer,
                 job.getCreatedAt().toLocalDate());
+    }
+
+    private void checkJobPostLimit(Employer employer) {
+        LocalDateTime now = LocalDateTime.now();
+        
+        // Lấy gói đăng ký active hiện tại của employer
+        Optional<EmployerSubscription> activeSubOpt = employerSubscriptionRepository
+                .findFirstByEmployer_EmployerIdAndStatusAndEndDateAfterOrderByEndDateDesc(
+                        employer.getEmployerId(), "ACTIVE", now);
+        
+        if (activeSubOpt.isPresent()) {
+            EmployerSubscription sub = activeSubOpt.get();
+            VipPackage vipPackage = sub.getVipPackage();
+            
+            // 1. Kiểm tra giới hạn tổng số bài đăng của gói (postLimit)
+            if (vipPackage.getPostLimit() != null && vipPackage.getPostLimit() > 0) {
+                // Đếm tổng số bài đăng trong thời gian hiệu lực của gói
+                Specification<Job> totalSpec = Specification.where(JobSpec.hasEmployerId(employer.getEmployerId()))
+                        .and(JobSpec.createdBetween(sub.getStartDate(), sub.getEndDate()));
+                
+                long totalPosts = jobRepository.count(totalSpec);
+                
+                if (totalPosts >= vipPackage.getPostLimit()) {
+                    throw new AppException(Code.JOB_POST_TOTAL_LIMIT_EXCEEDED);
+                }
+            }
+
+            // 2. Kiểm tra giới hạn bài đăng hàng tuần (weeklyPostLimit)
+            if (vipPackage.getWeeklyPostLimit() != null && vipPackage.getWeeklyPostLimit() > 0) {
+                // Tính thời gian đầu tuần và cuối tuần hiện tại
+                LocalDateTime startOfWeek = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).withHour(0).withMinute(0).withSecond(0);
+                LocalDateTime endOfWeek = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)).withHour(23).withMinute(59).withSecond(59);
+                
+                // Sử dụng Specification để đếm số lượng bài đăng trong tuần
+                Specification<Job> weeklySpec = Specification.where(JobSpec.hasEmployerId(employer.getEmployerId()))
+                        .and(JobSpec.createdBetween(startOfWeek, endOfWeek));
+                
+                long currentWeekPosts = jobRepository.count(weeklySpec);
+                
+                if (currentWeekPosts >= vipPackage.getWeeklyPostLimit()) {
+                    throw new AppException(Code.JOB_POST_WEEKLY_LIMIT_EXCEEDED);
+                }
+            }
+        } else {
+             throw new AppException(Code.VIP_PACKAGE_NOT_FOUND);
+        }
     }
 
     @Override

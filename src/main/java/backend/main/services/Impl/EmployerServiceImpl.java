@@ -5,8 +5,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import backend.main.dto.request.EmployerSubscriptionRequest;
 import backend.main.entities.Candidate;
+import backend.main.entities.VipPackage;
 import backend.main.repository.CandidateRepository;
+import backend.main.repository.VipPackageRepository;
+import backend.main.services.EmployerSubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -62,6 +66,10 @@ public class EmployerServiceImpl implements EmployerService {
     VerificationTokenRepository verificationTokenRepository;
     @Autowired
     AppProperties appProperties;
+    @Autowired
+    VipPackageRepository vipPackageRepository;
+    @Autowired
+    EmployerSubscriptionService employerSubscriptionService;
 
     private String generateEmployerID() {
         return "EMPL" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
@@ -125,7 +133,29 @@ public class EmployerServiceImpl implements EmployerService {
         e.setUpdateAt(LocalDateTime.now());
         e.setEnabled(true);
         verificationTokenRepository.delete(vt);
-        return saveEmployer(e);
+        Employer savedEmployer = saveEmployer(e);
+
+        // Gán gói VIP mặc định (DEFAULT) cho nhà tuyển dụng sau khi xác thực thành công
+        try {
+            VipPackage defaultPackage = vipPackageRepository.findByCode("DEFAULT")
+                    .orElse(null);
+            
+            if (defaultPackage != null) {
+                EmployerSubscriptionRequest subRequest = EmployerSubscriptionRequest.builder()
+                        .employerId(savedEmployer.getEmployerId())
+                        .vipPackageId(defaultPackage.getId())
+                        .build();
+                employerSubscriptionService.createSubscription(subRequest);
+                log.info("Assigned DEFAULT vip package to employer: {}", savedEmployer.getEmail());
+            } else {
+                log.warn("DEFAULT vip package not found. Skipping auto-assignment for employer: {}", savedEmployer.getEmail());
+            }
+        } catch (Exception ex) {
+            log.error("Error assigning DEFAULT vip package to employer: {}", savedEmployer.getEmail(), ex);
+            // Không throw exception để tránh rollback việc verify tài khoản
+        }
+
+        return savedEmployer;
     }
 
     @Override
