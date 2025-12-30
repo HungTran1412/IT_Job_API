@@ -79,7 +79,11 @@ public enum Code {
     CREATE_VIP_PACKAGE_SUCCESS(CodeEnum.success.toString(), "Tạo gói VIP thành công"),
     UPDATE_VIP_PACKAGE_SUCCESS(CodeEnum.success.toString(), "Cập nhật gói VIP thành công"),
     DELETE_VIP_PACKAGE_SUCCESS(CodeEnum.success.toString(), "Xóa gói VIP thành công"),
-    GET_VIP_PACKAGE_SUCCESS(CodeEnum.success.toString(), "Lấy thông tin gói VIP thành công")
+    GET_VIP_PACKAGE_SUCCESS(CodeEnum.success.toString(), "Lấy thông tin gói VIP thành công"),
+    
+    // Job Limit
+    JOB_POST_WEEKLY_LIMIT_EXCEEDED(CodeEnum.error.toString(), "Bạn đã đạt giới hạn số lượng bài đăng trong tuần của gói hiện tại!"),
+    JOB_POST_TOTAL_LIMIT_EXCEEDED(CodeEnum.error.toString(), "Bạn đã đạt giới hạn tổng số lượng bài đăng của gói hiện tại!")
     ;
 
     String code;

@@ -21,10 +21,12 @@ public class VipPackageServiceImpl implements VipPackageService {
     @Override
     public VipPackage createVipPackage(VipPackageRequest request) {
         VipPackage vipPackage = VipPackage.builder()
+                .code(request.getCode())
                 .name(request.getName())
                 .price(request.getPrice())
                 .durationDays(request.getDurationDays())
                 .postLimit(request.getPostLimit())
+                .weeklyPostLimit(request.getWeeklyPostLimit())
                 .jobPostDurationDays(request.getJobPostDurationDays())
                 .description(request.getDescription())
                 .isActive(request.getIsActive() != null ? request.getIsActive() : true)
@@ -36,10 +38,12 @@ public class VipPackageServiceImpl implements VipPackageService {
     public VipPackage updateVipPackage(Integer id, VipPackageRequest request) {
         VipPackage vipPackage = getVipPackageById(id);
         
+        if (request.getCode() != null) vipPackage.setCode(request.getCode());
         if (request.getName() != null) vipPackage.setName(request.getName());
         if (request.getPrice() != null) vipPackage.setPrice(request.getPrice());
         if (request.getDurationDays() != null) vipPackage.setDurationDays(request.getDurationDays());
         if (request.getPostLimit() != null) vipPackage.setPostLimit(request.getPostLimit());
+        if (request.getWeeklyPostLimit() != null) vipPackage.setWeeklyPostLimit(request.getWeeklyPostLimit());
         if (request.getJobPostDurationDays() != null) vipPackage.setJobPostDurationDays(request.getJobPostDurationDays());
         if (request.getDescription() != null) vipPackage.setDescription(request.getDescription());
         if (request.getIsActive() != null) vipPackage.setIsActive(request.getIsActive());

@@ -1,5 +1,6 @@
 package backend.main.specification;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
@@ -69,5 +70,16 @@ public class JobSpec {
                         ? null
                         : cb.equal(root.get("workingFrom"), workingFrom);
     }
-}
+    
+    public static Specification<Job> hasEmployerId(String employerId) {
+        return (root, query, cb) -> 
+            employerId == null || employerId.isBlank()
+                ? null
+                : cb.equal(root.get("employer").get("employerId"), employerId);
+    }
 
+    public static Specification<Job> createdBetween(LocalDateTime start, LocalDateTime end) {
+        return (root, query, cb) -> 
+            cb.between(root.get("createdAt"), start, end);
+    }
+}

@@ -1,5 +1,6 @@
 package backend.main.repository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -19,5 +20,7 @@ public interface JobRepository extends CrudRepository<Job,String>, JpaSpecificat
     Page<Job> findByEmployer_EmployerId(String employerId, Pageable pageable);
     Page<Job> findByEmployer_EmployerIdAndStatus(String employerId, JobStatus status, Pageable pageable);
     Page<Job> findByEmployer_EmployerIdAndTitleContaining(String employerId, String keyword, Pageable pageable);
+    
+    // Đếm số lượng bài đăng của một employer trong khoảng thời gian
+    long countByEmployer_EmployerIdAndCreatedAtBetween(String employerId, LocalDateTime start, LocalDateTime end);
 }
-

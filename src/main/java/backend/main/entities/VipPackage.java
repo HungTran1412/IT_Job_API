@@ -28,6 +28,9 @@ public class VipPackage extends BaseModel {
     @Column(name = "id")
     Integer id;
 
+    @Column(name = "code", unique = true, nullable = false)
+    String code;
+
     @Column(name = "name", nullable = false)
     String name; 
 
@@ -39,6 +42,9 @@ public class VipPackage extends BaseModel {
 
     @Column(name = "post_limit")
     Integer postLimit; 
+
+    @Column(name = "weekly_post_limit")
+    Integer weeklyPostLimit;
 
     @Column(name = "job_post_duration_days")
     Integer jobPostDurationDays; 
