@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import backend.main.enums.Code;
+import backend.main.exception.AppException;
 import org.springframework.stereotype.Service;
 
 import backend.main.dto.request.EmployerSubscriptionRequest;
@@ -27,10 +29,10 @@ public class EmployerSubscriptionServiceImpl implements EmployerSubscriptionServ
     @Override
     public EmployerSubscription createSubscription(EmployerSubscriptionRequest request) {
         Employer employer = employerRepository.findById(request.getEmployerId())
-                .orElseThrow(() -> new RuntimeException("Employer not found"));
+                .orElseThrow(() -> new AppException(Code.EMPLOYER_NOT_FOUND));
         
         VipPackage vipPackage = vipPackageRepository.findById(request.getVipPackageId())
-                .orElseThrow(() -> new RuntimeException("Vip Package not found"));
+                .orElseThrow(() -> new AppException(Code.VIP_PACKAGE_NOT_FOUND));
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime endDate = now.plusDays(vipPackage.getDurationDays());
@@ -49,7 +51,7 @@ public class EmployerSubscriptionServiceImpl implements EmployerSubscriptionServ
     @Override
     public EmployerSubscription getSubscriptionById(Integer id) {
         return employerSubscriptionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Subscription not found"));
+                .orElseThrow(() -> new AppException(Code.SUBSCRIPTION_NOT_FOUND));
     }
 
     @Override

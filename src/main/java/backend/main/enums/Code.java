@@ -83,7 +83,13 @@ public enum Code {
     
     // Job Limit
     JOB_POST_WEEKLY_LIMIT_EXCEEDED(CodeEnum.error.toString(), "Bạn đã đạt giới hạn số lượng bài đăng trong tuần của gói hiện tại!"),
-    JOB_POST_TOTAL_LIMIT_EXCEEDED(CodeEnum.error.toString(), "Bạn đã đạt giới hạn tổng số lượng bài đăng của gói hiện tại!")
+    JOB_POST_TOTAL_LIMIT_EXCEEDED(CodeEnum.error.toString(), "Bạn đã đạt giới hạn tổng số lượng bài đăng của gói hiện tại!"),
+    
+    // Subscription
+    SUBSCRIPTION_NOT_FOUND(CodeEnum.error.toString(), "Không tìm thấy gói đăng ký!"),
+    
+    // Email
+    SEND_EMAIL_FAILED(CodeEnum.error.toString(), "Gửi email thất bại!")
     ;
 
     String code;

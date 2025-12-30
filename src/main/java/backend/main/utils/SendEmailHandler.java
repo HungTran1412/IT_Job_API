@@ -1,5 +1,7 @@
 package backend.main.utils;
 
+import backend.main.enums.Code;
+import backend.main.exception.AppException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -57,7 +59,7 @@ public class SendEmailHandler {
             helper.setText(content, true);
             mailSender.send(message);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new AppException(Code.SEND_EMAIL_FAILED);
         }
     }
 
@@ -86,7 +88,7 @@ public class SendEmailHandler {
             helper.setText(content, true);
             mailSender.send(message);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new AppException(Code.SEND_EMAIL_FAILED);
         }
     }
 }

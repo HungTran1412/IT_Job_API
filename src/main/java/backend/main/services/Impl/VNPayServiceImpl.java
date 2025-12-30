@@ -145,7 +145,7 @@ public class VNPayServiceImpl implements VNPayService {
                 
                 // Tìm đơn hàng
                 Order order = orderRepository.findByVnpTxnRef(vnp_TxnRef)
-                        .orElseThrow(() -> new RuntimeException("Order not found"));
+                        .orElseThrow(() -> new AppException(Code.ORDER_NOT_FOUND));
 
                 boolean isSuccess = "00".equals(vnp_ResponseCode);
                 
