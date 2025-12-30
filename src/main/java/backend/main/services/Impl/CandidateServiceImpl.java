@@ -156,7 +156,12 @@ public class CandidateServiceImpl implements CandidateService {
         cd.setUpdateAt(LocalDateTime.now());
         cd.setEnabled(true);
         verificationTokenRepository.delete(vt);
-        return saveCandidate(cd);
+        Candidate savedCandidate = saveCandidate(cd);
+
+        // Gửi email chào mừng sau khi xác thực thành công
+        sendEmailHandler.sendWelcomeEmail(savedCandidate.getEmail(), savedCandidate.getFullname());
+
+        return savedCandidate;
     }
 
     @Override

@@ -3,6 +3,7 @@ package backend.main.controller;
 import java.util.List;
 import java.util.Optional;
 
+import backend.main.exception.AppException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -69,13 +70,13 @@ public class ApplicationController {
 	@GetMapping("/candidate/{candidateId}")
 	public List<Application> getApplicationsByCandidate(@PathVariable String candidateEmail) {
 		Candidate candidate = candidateRepository.findByEmail(candidateEmail)
-				.orElseThrow(() -> new RuntimeException("Candidate not found"));
+				.orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
 		return applicationService.findByCandidate(candidate);
 	}
 
 	@GetMapping("/job/{jobId}")
 	public List<Application> getApplicationsByJob(@PathVariable String jobId) {
-		Job job = jobRepository.findById(jobId).orElseThrow(() -> new RuntimeException("Job not found"));
+		Job job = jobRepository.findById(jobId).orElseThrow(() -> new AppException(Code.JOB_NOT_FOUND));
 		return applicationService.findByJob(job);
 	}
 

@@ -155,6 +155,9 @@ public class EmployerServiceImpl implements EmployerService {
             // Không throw exception để tránh rollback việc verify tài khoản
         }
 
+        // Gửi email chào mừng sau khi xác thực thành công
+        sendEmailHandler.sendWelcomeEmail(savedEmployer.getEmail(), savedEmployer.getCompanyName());
+
         return savedEmployer;
     }
 
