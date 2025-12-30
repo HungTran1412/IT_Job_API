@@ -89,7 +89,12 @@ public enum Code {
     SUBSCRIPTION_NOT_FOUND(CodeEnum.error.toString(), "Không tìm thấy gói đăng ký!"),
     
     // Email
-    SEND_EMAIL_FAILED(CodeEnum.error.toString(), "Gửi email thất bại!")
+    SEND_EMAIL_FAILED(CodeEnum.error.toString(), "Gửi email thất bại!"),
+    
+    // Order
+    CREATE_ORDER_SUCCESS(CodeEnum.success.toString(), "Tạo đơn hàng thành công"),
+    GET_ORDER_SUCCESS(CodeEnum.success.toString(), "Lấy thông tin đơn hàng thành công"),
+    UPDATE_ORDER_STATUS_SUCCESS(CodeEnum.success.toString(), "Cập nhật trạng thái đơn hàng thành công")
     ;
 
     String code;
