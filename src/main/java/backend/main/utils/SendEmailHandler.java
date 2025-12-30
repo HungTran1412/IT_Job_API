@@ -91,4 +91,38 @@ public class SendEmailHandler {
             throw new AppException(Code.SEND_EMAIL_FAILED);
         }
     }
+
+    public void sendWelcomeEmail(String email, String name) {
+        String subject = "Chào mừng bạn đến với ITJob - Đăng ký thành công!";
+
+        String content = """
+            <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                <h2 style="color: #28a745; text-align: center;">Đăng ký tài khoản thành công!</h2>
+                <p>Xin chào <strong>%s</strong>,</p>
+                <p>Chúc mừng bạn đã xác thực tài khoản thành công và chính thức trở thành thành viên của cộng đồng <strong>ITJob</strong>.</p>
+                
+                <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                    <h3 style="color: #0056b3; margin-top: 0;">Bước tiếp theo: Hoàn thiện thông tin</h3>
+                    <p>Để có trải nghiệm tốt nhất trên hệ thống, bạn hãy dành chút thời gian cập nhật đầy đủ thông tin hồ sơ cá nhân (đối với Ứng viên) hoặc thông tin doanh nghiệp (đối với Nhà tuyển dụng) tại trang quản lý nhé.</p>
+                </div>
+
+                <p>Nếu bạn cần hỗ trợ, đừng ngần ngại liên hệ với chúng tôi qua email này.</p>
+                <p>Chúc bạn có những trải nghiệm tuyệt vời cùng ITJob!</p>
+                <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                <p style="font-size: 12px; color: #777; text-align: center;">&copy; 2024 ITJob. All rights reserved.</p>
+            </div>
+            """.formatted(name);
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setTo(email);
+            helper.setSubject(subject);
+            helper.setText(content, true);
+            mailSender.send(message);
+        } catch (Exception e) {
+            // Log lỗi nhưng không throw exception để tránh ảnh hưởng luồng chính (vì email chào mừng không quá quan trọng)
+            log.error("Failed to send welcome email to {}", email, e);
+        }
+    }
 }
