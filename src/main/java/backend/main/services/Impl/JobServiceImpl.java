@@ -1,6 +1,7 @@
 package backend.main.services.Impl;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
@@ -75,10 +76,26 @@ public class JobServiceImpl implements JobService {
 //        System.out.println("Context: " + context);
         Employer employer = employerRepository.findByEmail(email).orElseThrow(()-> new AppException(Code.USER_NOT_FOUND));
 
-        // Kiểm tra giới hạn bài đăng theo gói VIP
-        checkJobPostLimit(employer);
+        // Kiểm tra giới hạn bài đăng theo gói VIP và lấy gói hiện tại
+        VipPackage currentVipPackage = checkJobPostLimit(employer);
 
         Job job = null;
+        
+        // Tính toán deadline dựa trên jobPostDurationDays của gói VIP
+        LocalDate deadline = jobRequest.getDeadline();
+        if (currentVipPackage.getJobPostDurationDays() != null && currentVipPackage.getJobPostDurationDays() > 0) {
+            LocalDate maxDeadline = LocalDate.now().plusDays(currentVipPackage.getJobPostDurationDays());
+            // Nếu người dùng không nhập deadline hoặc nhập quá xa -> gán bằng maxDeadline
+            if (deadline == null || deadline.isAfter(maxDeadline)) {
+                deadline = maxDeadline;
+            }
+            // Nếu người dùng nhập deadline ngắn hơn maxDeadline -> giữ nguyên
+        } else {
+             // Nếu gói không quy định (null hoặc 0) -> có thể để mặc định hoặc bắt buộc (tùy logic), ở đây tạm để theo request
+             if (deadline == null) {
+                 deadline = LocalDate.now().plusDays(30); // Mặc định 30 ngày nếu không có quy định
+             }
+        }
         
         if(!jobRequest.isCheckSalary()) {
         	job = Job.builder()
@@ -90,7 +107,7 @@ public class JobServiceImpl implements JobService {
                 .workingFrom(jobRequest.getWorkingFrom())
                 .location(employer.getCity())
                 .technologies(jobRequest.getTechnologies())
-                .deadline(jobRequest.getDeadline())
+                .deadline(deadline)
                 .logo(employer.getLogo())
                 .build();
         }else {
@@ -103,7 +120,7 @@ public class JobServiceImpl implements JobService {
                     .workingFrom(jobRequest.getWorkingFrom())
                     .location(employer.getCity())
                     .technologies(jobRequest.getTechnologies())
-                    .deadline(jobRequest.getDeadline())
+                    .deadline(deadline)
                     .logo(employer.getLogo())
                     .build();
         }
@@ -128,7 +145,7 @@ public class JobServiceImpl implements JobService {
                 job.getCreatedAt().toLocalDate());
     }
 
-    private void checkJobPostLimit(Employer employer) {
+    private VipPackage checkJobPostLimit(Employer employer) {
         LocalDateTime now = LocalDateTime.now();
         
         // Lấy gói đăng ký active hiện tại của employer
@@ -169,6 +186,8 @@ public class JobServiceImpl implements JobService {
                     throw new AppException(Code.JOB_POST_WEEKLY_LIMIT_EXCEEDED);
                 }
             }
+            
+            return vipPackage;
         } else {
              throw new AppException(Code.VIP_PACKAGE_NOT_FOUND);
         }
