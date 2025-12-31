@@ -16,8 +16,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder.Default;
+import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -26,6 +27,7 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "tbl_candidate")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Data
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
@@ -57,11 +59,11 @@ public class Candidate extends User{
 
     @JsonIgnore
     @Column(name = "enabled")
-    @Default
+    @Builder.Default
     Boolean enabled = false;
 
     @Column(name = "is_private")
-    @Default
+    @Builder.Default
     Boolean isPrivate = true;
 
     @Column(name = "experience")
@@ -81,7 +83,7 @@ public class Candidate extends User{
     List<Application> applications;
     
     @JsonIgnore
-    @Default
+    @Builder.Default
     @ManyToMany
     @JoinTable(
             name = "candidate_liked_jobs",

@@ -15,8 +15,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder.Default;
+import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -25,6 +26,7 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "tbl_employer")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Data
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
@@ -36,7 +38,7 @@ public class Employer extends User {
     @Column(name = "company_name")
     String companyName;
 
-    @Default
+    @Builder.Default
     @ElementCollection
     @CollectionTable(name = "employer_city", joinColumns = @JoinColumn(name = "employer_id"))
     @Column(name = "city")
@@ -67,6 +69,7 @@ public class Employer extends User {
     String logo;
 
     @Column(name = "enabled")
+    @Builder.Default
     Boolean enabled = false;
     
     @OneToMany(mappedBy = "employer",orphanRemoval = true)

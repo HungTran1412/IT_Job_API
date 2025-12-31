@@ -14,8 +14,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder.Default;
+import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -24,6 +25,7 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "tbl_applications")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Data
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
@@ -36,7 +38,7 @@ public class Application extends BaseModel {
 	LocalDateTime appliedDate;
 	String coverLetter;
 	
-	@Default
+	@Builder.Default
     @JsonIgnore
 	ApplicationStatus status = ApplicationStatus.REVIEWING;
 	

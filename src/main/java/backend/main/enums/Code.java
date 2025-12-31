@@ -94,7 +94,10 @@ public enum Code {
     // Order
     CREATE_ORDER_SUCCESS(CodeEnum.success.toString(), "Tạo đơn hàng thành công"),
     GET_ORDER_SUCCESS(CodeEnum.success.toString(), "Lấy thông tin đơn hàng thành công"),
-    UPDATE_ORDER_STATUS_SUCCESS(CodeEnum.success.toString(), "Cập nhật trạng thái đơn hàng thành công")
+    UPDATE_ORDER_STATUS_SUCCESS(CodeEnum.success.toString(), "Cập nhật trạng thái đơn hàng thành công"),
+    
+    // Dashboard
+    GET_DASHBOARD_STATS_SUCCESS(CodeEnum.success.toString(), "Lấy thống kê dashboard thành công")
     ;
 
     String code;
