@@ -206,6 +206,10 @@ public class CandidateServiceImpl implements CandidateService {
         if(c.getEnabled() == false){
             throw new AppException(Code.ACCOUNT_UNENABLED);
         }
+        
+        if(c.getIsLocked()){
+            throw new AppException(Code.ACCOUNT_LOCKED);
+        }
 
         // Trả về thông tin ứng viên (không bao gồm mật khẩu)
         return jwtUtils.generateToken(c.getCandidateId(),c.getEmail(), c.getRole(), request.isRememberMe());

@@ -1,5 +1,6 @@
 package backend.main.controller;
 
+import backend.main.dto.request.admin.UpdateUserLockRequest;
 import backend.main.utils.JwtUtils;
 import backend.main.dto.request.ChangePasswordRequest;
 import backend.main.dto.request.LoginRequest;
@@ -15,12 +16,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/admin")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Tag(name = "Admin: ", description = "Đăng nhập và quên mật khẩu")
+@Tag(name = "Admin: ", description = "Đăng nhập và quản lý người dùng")
 public class AdminController {
     @Autowired
     AdminService adminService;
@@ -83,5 +85,18 @@ public class AdminController {
                     .message(Code.UNCATEGORIZED_EXCEPTION.getMessage())
                     .build());
         }
+    }
+
+    //TODO: thêm api lấy tất cả danh sách người dùng (có phân trang) hiển thị id người dùng, tên, trạng thái khóa
+    //TODO: thêm api xóa người dùng cho admin
+
+    @PutMapping("/users/lock-status")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<ApiResponse<Void>> updateUserLockStatus(@RequestBody UpdateUserLockRequest request) {
+        adminService.updateUserLockStatus(request.getUserId(), request.getIsLocked());
+        return ResponseEntity.ok(ApiResponse.<Void>builder()
+                .code(Code.UPDATE_LOCK_SUCCEEDED.getCode())
+                .message(Code.UPDATE_LOCK_SUCCEEDED.getMessage())
+                .build());
     }
 }
