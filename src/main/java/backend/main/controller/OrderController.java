@@ -2,10 +2,13 @@ package backend.main.controller;
 
 import java.util.List;
 
+import backend.main.dto.request.PageRequestDto;
 import backend.main.enums.Code;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,8 +35,6 @@ public class OrderController {
     @Autowired
     OrderService orderService;
 
-    //TODO: viết api lấy ra tổng số đơn hàng,tổng số công việc cho trang dashboard
-    
     @PostMapping
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYER')")
     public ResponseEntity<ApiResponse<Order>> createOrder(@RequestBody OrderRequest request) {
@@ -69,12 +70,12 @@ public class OrderController {
 
     //TODO:-viết api riêng lấy tất cả đơn hàng có lọc theo từng tháng, hoặc cho phép truyền vào từ tháng 1 đến tháng 9 . Ví dụ(startDate=1&endDate=9)
 
-    //TODO: -lấy ra danh sách đơn hàng có cả phân trang
-    @GetMapping
+    @PostMapping("/filter")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<ApiResponse<List<Order>>> getAllOrders() {
-        List<Order> result = orderService.getAllOrders();
-        return ResponseEntity.ok(ApiResponse.<List<Order>>builder()
+    public ResponseEntity<ApiResponse<Page<Order>>> getAllOrders(@RequestBody PageRequestDto requestDto) {
+        Pageable pageable = requestDto.toPageable();
+        Page<Order> result = orderService.getAllOrders(pageable);
+        return ResponseEntity.ok(ApiResponse.<Page<Order>>builder()
                 .code(Code.GET_ORDER_SUCCESS.getCode())
                 .message(Code.GET_ORDER_SUCCESS.getMessage())
                 .result(result)

@@ -5,6 +5,8 @@ import java.util.UUID;
 
 import backend.main.enums.Code;
 import backend.main.exception.AppException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import backend.main.dto.request.OrderRequest;
@@ -63,8 +65,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
+    public Page<Order> getAllOrders(Pageable pageable) {
+        return orderRepository.findAll(pageable);
     }
 
     @Override

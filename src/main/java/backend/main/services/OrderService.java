@@ -2,6 +2,9 @@ package backend.main.services;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import backend.main.dto.request.OrderRequest;
 import backend.main.entities.Order;
 
@@ -9,6 +12,6 @@ public interface OrderService {
     Order createOrder(OrderRequest request);
     Order getOrderById(Integer id);
     List<Order> getOrdersByEmployerId(String employerId);
-    List<Order> getAllOrders();
+    Page<Order> getAllOrders(Pageable pageable);
     Order updateOrderStatus(Integer id, String status); 
 }
