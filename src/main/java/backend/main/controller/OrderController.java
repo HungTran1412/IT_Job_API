@@ -68,8 +68,6 @@ public class OrderController {
                 .build());
     }
 
-    //TODO:-viết api riêng lấy tất cả đơn hàng có lọc theo từng tháng, hoặc cho phép truyền vào từ tháng 1 đến tháng 9 . Ví dụ(startDate=1&endDate=9)
-
     @PostMapping("/filter")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<Page<Order>>> getAllOrders(@RequestBody PageRequestDto requestDto) {

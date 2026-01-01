@@ -1,18 +1,23 @@
 package backend.main.services.Impl;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import backend.main.enums.Code;
-import backend.main.exception.AppException;
+import backend.main.dto.response.OrderStatsResponse;
+import backend.main.specification.OrderSpec;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import backend.main.dto.request.OrderRequest;
 import backend.main.entities.Employer;
 import backend.main.entities.Order;
 import backend.main.entities.VipPackage;
+import backend.main.enums.Code;
+import backend.main.exception.AppException;
 import backend.main.repository.EmployerRepository;
 import backend.main.repository.OrderRepository;
 import backend.main.repository.VipPackageRepository;
@@ -74,5 +79,39 @@ public class OrderServiceImpl implements OrderService {
         Order order = getOrderById(id);
         order.setStatus(status);
         return orderRepository.save(order);
+    }
+
+    @Override
+    public OrderStatsResponse getOrderStats(LocalDate startDate, LocalDate endDate) {
+        if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
+            throw new AppException(Code.INVALID_DATE_RANGE);
+        }
+
+        LocalDateTime start = null;
+        LocalDateTime end = null;
+
+        if (startDate != null) {
+            start = startDate.atStartOfDay();
+        }
+        
+        if (endDate != null) {
+            end = endDate.atTime(23, 59, 59);
+        }
+
+        // Chỉ lấy các đơn hàng thành công
+        Specification<Order> spec = Specification.where(OrderSpec.hasStatus("SUCCESS"))
+                .and(OrderSpec.createdBetween(start, end));
+
+        List<Order> orders = orderRepository.findAll(spec);
+
+        long totalOrders = orders.size();
+        double totalRevenue = orders.stream()
+                .mapToDouble(Order::getAmount)
+                .sum();
+
+        return OrderStatsResponse.builder()
+                .totalOrders(totalOrders)
+                .totalRevenue(totalRevenue)
+                .build();
     }
 }

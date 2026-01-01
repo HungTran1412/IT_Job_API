@@ -97,7 +97,10 @@ public enum Code {
     UPDATE_ORDER_STATUS_SUCCESS(CodeEnum.success.toString(), "Cập nhật trạng thái đơn hàng thành công"),
     
     // Dashboard
-    GET_DASHBOARD_STATS_SUCCESS(CodeEnum.success.toString(), "Lấy thống kê dashboard thành công")
+    GET_DASHBOARD_STATS_SUCCESS(CodeEnum.success.toString(), "Lấy thống kê dashboard thành công"),
+    
+    // Date
+    INVALID_DATE_RANGE(CodeEnum.error.toString(), "Ngày bắt đầu không được lớn hơn ngày kết thúc!")
     ;
 
     String code;
