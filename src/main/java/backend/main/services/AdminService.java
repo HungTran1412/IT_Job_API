@@ -8,4 +8,5 @@ import backend.main.entities.Admin;
 public interface AdminService {
     String login(LoginRequest request);
     boolean changePassword(String email, ChangePasswordRequest request);
+    void updateUserLockStatus(String userId, boolean isLocked);
 }

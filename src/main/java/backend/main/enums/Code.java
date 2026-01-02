@@ -19,10 +19,12 @@ public enum Code {
     TOKEN_NOT_VERIFIED(CodeEnum.error.toString(), "Token chưa được xác thực!"),
     TOKEN_NOT_FOUND_IN_COOKIE(CodeEnum.error.toString(), "Không tìm thấy token trong cookie. Vui lòng xác thực lại OTP."),
     ACCOUNT_UNENABLED(CodeEnum.error.toString(), "Tài khoản chưa xác thực!"),
+    ACCOUNT_LOCKED(CodeEnum.error.toString(), "Tài khoản đã bị khóa!"),
     ID_EXISTED(CodeEnum.error.toString(), "ID đã ồn tại!"),
     FILE_UPLOAD_FAILED(CodeEnum.error.toString(), "File Upload thất bại!"),
     LOGIN_SUCCEEDED(CodeEnum.success.toString(), "Đăng nhập thành công!"),
     UPDATE_INFO_SUCCEEDED(CodeEnum.success.toString(), "Cập nhật thông tin thành công!"),
+    UPDATE_LOCK_SUCCEEDED(CodeEnum.success.toString(),"Cập nhật trạng thái khóa thành công"),
     UPDATE_INFO_FAILED(CodeEnum.error.toString(), "Cập nhật thông tin thất bại!"),
     CANNOT_UPDATE_ANOTHER_USER(CodeEnum.error.toString(), "Không thể cập nhật thông tin của người khác!"),
     CANNOT_GET_ANOTHER_INFO(CodeEnum.error.toString(), "Cannot get another info!"),
@@ -97,7 +99,10 @@ public enum Code {
     UPDATE_ORDER_STATUS_SUCCESS(CodeEnum.success.toString(), "Cập nhật trạng thái đơn hàng thành công"),
     
     // Dashboard
-    GET_DASHBOARD_STATS_SUCCESS(CodeEnum.success.toString(), "Lấy thống kê dashboard thành công")
+    GET_DASHBOARD_STATS_SUCCESS(CodeEnum.success.toString(), "Lấy thống kê dashboard thành công"),
+    
+    // Date
+    INVALID_DATE_RANGE(CodeEnum.error.toString(), "Ngày bắt đầu không được lớn hơn ngày kết thúc!")
     ;
 
     String code;

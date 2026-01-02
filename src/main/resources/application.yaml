@@ -50,9 +50,9 @@ app:
     employer: ${VERIFY_TOKEN_EMPLOYER}
   front-end:
     fe-url: ${FE_URL}
-    verified-candidate-url: ${VERIFIED_CANDIDATE_URL}
-    verified-company-url: ${VERIFIED_EMPLOYER_URL}
-    verified-url: ${VERIFIED_URL}
+    verified-candidate-url: ${FE_URL}${VERIFIED_CANDIDATE_URL}
+    verified-company-url: ${FE_URL}${VERIFIED_EMPLOYER_URL}
+    verified-url: ${FE_URL}${VERIFIED_URL}
 
 vnpay:
   tmn-code: ${TMN_CODE}

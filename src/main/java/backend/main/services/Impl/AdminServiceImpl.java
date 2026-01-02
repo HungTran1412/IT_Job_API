@@ -1,5 +1,9 @@
 package backend.main.services.Impl;
 
+import backend.main.entities.Candidate;
+import backend.main.entities.Employer;
+import backend.main.repository.CandidateRepository;
+import backend.main.repository.EmployerRepository;
 import backend.main.utils.JwtUtils;
 import backend.main.dto.request.ChangePasswordRequest;
 import backend.main.dto.request.LoginRequest;
@@ -17,6 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
 @Slf4j
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,  makeFinal = true)
@@ -28,6 +35,10 @@ public class AdminServiceImpl implements AdminService {
     PasswordEncoder passwordEncoder;
     @Autowired
     JwtUtils jwtUtils;
+    @Autowired
+    CandidateRepository candidateRepository;
+    @Autowired
+    EmployerRepository employerRepository;
 
     @Override
     @Transactional
@@ -69,5 +80,29 @@ public class AdminServiceImpl implements AdminService {
         } catch (AppException e) {
             return false;
         }
+    }
+
+    @Override
+    @Transactional
+    public void updateUserLockStatus(String userId, boolean isLocked) {
+        // Thử tìm trong Candidate
+        Optional<Candidate> candidateOpt = candidateRepository.findById(userId);
+        if (candidateOpt.isPresent()) {
+            Candidate candidate = candidateOpt.get();
+            candidate.setIsLocked(isLocked);
+            candidateRepository.save(candidate);
+            return;
+        }
+
+        // Thử tìm trong Employer
+        Optional<Employer> employerOpt = employerRepository.findById(userId);
+        if (employerOpt.isPresent()) {
+            Employer employer = employerOpt.get();
+            employer.setIsLocked(isLocked);
+            employerRepository.save(employer);
+            return;
+        }
+
+        throw new AppException(Code.USER_NOT_FOUND);
     }
 }

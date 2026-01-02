@@ -7,11 +7,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.MappedSuperclass;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
@@ -38,5 +34,9 @@ public class User extends BaseModel{
     @JsonIgnore
     @Column(name = "remember_me")
     Boolean rememberMe;
+
+    @Column(name = "is_locked")
+    @Builder.Default
+    Boolean isLocked = false;
     
 }

@@ -238,6 +238,10 @@ public class EmployerServiceImpl implements EmployerService {
         if (e.getEnabled() == false) {
             throw new AppException(Code.ACCOUNT_UNENABLED);
         }
+        
+        if(e.getIsLocked()){
+            throw new AppException(Code.ACCOUNT_LOCKED);
+        }
 
         return jwtUtils.generateToken(e.getEmployerId(), e.getEmail(), e.getRole(), request.isRememberMe());
     }
