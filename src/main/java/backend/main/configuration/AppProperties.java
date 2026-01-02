@@ -16,6 +16,7 @@ public class AppProperties {
 
     private Verify verify = new Verify();
     private Frontend frontend = new Frontend();
+    private Admin admin = new Admin();
     @Getter
     @Setter
     public static class Verify {
@@ -30,6 +31,12 @@ public class AppProperties {
         private String verifiedCompanyUrl;
         private String verifiedUrl;
         private String failedUrl;
+    }
+    @Getter
+    @Setter
+    public static class Admin {
+        private String email;
+        private String password;
     }
 }
 

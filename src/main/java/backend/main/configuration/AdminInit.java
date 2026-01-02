@@ -28,16 +28,17 @@ import lombok.extern.slf4j.Slf4j;
 public class AdminInit {
 	
 	PasswordEncoder encoder;
+	AppProperties appProperties;
 
 	@Bean
 	ApplicationRunner applicationRunner(AdminRepository repository,CandidateRepository candidateRepo,EmployerRepository employerRepo) {
         return args -> {
-            if(repository.findByEmail("admin@dev.com").isEmpty()) {
+            if(repository.findByEmail(appProperties.getAdmin().getEmail()).isEmpty()) {
 
                 User user = Admin.builder()
                                 .name("admin")
-                                .password(encoder.encode("admin"))
-                                .email("admin@dev.com")
+                                .password(encoder.encode(appProperties.getAdmin().getPassword()))
+                                .email(appProperties.getAdmin().getEmail())
                                 .role(Role.ROLE_ADMIN)
                                 .build();
 
@@ -73,6 +74,7 @@ public class AdminInit {
                                 )
                                 .role(Role.ROLE_EMPLOYER)
                                 .enabled(true)
+                                .isLocked(false)
                                 .build();
 
                 employerRepo.save((Employer) user);

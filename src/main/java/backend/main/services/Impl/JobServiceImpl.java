@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import backend.main.configuration.AppProperties;
 import backend.main.dto.request.job.JobRequest;
 import backend.main.dto.request.job.JobReviewRequest;
 import backend.main.dto.request.job.JobSearchRequest;
@@ -68,6 +69,9 @@ public class JobServiceImpl implements JobService {
     
     @Autowired
     private EmployerSubscriptionRepository employerSubscriptionRepository;
+    
+    @Autowired
+    private AppProperties appProperties;
 
     @Transactional
     @Override
@@ -128,6 +132,19 @@ public class JobServiceImpl implements JobService {
         job.setEmployer(employer);
         job.setApplications(new ArrayList<Application>());
         jobRepository.save(job);
+        
+        String content =employer.getCompanyName() + " đã tạo công việc " + job.getTitle();
+        
+        Notification notification = Notification.builder()
+        		.content(content)
+        		.isRead(false)
+        		.userId(appProperties.getAdmin().getEmail())
+        		.role(Role.ROLE_EMPLOYER)
+        		.type("Duyet")
+        		.from(employer.getCompanyName())
+        		.build();
+    	notificationRepository.save(notification);
+        sseUtils.sendToUser(appProperties.getAdmin().getEmail(), content,notification.getNotiId());
 
         return new JobResponse(
                 job.getJobId(),
