@@ -2,6 +2,10 @@ package backend.main.configuration;
 
 import java.util.List;
 
+import backend.main.dto.request.EmployerSubscriptionRequest;
+import backend.main.entities.VipPackage;
+import backend.main.repository.VipPackageRepository;
+import backend.main.services.EmployerSubscriptionService;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +35,11 @@ public class AdminInit {
 	AppProperties appProperties;
 
 	@Bean
-	ApplicationRunner applicationRunner(AdminRepository repository,CandidateRepository candidateRepo,EmployerRepository employerRepo) {
+	ApplicationRunner applicationRunner(AdminRepository repository,
+                                        CandidateRepository candidateRepo,
+                                        EmployerRepository employerRepo,
+                                        VipPackageRepository vipPackageRepo,
+                                        EmployerSubscriptionService employerSubscriptionService) {
         return args -> {
             if(repository.findByEmail(appProperties.getAdmin().getEmail()).isEmpty()) {
 
@@ -56,15 +64,34 @@ public class AdminInit {
                         .role(Role.ROLE_CANDIDATE)
                         .enabled(true)
                         .isPrivate(false)
+                        .isLocked(false)
                         .build();
 
                 candidateRepo.save((Candidate) user);
 
-                log.warn("created default admin");
+                log.warn("created default candidate");
             }
+            
+            // Tạo gói VIP DEFAULT nếu chưa tồn tại
+            VipPackage defaultVipPackage = vipPackageRepo.findByCode("DEFAULT").orElseGet(() -> {
+                VipPackage newPackage = VipPackage.builder()
+                        .code("DEFAULT")
+                        .name("Gói Mặc Định")
+                        .price(0.0)
+                        .durationDays(36500) // 100 years
+                        .postLimit(1000) // Giới hạn tổng
+                        .weeklyPostLimit(3) // Giới hạn tuần
+                        .jobPostDurationDays(7) // Thời hạn tin đăng
+                        .description("Gói miễn phí dành cho nhà tuyển dụng mới đăng ký.")
+                        .isActive(true)
+                        .build();
+                log.warn("Created DEFAULT VIP package.");
+                return vipPackageRepo.save(newPackage);
+            });
+            
             if(employerRepo.findByEmail("company@dev2.com").isEmpty()) {
 
-                User user = Employer.builder()
+                Employer user = Employer.builder()
                                 .companyName("company")
 								.employerId("demoEmployer")
                                 .password(encoder.encode("Company@123"))
@@ -77,9 +104,18 @@ public class AdminInit {
                                 .isLocked(false)
                                 .build();
 
-                employerRepo.save((Employer) user);
+                Employer savedEmployer = employerRepo.save(user);
+                log.warn("created default employer");
 
-                log.warn("created default admin");
+                // Gán gói DEFAULT cho tài khoản employer mặc định
+                if (savedEmployer.getSubscriptions() == null || savedEmployer.getSubscriptions().isEmpty()) {
+                    EmployerSubscriptionRequest subRequest = EmployerSubscriptionRequest.builder()
+                            .employerId(savedEmployer.getEmployerId())
+                            .vipPackageId(defaultVipPackage.getId())
+                            .build();
+                    employerSubscriptionService.createSubscription(subRequest);
+                    log.warn("Assigned DEFAULT VIP package to default employer.");
+                }
             }
         };
     }
