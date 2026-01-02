@@ -24,30 +24,31 @@ public class SendEmailHandler {
         String subject = "Xác nhận đăng ký tài khoản ITJob";
 
         String content = """
-        <div style="font-family: Arial, sans-serif; color: #333;">
-            <h2>Chào mừng bạn đến với ITJob!</h2>
+        <div style="font-family: Arial, sans-serif; color: #333; border: 1px solid #ddd; padding: 20px; max-width: 600px; margin: auto; border-radius: 8px;">
+            <h2 style="color: #0056b3;">Chào mừng bạn đến với ITJob!</h2>
             <p>Cảm ơn bạn đã đăng ký tài khoản.</p>
             <p>Vui lòng xác nhận tài khoản của bạn bằng cách nhấn vào nút bên dưới:</p>
 
-            <p>
-                        <a href="%s"
-                           style="display:inline-block;background-color:#28a745;color:white;
-                                  padding:12px 24px;text-decoration:none;border-radius:5px;
-                                  font-weight:bold;">
-                            Xác nhận tài khoản
-                   </a>
-             </p>
-                
-
-            <p>Nếu nút trên không hoạt động, vui lòng sao chép và dán liên kết sau vào trình duyệt:</p>
-            <p>
-                <a href="%s" style="color:#0056b3; word-break: break-all;">
-                    %s
+            <p style="text-align: center; margin: 30px 0;">
+                <a href="%s"
+                   style="display:inline-block;background-color:#28a745;color:white;
+                          padding:12px 24px;text-decoration:none;border-radius:5px;
+                          font-weight:bold; font-size: 16px;">
+                    Xác nhận tài khoản
                 </a>
             </p>
+                
+            <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin-top: 20px;">
+                <p style="margin: 0; font-size: 14px; color: #555;">Nếu nút trên không hoạt động, vui lòng sao chép và dán liên kết sau vào trình duyệt:</p>
+                <p style="margin-top: 5px; word-break: break-all;">
+                    <a href="%s" style="color:#0056b3;">%s</a>
+                </p>
+            </div>
 
-            <p>Liên kết này sẽ hết hạn sau 5 phút.</p>
-            <p>Nếu bạn không thực hiện đăng ký này, vui lòng bỏ qua email này.</p>
+            <p style="margin-top: 20px; font-size: 14px; color: #777;">Liên kết này sẽ hết hạn sau 5 phút.</p>
+            <p style="font-size: 14px; color: #777;">Nếu bạn không thực hiện đăng ký này, vui lòng bỏ qua email này.</p>
+            <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+            <p style="font-size: 12px; color: #777; text-align: center;">&copy; 2024 ITJob. All rights reserved.</p>
         </div>
         """.formatted(verifyLink, verifyLink, verifyLink);
 
