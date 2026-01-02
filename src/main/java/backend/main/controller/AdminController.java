@@ -1,6 +1,8 @@
 package backend.main.controller;
 
+import backend.main.dto.request.PageRequestDto;
 import backend.main.dto.request.admin.UpdateUserLockRequest;
+import backend.main.dto.response.UserSummaryResponse;
 import backend.main.utils.JwtUtils;
 import backend.main.dto.request.ChangePasswordRequest;
 import backend.main.dto.request.LoginRequest;
@@ -13,6 +15,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -87,16 +91,25 @@ public class AdminController {
         }
     }
 
-    //TODO: thêm api lấy tất cả danh sách người dùng (có phân trang) hiển thị id người dùng, tên, trạng thái khóa
-    //TODO: thêm api xóa người dùng cho admin
+    @PostMapping("/users/all")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<ApiResponse<Page<UserSummaryResponse>>> getAllUsers(@RequestBody PageRequestDto requestDto) {
+        Pageable pageable = requestDto.toPageable();
+        Page<UserSummaryResponse> users = adminService.getAllUsers(pageable, requestDto.getRole());
+        return ResponseEntity.ok(ApiResponse.<Page<UserSummaryResponse>>builder()
+                .code(Code.GET_INFO_SUCCEEDED.getCode())
+                .message(Code.GET_INFO_SUCCEEDED.getMessage())
+                .result(users)
+                .build());
+    }
 
     @PutMapping("/users/lock-status")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<Void>> updateUserLockStatus(@RequestBody UpdateUserLockRequest request) {
         adminService.updateUserLockStatus(request.getUserId(), request.getIsLocked());
         return ResponseEntity.ok(ApiResponse.<Void>builder()
-                .code(Code.UPDATE_LOCK_SUCCEEDED.getCode())
-                .message(Code.UPDATE_LOCK_SUCCEEDED.getMessage())
+                .code(Code.UPDATE_INFO_SUCCEEDED.getCode())
+                .message("Cập nhật trạng thái khóa người dùng thành công")
                 .build());
     }
 }

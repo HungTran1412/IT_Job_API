@@ -1,5 +1,6 @@
 package backend.main.dto.request;
 
+import backend.main.enums.Role;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class PageRequestDto {
     int size = 10;
     String sortBy = "createdAt";
     String sortDirection = "DESC";
+    String role; // Thêm trường role để lọc
 
     public Pageable toPageable() {
         Sort.Direction direction = Sort.Direction.fromString(sortDirection.toUpperCase());

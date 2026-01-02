@@ -4,12 +4,12 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 
 import backend.main.entities.Employer;
 
-public interface EmployerRepository extends CrudRepository<Employer, String> {
+public interface EmployerRepository extends JpaRepository<Employer, String> {
     Optional<Employer> findByEmail(String email);
     Optional<Employer> findByCompanyName(String name);
     

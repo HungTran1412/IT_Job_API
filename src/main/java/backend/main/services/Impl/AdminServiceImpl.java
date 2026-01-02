@@ -1,7 +1,9 @@
 package backend.main.services.Impl;
 
+import backend.main.dto.response.UserSummaryResponse;
 import backend.main.entities.Candidate;
 import backend.main.entities.Employer;
+import backend.main.enums.Role;
 import backend.main.repository.CandidateRepository;
 import backend.main.repository.EmployerRepository;
 import backend.main.utils.JwtUtils;
@@ -18,11 +20,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -104,5 +113,48 @@ public class AdminServiceImpl implements AdminService {
         }
 
         throw new AppException(Code.USER_NOT_FOUND);
+    }
+
+    @Override
+    public Page<UserSummaryResponse> getAllUsers(Pageable pageable, String role) {
+        List<UserSummaryResponse> allUsers = new ArrayList<>();
+
+        boolean searchCandidates = !StringUtils.hasText(role) || Role.ROLE_CANDIDATE.name().equalsIgnoreCase(role);
+        boolean searchEmployers = !StringUtils.hasText(role) || Role.ROLE_EMPLOYER.name().equalsIgnoreCase(role);
+
+        if (searchCandidates) {
+            List<Candidate> candidates = candidateRepository.findAll();
+            allUsers.addAll(candidates.stream().map(c -> UserSummaryResponse.builder()
+                    .id(c.getCandidateId())
+                    .name(c.getFullname())
+                    .email(c.getEmail())
+                    .role(c.getRole())
+                    .isLocked(c.getIsLocked())
+                    .enabled(c.getEnabled())
+                    .build()).collect(Collectors.toList()));
+        }
+
+        if (searchEmployers) {
+            List<Employer> employers = employerRepository.findAll();
+            allUsers.addAll(employers.stream().map(e -> UserSummaryResponse.builder()
+                    .id(e.getEmployerId())
+                    .name(e.getCompanyName())
+                    .email(e.getEmail())
+                    .role(e.getRole())
+                    .isLocked(e.getIsLocked())
+                    .enabled(e.getEnabled())
+                    .build()).collect(Collectors.toList()));
+        }
+
+        // Phân trang thủ công trên List
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), allUsers.size());
+        
+        if (start > allUsers.size()) {
+            return new PageImpl<>(new ArrayList<>(), pageable, allUsers.size());
+        }
+
+        List<UserSummaryResponse> pageContent = allUsers.subList(start, end);
+        return new PageImpl<>(pageContent, pageable, allUsers.size());
     }
 }
