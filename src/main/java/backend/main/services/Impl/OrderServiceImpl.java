@@ -9,6 +9,7 @@ import backend.main.dto.response.OrderStatsResponse;
 import backend.main.specification.OrderSpec;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -90,11 +91,20 @@ public class OrderServiceImpl implements OrderService {
         LocalDateTime start = null;
         LocalDateTime end = null;
 
-        if (startDate != null) {
+        // Nếu không truyền startDate, lấy ngày tạo của đơn hàng đầu tiên
+        if (startDate == null) {
+            Order firstOrder = orderRepository.findAll(Sort.by(Sort.Direction.ASC, "createdAt")).stream().findFirst().orElse(null);
+            if (firstOrder != null) {
+                start = firstOrder.getCreatedAt();
+            }
+        } else {
             start = startDate.atStartOfDay();
         }
         
-        if (endDate != null) {
+        // Nếu không truyền endDate, lấy thời điểm hiện tại
+        if (endDate == null) {
+            end = LocalDateTime.now();
+        } else {
             end = endDate.atTime(23, 59, 59);
         }
 
@@ -112,6 +122,7 @@ public class OrderServiceImpl implements OrderService {
         return OrderStatsResponse.builder()
                 .totalOrders(totalOrders)
                 .totalRevenue(totalRevenue)
+                .orders(orders)
                 .build();
     }
 }

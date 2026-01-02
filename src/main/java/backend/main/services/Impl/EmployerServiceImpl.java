@@ -53,8 +53,6 @@ public class EmployerServiceImpl implements EmployerService {
     @Autowired
     EmployerRepository employerRepository;
     @Autowired
-    CandidateRepository candidateRepository;
-    @Autowired
     PasswordEncoder passwordEncoder;
     @Autowired
     JwtUtils jwtUtils;
