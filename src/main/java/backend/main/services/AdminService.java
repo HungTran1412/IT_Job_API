@@ -13,4 +13,5 @@ public interface AdminService {
     boolean changePassword(String email, ChangePasswordRequest request);
     void updateUserLockStatus(String userId, boolean isLocked);
     Page<UserSummaryResponse> getAllUsers(Pageable pageable, String role);
+    void deleteUser(String userId);
 }

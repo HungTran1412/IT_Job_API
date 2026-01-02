@@ -112,4 +112,14 @@ public class AdminController {
                 .message("Cập nhật trạng thái khóa người dùng thành công")
                 .build());
     }
+
+    @DeleteMapping("/users/{userId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable String userId) {
+        adminService.deleteUser(userId);
+        return ResponseEntity.ok(ApiResponse.<Void>builder()
+                .code(Code.DELETED_USER_SUCCESSFULLY.getCode())
+                .message(Code.DELETED_USER_SUCCESSFULLY.getMessage())
+                .build());
+    }
 }

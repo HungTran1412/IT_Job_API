@@ -157,4 +157,24 @@ public class AdminServiceImpl implements AdminService {
         List<UserSummaryResponse> pageContent = allUsers.subList(start, end);
         return new PageImpl<>(pageContent, pageable, allUsers.size());
     }
+
+    @Override
+    @Transactional
+    public void deleteUser(String userId) {
+        // Thử tìm trong Candidate
+        Optional<Candidate> candidateOpt = candidateRepository.findById(userId);
+        if (candidateOpt.isPresent()) {
+            candidateRepository.delete(candidateOpt.get());
+            return;
+        }
+
+        // Thử tìm trong Employer
+        Optional<Employer> employerOpt = employerRepository.findById(userId);
+        if (employerOpt.isPresent()) {
+            employerRepository.delete(employerOpt.get());
+            return;
+        }
+
+        throw new AppException(Code.USER_NOT_FOUND);
+    }
 }

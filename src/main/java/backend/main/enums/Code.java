@@ -65,6 +65,8 @@ public enum Code {
     RESET_PASSWORD_SUCCESS(CodeEnum.success.toString(), "Mật khẩu của bạn đã được đặt lại thành công."),
     LIKED_JOB_ADDED(CodeEnum.error.toString(), "Thêm việc yêu thích thành công"),
     DELETED_SUCCESSFULLY(CodeEnum.success.toString(),"Xóa thành công"),
+    DELETED_USER_SUCCESSFULLY(CodeEnum.success.toString(),"Xóa người dùng thành công"),
+
     INVALID_VALUE(CodeEnum.error.toString(),"Lỗi dữ liệu"),
     UNAUTHORIZED(CodeEnum.error.toString(),"Lỗi"),
 
