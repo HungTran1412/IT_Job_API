@@ -139,7 +139,7 @@ public class JobServiceImpl implements JobService {
         		.content(content)
         		.isRead(false)
         		.userId(appProperties.getAdmin().getEmail())
-        		.role(Role.ROLE_EMPLOYER)
+        		.role(Role.ROLE_ADMIN)
         		.type("Duyet")
         		.from(employer.getCompanyName())
         		.build();
@@ -367,7 +367,25 @@ public class JobServiceImpl implements JobService {
             	notificationRepository.save(notification);
 	            sseUtils.sendToUser(t, u,notification.getNotiId()); 
             	
-            });     
+            });
+            if (request.getJobStatus() == JobStatus.APPROVED) {
+                List<Candidate> candidates = candidateRepository.findAll();
+                for (Job job : jobs) {
+                    String content = "Công việc mới: " + job.getTitle() + " tại " + job.getEmployer().getCompanyName() + " có thể bạn quan tâm.";
+                    for (Candidate candidate : candidates) {
+                        Notification notification = Notification.builder()
+                                .content(content)
+                                .isRead(false)
+                                .userId(candidate.getEmail())
+                                .role(Role.ROLE_CANDIDATE)
+                                .type("NewJob")
+                                .from("system")
+                                .build();
+                        notificationRepository.save(notification);
+                        sseUtils.sendToUser(candidate.getEmail(), content, notification.getNotiId());
+                    }
+                }
+            }
             return true;
         } catch (Exception e) {
             e.printStackTrace();

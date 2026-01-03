@@ -5,12 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import backend.main.dto.request.EmployerSubscriptionRequest;
-import backend.main.entities.Candidate;
-import backend.main.entities.VipPackage;
-import backend.main.repository.CandidateRepository;
-import backend.main.repository.VipPackageRepository;
-import backend.main.services.EmployerSubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,22 +17,29 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import backend.main.configuration.AppProperties;
+import backend.main.dto.request.EmployerSubscriptionRequest;
 import backend.main.dto.request.LoginRequest;
 import backend.main.dto.request.employer.EmployerRegisterRequest;
 import backend.main.dto.request.employer.EmployerUpdateRequest;
 import backend.main.dto.response.EmployerResponse;
 import backend.main.entities.Employer;
 import backend.main.entities.Job;
+import backend.main.entities.Notification;
 import backend.main.entities.VerificationToken;
+import backend.main.entities.VipPackage;
 import backend.main.enums.Code;
 import backend.main.enums.Role;
 import backend.main.exception.AppException;
 import backend.main.repository.EmployerRepository;
+import backend.main.repository.NotificationRepository;
 import backend.main.repository.VerificationTokenRepository;
+import backend.main.repository.VipPackageRepository;
 import backend.main.services.EmployerService;
+import backend.main.services.EmployerSubscriptionService;
 import backend.main.utils.CloudinaryFileUpload;
 import backend.main.utils.JwtUtils;
 import backend.main.utils.SendEmailHandler;
+import backend.main.utils.SseUtils;
 import backend.main.utils.ValidationUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -68,6 +69,10 @@ public class EmployerServiceImpl implements EmployerService {
     VipPackageRepository vipPackageRepository;
     @Autowired
     EmployerSubscriptionService employerSubscriptionService;
+    @Autowired
+    NotificationRepository notificationRepository;
+    @Autowired
+    SseUtils sseUtils;
 
     private String generateEmployerID() {
         return "EMPL" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
@@ -155,6 +160,19 @@ public class EmployerServiceImpl implements EmployerService {
 
         // Gửi email chào mừng sau khi xác thực thành công
         sendEmailHandler.sendWelcomeEmail(savedEmployer.getEmail(), savedEmployer.getCompanyName());
+
+        // Notify admin
+        String adminContent = "Nhà tuyển dụng mới đã đăng ký: " + savedEmployer.getCompanyName();
+        Notification adminNotification = Notification.builder()
+                .content(adminContent)
+                .isRead(false)
+                .userId(appProperties.getAdmin().getEmail())
+                .role(Role.ROLE_ADMIN)
+                .type("NewEmployer")
+                .from(savedEmployer.getCompanyName())
+                .build();
+        notificationRepository.save(adminNotification);
+        sseUtils.sendToUser(appProperties.getAdmin().getEmail(), adminContent, adminNotification.getNotiId());
 
         return savedEmployer;
     }

@@ -25,18 +25,21 @@ import backend.main.dto.response.CandidateResponse;
 import backend.main.entities.Application;
 import backend.main.entities.Candidate;
 import backend.main.entities.Job;
+import backend.main.entities.Notification;
 import backend.main.entities.VerificationToken;
 import backend.main.enums.Code;
 import backend.main.enums.Role;
 import backend.main.exception.AppException;
 import backend.main.repository.CandidateRepository;
 import backend.main.repository.JobRepository;
+import backend.main.repository.NotificationRepository;
 import backend.main.repository.VerificationTokenRepository;
 import backend.main.services.CandidateService;
 import backend.main.specification.CandidateSpec;
 import backend.main.utils.CloudinaryFileUpload;
 import backend.main.utils.JwtUtils;
 import backend.main.utils.SendEmailHandler;
+import backend.main.utils.SseUtils;
 import backend.main.utils.ValidationUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -62,6 +65,9 @@ public class CandidateServiceImpl implements CandidateService {
     AppProperties appProperties;
     @Autowired
     JobRepository jobRepository;
+    
+    NotificationRepository notificationRepository;
+    SseUtils sseUtils;
 
     private String generateCandidateID() {
         return "USER" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
@@ -160,6 +166,20 @@ public class CandidateServiceImpl implements CandidateService {
 
         // Gửi email chào mừng sau khi xác thực thành công
         sendEmailHandler.sendWelcomeEmail(savedCandidate.getEmail(), savedCandidate.getFullname());
+
+        // Notify admin
+        String adminContent = "Ứng viên mới đã đăng ký: " + savedCandidate.getFullname();
+        Notification adminNotification = Notification.builder()
+                .content(adminContent)
+                .isRead(false)
+                .userId(appProperties.getAdmin().getEmail())
+                .role(Role.ROLE_ADMIN)
+                .type("NewCandidate")
+                .from(savedCandidate.getFullname())
+                .build();
+        notificationRepository.save(adminNotification);
+        sseUtils.sendToUser(appProperties.getAdmin().getEmail(), adminContent, adminNotification.getNotiId());
+
 
         return savedCandidate;
     }
