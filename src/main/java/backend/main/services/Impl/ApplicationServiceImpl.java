@@ -12,9 +12,9 @@ import backend.main.configuration.AppProperties;
 import backend.main.entities.Application;
 import backend.main.entities.Candidate;
 import backend.main.entities.Job;
-import backend.main.entities.Notification;
 import backend.main.enums.ApplicationStatus;
 import backend.main.enums.Code;
+import backend.main.enums.NotificationType;
 import backend.main.enums.Role;
 import backend.main.exception.AppException;
 import backend.main.repository.ApplicationRepository;
@@ -22,6 +22,7 @@ import backend.main.repository.CandidateRepository;
 import backend.main.repository.JobRepository;
 import backend.main.repository.NotificationRepository;
 import backend.main.services.ApplicationService;
+import backend.main.services.NotificationService;
 import backend.main.utils.CloudinaryFileUpload;
 import backend.main.utils.SendEmailHandler;
 import backend.main.utils.SseUtils;
@@ -46,6 +47,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     SseUtils sseUtils;
     AppProperties appProperties;
     SendEmailHandler sendEmailHandler;
+    NotificationService  notificationService;
 
     @Override
     @Transactional
@@ -80,32 +82,31 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 			// Notify candidate
 			String candidateContent = "Bạn đã ứng tuyển thành công công việc " + job.getTitle();
-			Notification candidateNotification = Notification.builder()
-					.content(candidateContent)
-					.isRead(false)
-					.userId(candidate.getEmail())
-					.role(Role.ROLE_CANDIDATE)
-					.type("Apply")
-					.from(job.getEmployer().getCompanyName())
-					.build();
-			notificationRepository.save(candidateNotification);
-			sseUtils.sendToUser(candidate.getEmail(), candidateContent, candidateNotification.getNotiId());
+			
+			Long idCandicateNoti = notificationService.saveNotification(
+					candidate.getEmail(), 
+	        		Role.ROLE_CANDIDATE,
+	        		NotificationType.NEW_APPLICATION,
+	        		candidateContent, 
+	        		job.getEmployer().getEmail());
+			
+		
+			sseUtils.sendToUser(candidate.getEmail(), candidateContent, idCandicateNoti);
 			
 			// Send email to candidate
 			sendEmailHandler.sendApplicationNotification(candidate.getEmail(), job.getTitle(), job.getEmployer().getCompanyName(), candidate.getFullname(), false, null);
 
 			// Notify employer
 			String employerContent = "Có một ứng viên mới cho công việc " + job.getTitle();
-			Notification employerNotification = Notification.builder()
-					.content(employerContent)
-					.isRead(false)
-					.userId(job.getEmployer().getEmail())
-					.role(Role.ROLE_EMPLOYER)
-					.type("NewApplication")
-					.from(candidate.getEmail())
-					.build();
-			notificationRepository.save(employerNotification);
-			sseUtils.sendToUser(job.getEmployer().getEmail(), employerContent, employerNotification.getNotiId());
+			
+			Long idEmployerNoti = notificationService.saveNotification(
+					job.getEmployer().getEmail(), 
+	        		Role.ROLE_EMPLOYER,
+	        		NotificationType.NEW_APPLICATION,
+	        		employerContent, 
+	        		candidate.getEmail());
+			
+			sseUtils.sendToUser(job.getEmployer().getEmail(), employerContent, idEmployerNoti);
 			
 			// Send email to employer with CV link
 			sendEmailHandler.sendApplicationNotification(job.getEmployer().getEmail(), job.getTitle(), job.getEmployer().getCompanyName(), candidate.getFullname(), true, cvString);
@@ -152,33 +153,31 @@ public class ApplicationServiceImpl implements ApplicationService {
             applicationRepository.save(application);
 
             String content = "";
-            String type = "";
+            NotificationType type = null;
 
             if (status == ApplicationStatus.REVIEWING) {
                 content = "Nhà tuyển dụng đã xem hồ sơ của bạn cho công việc " + application.getJob().getTitle();
-                type = "ApplicationViewed";
+                type = NotificationType.APPLICATION_REVIEW;
             } else if (status == ApplicationStatus.REJECTED) {
                 content = "Nhà tuyển dụng đã từ chối hồ sơ của bạn cho công việc " + application.getJob().getTitle();
-                type = "ApplicationRejected";
+                type =  NotificationType.APPLICATION_REJECTED;
             } else if (status == ApplicationStatus.APPLIED) {
-                // Applied status is set on creation, notification already sent.
-                // Or maybe an employer can revert to this status? If so, a notification might be needed.
-                // For now, assume no notification on re-setting to APPLIED.
-                return;
+            	content = "Nhà tuyển dụng đã duyệt hồ sơ của bạn cho công việc " + application.getJob().getTitle();
+                type =  NotificationType.APPLICATION_APPROVED;
             }
 
 
             if (!content.isEmpty()) {
-                Notification notification = Notification.builder()
-                        .content(content)
-                        .isRead(false)
-                        .userId(application.getCandidate().getEmail())
-                        .role(Role.ROLE_CANDIDATE)
-                        .type(type)
-                        .from(application.getJob().getEmployer().getCompanyName())
-                        .build();
-                notificationRepository.save(notification);
-                sseUtils.sendToUser(application.getCandidate().getEmail(), content, notification.getNotiId());
+            	
+            	Long id = notificationService.saveNotification(
+            			application.getCandidate().getEmail(), 
+    	        		Role.ROLE_CANDIDATE,
+    	        		type,
+    	        		content, 
+    	        		application.getJob().getEmployer().getEmail());
+            	
+            
+                sseUtils.sendToUser(application.getCandidate().getEmail(), content,id);
                 
                 // Send email notification for status update
                 sendEmailHandler.sendApplicationStatusNotification(

@@ -27,18 +27,18 @@ import backend.main.entities.Candidate;
 import backend.main.entities.Employer;
 import backend.main.entities.EmployerSubscription;
 import backend.main.entities.Job;
-import backend.main.entities.Notification;
 import backend.main.entities.VipPackage;
 import backend.main.enums.Code;
 import backend.main.enums.JobStatus;
+import backend.main.enums.NotificationType;
 import backend.main.enums.Role;
 import backend.main.exception.AppException;
 import backend.main.repository.CandidateRepository;
 import backend.main.repository.EmployerRepository;
 import backend.main.repository.EmployerSubscriptionRepository;
 import backend.main.repository.JobRepository;
-import backend.main.repository.NotificationRepository;
 import backend.main.services.JobService;
+import backend.main.services.NotificationService;
 import backend.main.specification.JobSpec;
 import backend.main.utils.JwtUtils;
 import backend.main.utils.SseUtils;
@@ -62,7 +62,7 @@ public class JobServiceImpl implements JobService {
     private EmployerRepository employerRepository;
     
     @Autowired
-    private NotificationRepository notificationRepository;
+    private NotificationService notificationService;
     
     @Autowired
     private SseUtils sseUtils;
@@ -135,16 +135,10 @@ public class JobServiceImpl implements JobService {
         
         String content =employer.getCompanyName() + " đã tạo công việc " + job.getTitle();
         
-        Notification notification = Notification.builder()
-        		.content(content)
-        		.isRead(false)
-        		.userId(appProperties.getAdmin().getEmail())
-        		.role(Role.ROLE_ADMIN)
-        		.type("Duyet")
-        		.from(employer.getCompanyName())
-        		.build();
-    	notificationRepository.save(notification);
-        sseUtils.sendToUser(appProperties.getAdmin().getEmail(), content,notification.getNotiId());
+        
+        Long id = notificationService.saveNotification(appProperties.getAdmin().getEmail(), Role.ROLE_ADMIN, NotificationType.SYSTEM, content, employer.getCompanyName());
+        
+        sseUtils.sendToUser(appProperties.getAdmin().getEmail(), content,id);
 
         return new JobResponse(
                 job.getJobId(),
@@ -356,16 +350,10 @@ public class JobServiceImpl implements JobService {
      
             
             companyEmails.forEach((t ,u)-> {
-            	Notification notification = Notification.builder()
-	            		.content(u)
-	            		.isRead(false)
-	            		.userId(t)
-	            		.role(Role.ROLE_EMPLOYER)
-	            		.type("Duyet")
-	            		.from("admin")
-	            		.build();
-            	notificationRepository.save(notification);
-	            sseUtils.sendToUser(t, u,notification.getNotiId()); 
+            	
+                Long id = notificationService.saveNotification(t, Role.ROLE_EMPLOYER, NotificationType.SYSTEM, u, appProperties.getAdmin().getEmail());
+
+	            sseUtils.sendToUser(t, u,id); 
             	
             });
             if (request.getJobStatus() == JobStatus.APPROVED) {
@@ -373,16 +361,10 @@ public class JobServiceImpl implements JobService {
                 for (Job job : jobs) {
                     String content = "Công việc mới: " + job.getTitle() + " tại " + job.getEmployer().getCompanyName() + " có thể bạn quan tâm.";
                     for (Candidate candidate : candidates) {
-                        Notification notification = Notification.builder()
-                                .content(content)
-                                .isRead(false)
-                                .userId(candidate.getEmail())
-                                .role(Role.ROLE_CANDIDATE)
-                                .type("NewJob")
-                                .from("system")
-                                .build();
-                        notificationRepository.save(notification);
-                        sseUtils.sendToUser(candidate.getEmail(), content, notification.getNotiId());
+                    	
+                        Long id = notificationService.saveNotification(candidate.getEmail(), Role.ROLE_CANDIDATE, NotificationType.SYSTEM, content, "system");
+
+                        sseUtils.sendToUser(candidate.getEmail(), content, id);
                     }
                 }
             }

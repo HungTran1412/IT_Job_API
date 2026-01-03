@@ -1,5 +1,6 @@
 package backend.main.entities;
 
+import backend.main.enums.NotificationType;
 import backend.main.enums.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,7 +33,7 @@ public class Notification extends BaseModel {
     private String content;
 
     @Column(name = "notification_type")
-    private String type;
+    private NotificationType type;
 
     @Column(name = "is_read")
     private Boolean isRead;
