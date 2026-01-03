@@ -24,18 +24,18 @@ import backend.main.dto.request.employer.EmployerUpdateRequest;
 import backend.main.dto.response.EmployerResponse;
 import backend.main.entities.Employer;
 import backend.main.entities.Job;
-import backend.main.entities.Notification;
 import backend.main.entities.VerificationToken;
 import backend.main.entities.VipPackage;
 import backend.main.enums.Code;
+import backend.main.enums.NotificationType;
 import backend.main.enums.Role;
 import backend.main.exception.AppException;
 import backend.main.repository.EmployerRepository;
-import backend.main.repository.NotificationRepository;
 import backend.main.repository.VerificationTokenRepository;
 import backend.main.repository.VipPackageRepository;
 import backend.main.services.EmployerService;
 import backend.main.services.EmployerSubscriptionService;
+import backend.main.services.NotificationService;
 import backend.main.utils.CloudinaryFileUpload;
 import backend.main.utils.JwtUtils;
 import backend.main.utils.SendEmailHandler;
@@ -70,7 +70,7 @@ public class EmployerServiceImpl implements EmployerService {
     @Autowired
     EmployerSubscriptionService employerSubscriptionService;
     @Autowired
-    NotificationRepository notificationRepository;
+    NotificationService notificationService;
     @Autowired
     SseUtils sseUtils;
 
@@ -163,16 +163,14 @@ public class EmployerServiceImpl implements EmployerService {
 
         // Notify admin
         String adminContent = "Nhà tuyển dụng mới đã đăng ký: " + savedEmployer.getCompanyName();
-        Notification adminNotification = Notification.builder()
-                .content(adminContent)
-                .isRead(false)
-                .userId(appProperties.getAdmin().getEmail())
-                .role(Role.ROLE_ADMIN)
-                .type("NewEmployer")
-                .from(savedEmployer.getCompanyName())
-                .build();
-        notificationRepository.save(adminNotification);
-        sseUtils.sendToUser(appProperties.getAdmin().getEmail(), adminContent, adminNotification.getNotiId());
+        
+        Long id = notificationService.saveNotification(appProperties.getAdmin().getEmail(), 
+        		Role.ROLE_ADMIN,
+        		NotificationType.SYSTEM,
+        		adminContent, 
+        		savedEmployer.getEmail());
+        
+        sseUtils.sendToUser(appProperties.getAdmin().getEmail(), adminContent, id);
 
         return savedEmployer;
     }
