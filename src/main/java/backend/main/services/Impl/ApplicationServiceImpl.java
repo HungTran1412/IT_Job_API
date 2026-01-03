@@ -24,6 +24,7 @@ import backend.main.repository.NotificationRepository;
 import backend.main.services.ApplicationService;
 import backend.main.services.NotificationService;
 import backend.main.utils.CloudinaryFileUpload;
+import backend.main.utils.SendEmailHandler;
 import backend.main.utils.SseUtils;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -45,6 +46,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     NotificationRepository notificationRepository;
     SseUtils sseUtils;
     AppProperties appProperties;
+    SendEmailHandler sendEmailHandler;
     NotificationService  notificationService;
 
     @Override
@@ -90,6 +92,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 			
 		
 			sseUtils.sendToUser(candidate.getEmail(), candidateContent, idCandicateNoti);
+			
+			// Send email to candidate
+			sendEmailHandler.sendApplicationNotification(candidate.getEmail(), job.getTitle(), job.getEmployer().getCompanyName(), candidate.getFullname(), false, null);
 
 			// Notify employer
 			String employerContent = "Có một ứng viên mới cho công việc " + job.getTitle();
@@ -102,6 +107,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 	        		candidate.getEmail());
 			
 			sseUtils.sendToUser(job.getEmployer().getEmail(), employerContent, idEmployerNoti);
+			
+			// Send email to employer with CV link
+			sendEmailHandler.sendApplicationNotification(job.getEmployer().getEmail(), job.getTitle(), job.getEmployer().getCompanyName(), candidate.getFullname(), true, cvString);
 
 			return savedApplication;
 		} catch (AppException e) {
@@ -170,6 +178,15 @@ public class ApplicationServiceImpl implements ApplicationService {
             	
             
                 sseUtils.sendToUser(application.getCandidate().getEmail(), content,id);
+                
+                // Send email notification for status update
+                sendEmailHandler.sendApplicationStatusNotification(
+                    application.getCandidate().getEmail(), 
+                    application.getJob().getTitle(), 
+                    application.getJob().getEmployer().getCompanyName(), 
+                    application.getCandidate().getFullname(), 
+                    status.name()
+                );
             }
         }
     }

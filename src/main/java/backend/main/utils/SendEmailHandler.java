@@ -126,4 +126,89 @@ public class SendEmailHandler {
             log.error("Failed to send welcome email to {}", email, e);
         }
     }
+
+    public void sendApplicationNotification(String email, String jobTitle, String companyName, String candidateName, boolean isToEmployer, String cvUrl) {
+        String subject;
+        String content;
+
+        if (isToEmployer) {
+            subject = "Ứng viên mới cho công việc: " + jobTitle;
+            content = """
+                <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                    <h2 style="color: #0056b3;">Thông báo ứng tuyển mới</h2>
+                    <p>Xin chào <strong>%s</strong>,</p>
+                    <p>Bạn vừa nhận được một hồ sơ ứng tuyển mới cho vị trí <strong>%s</strong> từ ứng viên <strong>%s</strong>.</p>
+                    <p>Bạn có thể xem CV của ứng viên tại đường dẫn sau:</p>
+                    <p style="text-align: center; margin: 20px 0;">
+                        <a href="%s" style="display:inline-block;background-color:#007bff;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;font-weight:bold;">Xem CV</a>
+                    </p>
+                    <p>Hoặc đăng nhập vào hệ thống để xem chi tiết hồ sơ.</p>
+                    <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                    <p style="font-size: 12px; color: #777; text-align: center;">&copy; 2024 ITJob. All rights reserved.</p>
+                </div>
+                """.formatted(companyName, jobTitle, candidateName, cvUrl);
+        } else {
+            subject = "Ứng tuyển thành công: " + jobTitle;
+            content = """
+                <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                    <h2 style="color: #28a745;">Ứng tuyển thành công!</h2>
+                    <p>Xin chào <strong>%s</strong>,</p>
+                    <p>Hồ sơ của bạn cho vị trí <strong>%s</strong> tại công ty <strong>%s</strong> đã được gửi thành công.</p>
+                    <p>Nhà tuyển dụng sẽ xem xét hồ sơ và phản hồi lại bạn trong thời gian sớm nhất.</p>
+                    <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                    <p style="font-size: 12px; color: #777; text-align: center;">&copy; 2024 ITJob. All rights reserved.</p>
+                </div>
+                """.formatted(candidateName, jobTitle, companyName);
+        }
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setTo(email);
+            helper.setSubject(subject);
+            helper.setText(content, true);
+            mailSender.send(message);
+        } catch (Exception e) {
+            log.error("Failed to send application notification email to {}", email, e);
+        }
+    }
+    
+    public void sendApplicationStatusNotification(String email, String jobTitle, String companyName, String candidateName, String status) {
+        String subject = "Cập nhật trạng thái ứng tuyển: " + jobTitle;
+        String statusMessage = "";
+        String color = "#333";
+
+        if ("REVIEWING".equals(status)) {
+            statusMessage = "Hồ sơ của bạn đã được nhà tuyển dụng xem.";
+            color = "#17a2b8"; // Info color
+        } else if ("REJECTED".equals(status)) {
+            statusMessage = "Rất tiếc, nhà tuyển dụng đã từ chối hồ sơ của bạn.";
+            color = "#dc3545"; // Danger color
+        } else {
+            return; // Không gửi email cho các trạng thái khác nếu không cần thiết
+        }
+
+        String content = """
+            <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                <h2 style="color: %s;">Cập nhật trạng thái hồ sơ</h2>
+                <p>Xin chào <strong>%s</strong>,</p>
+                <p>Trạng thái hồ sơ ứng tuyển của bạn cho vị trí <strong>%s</strong> tại công ty <strong>%s</strong> đã thay đổi:</p>
+                <p style="font-size: 16px; font-weight: bold; color: %s;">%s</p>
+                <p>Vui lòng đăng nhập vào hệ thống để biết thêm chi tiết.</p>
+                <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                <p style="font-size: 12px; color: #777; text-align: center;">&copy; 2024 ITJob. All rights reserved.</p>
+            </div>
+            """.formatted(color, candidateName, jobTitle, companyName, color, statusMessage);
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setTo(email);
+            helper.setSubject(subject);
+            helper.setText(content, true);
+            mailSender.send(message);
+        } catch (Exception e) {
+            log.error("Failed to send application status notification email to {}", email, e);
+        }
+    }
 }
