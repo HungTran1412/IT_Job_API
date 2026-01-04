@@ -244,6 +244,11 @@ public class CandidateServiceImpl implements CandidateService {
         Candidate c = candidateRepository.findById(id)
                 .orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
 
+        // Kiểm tra nếu người dùng cố tình cập nhật trạng thái khóa
+        if (c.getIsLocked() == true) {
+            throw new AppException(Code.ACCOUNT_LOCKED);
+        }
+
         c.setFullname(request.getFullname());
         c.setGender(request.getGender());
         c.setPhone(request.getPhone());

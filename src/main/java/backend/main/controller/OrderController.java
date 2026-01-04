@@ -71,8 +71,7 @@ public class OrderController {
     @PostMapping("/filter")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<Page<Order>>> getAllOrders(@RequestBody PageRequestDto requestDto) {
-        Pageable pageable = requestDto.toPageable();
-        Page<Order> result = orderService.getAllOrders(pageable);
+        Page<Order> result = orderService.getAllOrders(requestDto);
         return ResponseEntity.ok(ApiResponse.<Page<Order>>builder()
                 .code(Code.GET_ORDER_SUCCESS.getCode())
                 .message(Code.GET_ORDER_SUCCESS.getMessage())

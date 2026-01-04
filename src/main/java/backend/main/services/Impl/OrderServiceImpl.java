@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import backend.main.dto.request.PageRequestDto;
 import backend.main.dto.response.OrderStatsResponse;
 import backend.main.specification.OrderSpec;
 import org.springframework.data.domain.Page;
@@ -71,7 +72,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<Order> getAllOrders(Pageable pageable) {
+    public Page<Order> getAllOrders(PageRequestDto pageRequestDto) {
+        Pageable pageable = pageRequestDto.toPageable();
         return orderRepository.findAll(pageable);
     }
 
