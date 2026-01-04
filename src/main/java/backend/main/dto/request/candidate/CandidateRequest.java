@@ -22,7 +22,6 @@ public class CandidateRequest {
     LocalDate dateOfBirth;
     String phone;
     MultipartFile avatar;
-    MultipartFile cv;
     Boolean isPrivate;
     String experience;
     String technologies;

@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -103,6 +104,7 @@ public class CandidateController {
 	}
 
 	@PatchMapping(value = "/update", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+	// @PreAuthorize("hasAuthority('ROLE_CANDIDATE')")
 	public ResponseEntity<ApiResponse<Candidate>> updateInfo(@ModelAttribute CandidateRequest candidateRequest,
 			@CookieValue(value = "jwt", required = false) String token) {
 
@@ -137,6 +139,13 @@ public class CandidateController {
 			System.out.println("Avatar: "
 					+ (candidateRequest.getAvatar() != null ? candidateRequest.getAvatar().getOriginalFilename()
 							: "null"));
+			System.out.println("Address: " + candidateRequest.getAddress());
+			System.out.println("DateOfBirth: " + candidateRequest.getDateOfBirth());
+			System.out.println("SoftSkill: " + candidateRequest.getSoftSkill());
+			System.out.println("Experience: " + candidateRequest.getExperience());
+			System.out.println("IsPrivate: " + candidateRequest.getIsPrivate());
+			System.out.println("DesiredSalary: " + candidateRequest.getDesiredSalary());
+			System.out.println("Technologies: " + candidateRequest.getTechnologies());
 
 			// Cap nhat thong tin nguoi dung
 			Candidate updated = candidateService.updateInfo(id, candidateRequest);
