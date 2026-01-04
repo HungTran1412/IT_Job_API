@@ -28,7 +28,7 @@ public class SseUtils {
             try {
                 emitter.send(SseEmitter.event()
                     .name("message")
-                    .data(id)
+                    .id(id.toString())
                     .data(data));
             } catch (Exception e) {
                 emitters.remove(username);
