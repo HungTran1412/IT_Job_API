@@ -211,4 +211,43 @@ public class SendEmailHandler {
             log.error("Failed to send application status notification email to {}", email, e);
         }
     }
+
+    public void sendJobReviewNotification(String email, String jobTitle, String companyName, String status) {
+        String subject = "Thông báo duyệt tin tuyển dụng: " + jobTitle;
+        String statusMessage = "";
+        String color = "#333";
+
+        if ("APPROVED".equals(status)) {
+            statusMessage = "Tin tuyển dụng của bạn đã được duyệt và hiển thị trên hệ thống.";
+            color = "#28a745"; // Success color
+        } else if ("REJECTED".equals(status)) {
+            statusMessage = "Tin tuyển dụng của bạn đã bị từ chối. Vui lòng kiểm tra lại nội dung.";
+            color = "#dc3545"; // Danger color
+        } else {
+            return;
+        }
+
+        String content = """
+            <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                <h2 style="color: %s;">Thông báo duyệt tin</h2>
+                <p>Xin chào <strong>%s</strong>,</p>
+                <p>Trạng thái tin tuyển dụng <strong>%s</strong> của bạn đã được cập nhật:</p>
+                <p style="font-size: 16px; font-weight: bold; color: %s;">%s</p>
+                <p>Vui lòng đăng nhập vào hệ thống để quản lý tin tuyển dụng.</p>
+                <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                <p style="font-size: 12px; color: #777; text-align: center;">&copy; 2024 ITJob. All rights reserved.</p>
+            </div>
+            """.formatted(color, companyName, jobTitle, color, statusMessage);
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setTo(email);
+            helper.setSubject(subject);
+            helper.setText(content, true);
+            mailSender.send(message);
+        } catch (Exception e) {
+            log.error("Failed to send job review notification email to {}", email, e);
+        }
+    }
 }
