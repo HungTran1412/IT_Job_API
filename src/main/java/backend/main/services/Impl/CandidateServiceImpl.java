@@ -250,6 +250,12 @@ public class CandidateServiceImpl implements CandidateService {
         c.setDateOfBirth(request.getDateOfBirth());
         c.setAddress(request.getAddress());
         c.setUpdateAt(LocalDateTime.now());
+        c.setSoftSkill(request.getSoftSkill());
+        c.setExperience(request.getExperience());
+        c.setIsPrivate(request.getIsPrivate());
+        c.setDesiredSalary(request.getDesiredSalary());
+        c.setTechnologies(request.getTechnologies());
+
 
         //Kiem tra xem nguoi dung co cap nhat anh khong
         if(request.getAvatar() != null && !request.getAvatar().isEmpty()) {
