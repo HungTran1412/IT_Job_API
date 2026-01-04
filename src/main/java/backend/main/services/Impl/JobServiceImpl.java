@@ -41,6 +41,7 @@ import backend.main.services.JobService;
 import backend.main.services.NotificationService;
 import backend.main.specification.JobSpec;
 import backend.main.utils.JwtUtils;
+import backend.main.utils.SendEmailHandler;
 import backend.main.utils.SseUtils;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -72,6 +73,9 @@ public class JobServiceImpl implements JobService {
     
     @Autowired
     private AppProperties appProperties;
+
+    @Autowired
+    private SendEmailHandler sendEmailHandler;
 
     @Transactional
     @Override
@@ -346,6 +350,14 @@ public class JobServiceImpl implements JobService {
             jobs.forEach(j -> {
             	String content = String.format(j.getStatus().getMessage(), j.getTitle());
             	companyEmails.put(j.getEmployer().getEmail(),content);
+            	
+            	// Send email notification to employer
+            	sendEmailHandler.sendJobReviewNotification(
+            	    j.getEmployer().getEmail(), 
+            	    j.getTitle(), 
+            	    j.getEmployer().getCompanyName(), 
+            	    j.getStatus().name()
+            	);
             });
      
             
