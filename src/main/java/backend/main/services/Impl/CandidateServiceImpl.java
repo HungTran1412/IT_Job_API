@@ -430,4 +430,28 @@ public class CandidateServiceImpl implements CandidateService {
             );
         });
     }
+
+    @Override
+    public CandidateResponse getCandidateById(String id) {
+        Candidate c = candidateRepository.findById(id)
+                .orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
+
+        return new CandidateResponse(
+                c.getCandidateId(),
+                c.getFullname(),
+                c.getEmail(),
+                c.getAddress(),
+                c.getDateOfBirth(),
+                c.getPhone(),
+                c.getAvatar(),
+                c.getIsPrivate(),
+                c.getRole(),
+                c.getGender(),
+                c.getExperience(),
+                c.getTechnologies(),
+                c.getSoftSkill(),
+                c.getDesiredSalary()
+        );
+    }
+
 }

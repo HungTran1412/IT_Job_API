@@ -26,4 +26,5 @@ public interface CandidateService {
     CandidateResponse getInfor(String id);
 	boolean unLikedJob(String jobId, String candidateId);
     Page<CandidateResponse> searchCandidates(CandidateSearchRequest request, Pageable pageable);
+    CandidateResponse getCandidateById(String id);
 }
