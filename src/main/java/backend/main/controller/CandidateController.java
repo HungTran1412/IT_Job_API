@@ -184,7 +184,19 @@ public class CandidateController {
 					.message(Code.UNCATEGORIZED_EXCEPTION.getMessage()).build());
 		}
 	}
-	
+
+	@GetMapping("{id}")
+	@PreAuthorize("hasAnyRole('ROLE_EMPLOYER')")
+	public ResponseEntity<ApiResponse<CandidateResponse>> getById(@RequestParam String id)
+	{
+		CandidateResponse c = candidateService.getCandidateById(id);
+		return ResponseEntity.ok(ApiResponse.<CandidateResponse>builder()
+				.code(Code.GET_INFO_SUCCEEDED.getCode())
+				.message(Code.GET_INFO_SUCCEEDED.getMessage())
+				.build());
+	}
+
+
 	@PostMapping("/unliked-job")
 	public ResponseEntity<ApiResponse> unLikedJob(@CookieValue(value = "jwt", required = false) String token,
 			@RequestParam String jobId) {
