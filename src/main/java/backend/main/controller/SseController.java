@@ -3,6 +3,7 @@ package backend.main.controller;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import backend.main.configuration.AppProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -29,23 +30,27 @@ public class SseController {
 	@Autowired
 	private JwtUtils jwtUtils;
 
+    @Autowired
+    private AppProperties appProperties;
+
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
 
 
     @GetMapping("/subscribe/admin")
-    public SseEmitter subscribeAdmin(@CookieValue(value = "nimda", required = false) String token) throws InterruptedException {
-    	String context = jwtUtils.extractEmail(token);
+    public SseEmitter subscribeAdmin() throws InterruptedException {
+    	String context = appProperties.getAdmin().getEmail();
         return sseUtils.subscribe(context);
     }
-    
+
     @GetMapping("/subscribe/")
     public SseEmitter subscribe() throws InterruptedException {
-    	String context = SecurityContextHolder.getContext().getAuthentication().getName();
+        String context = SecurityContextHolder.getContext().getAuthentication().getName();
         if(context.equals("anonymousUser")) {
             return null;
         }
         return sseUtils.subscribe(context);
     }
+
 
     public void sendToUser(String username, Object data) {
         SseEmitter emitter = emitters.get(username);

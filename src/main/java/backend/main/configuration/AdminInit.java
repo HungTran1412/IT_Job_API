@@ -59,7 +59,7 @@ public class AdminInit {
                 User user = Candidate.builder()
                         .fullname("candidate")
 						.candidateId("demoCandicate")
-                        .password(encoder.encode("Candidate@123"))
+                        .password(encoder.encode("Abc@1234"))
                         .email("candidate1@dev.com")
                         .role(Role.ROLE_CANDIDATE)
                         .enabled(true)
@@ -94,7 +94,7 @@ public class AdminInit {
                 Employer user = Employer.builder()
                                 .companyName("company")
 								.employerId("demoEmployer")
-                                .password(encoder.encode("Company@123"))
+                                .password(encoder.encode("Abc@1234"))
                                 .email("company@dev2.com")
                                 .city(
                                 		List.of("Hà Nội", "Đà Nẵng")
