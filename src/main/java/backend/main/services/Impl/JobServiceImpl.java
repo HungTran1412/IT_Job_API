@@ -337,43 +337,42 @@ public class JobServiceImpl implements JobService {
         try {
             List<Job> jobs = (List<Job>) jobRepository.findAllById(request.getJobId());
 
-            
+
             if (jobs.size() != request.getJobId().size()) {
                 throw new AppException(Code.JOB_NOT_FOUND);
             }
-            
+
             jobs.forEach(job -> job.setStatus(request.getJobStatus()));
             jobRepository.saveAll(jobs);
-            
-            Map<String,String> companyEmails = new HashMap<String,String>();
-            
-            jobs.forEach(j -> {
-            	String content = String.format(j.getStatus().getMessage(), j.getTitle());
-            	companyEmails.put(j.getEmployer().getEmail(),content);
-            	
-            	// Send email notification to employer
-            	sendEmailHandler.sendJobReviewNotification(
-            	    j.getEmployer().getEmail(), 
-            	    j.getTitle(), 
-            	    j.getEmployer().getCompanyName(), 
-            	    j.getStatus().name()
-            	);
-            });
-     
-            
-            companyEmails.forEach((t ,u)-> {
-            	
-                Long id = notificationService.saveNotification(t, Role.ROLE_EMPLOYER, NotificationType.SYSTEM, u, appProperties.getAdmin().getEmail());
 
-	            sseUtils.sendToUser(t, u,id); 
-            	
+
+            jobs.forEach(j -> {
+                String content = String.format(j.getStatus().getMessage(), j.getTitle());
+
+                String email = j.getEmployer().getEmail();
+
+
+                // Send email notification to employer
+                sendEmailHandler.sendJobReviewNotification(
+                        j.getEmployer().getEmail(),
+                        j.getTitle(),
+                        j.getEmployer().getCompanyName(),
+                        j.getStatus().name()
+                );
+
+                Long id = notificationService.saveNotification(email, Role.ROLE_EMPLOYER, NotificationType.SYSTEM, content, appProperties.getAdmin().getEmail());
+
+
+                sseUtils.sendToUser(email, content,id);
             });
+
+
             if (request.getJobStatus() == JobStatus.APPROVED) {
                 List<Candidate> candidates = candidateRepository.findAll();
                 for (Job job : jobs) {
                     String content = "Công việc mới: " + job.getTitle() + " tại " + job.getEmployer().getCompanyName() + " có thể bạn quan tâm.";
                     for (Candidate candidate : candidates) {
-                    	
+
                         Long id = notificationService.saveNotification(candidate.getEmail(), Role.ROLE_CANDIDATE, NotificationType.SYSTEM, content, "system");
 
                         sseUtils.sendToUser(candidate.getEmail(), content, id);
