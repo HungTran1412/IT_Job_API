@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,8 +39,11 @@ public class SseController {
     }
     
     @GetMapping("/subscribe/")
-    public SseEmitter subscribe(@CookieValue(value = "jwt", required = false) String token) throws InterruptedException {
-    	String context = jwtUtils.extractEmail(token);
+    public SseEmitter subscribe() throws InterruptedException {
+    	String context = SecurityContextHolder.getContext().getAuthentication().getName();
+        if(context.equals("anonymousUser")) {
+            return null;
+        }
         return sseUtils.subscribe(context);
     }
 
