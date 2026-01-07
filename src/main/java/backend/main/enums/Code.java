@@ -91,6 +91,8 @@ public enum Code {
     
     // Subscription
     SUBSCRIPTION_NOT_FOUND(CodeEnum.error.toString(), "Không tìm thấy gói đăng ký!"),
+    CREATE_SUBSCRIPTION_SUCCESS(CodeEnum.success.toString(), "Tạo gói đăng ký thành công"),
+    GET_SUBSCRIPTION_SUCCESS(CodeEnum.success.toString(), "Lấy thông tin gói đăng ký thành công"),
     
     // Email
     SEND_EMAIL_FAILED(CodeEnum.error.toString(), "Gửi email thất bại!"),
