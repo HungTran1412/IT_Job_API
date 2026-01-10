@@ -29,5 +29,4 @@ public interface JobService {
     Page<JobResponse> findJobsByEmployer(String employerId, Pageable pageable);
     Page<JobResponse> findJobsByEmployerAndStatus(String employerId, JobStatus status, Pageable pageable);
     Page<JobResponse> searchJobsByEmployer(String employerId, String keyword, Pageable pageable);
-
 }

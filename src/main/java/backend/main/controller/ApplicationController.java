@@ -3,10 +3,11 @@ package backend.main.controller;
 import java.util.List;
 import java.util.Optional;
 
-import backend.main.exception.AppException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,9 +22,9 @@ import org.springframework.web.multipart.MultipartFile;
 import backend.main.dto.response.ApiResponse;
 import backend.main.entities.Application;
 import backend.main.entities.Candidate;
-import backend.main.entities.Job;
 import backend.main.enums.ApplicationStatus;
 import backend.main.enums.Code;
+import backend.main.exception.AppException;
 import backend.main.repository.CandidateRepository;
 import backend.main.repository.JobRepository;
 import backend.main.services.ApplicationService;
@@ -75,10 +76,20 @@ public class ApplicationController {
 		return applicationService.findByCandidate(candidate);
 	}
 
-	@GetMapping("/job/{jobId}")
-	public List<Application> getApplicationsByJob(@PathVariable String jobId) {
-		Job job = jobRepository.findById(jobId).orElseThrow(() -> new AppException(Code.JOB_NOT_FOUND));
-		return applicationService.findByJob(job);
+	@PostMapping("/job")
+	public ResponseEntity<ApiResponse<Object>> getApplicationsByJob(
+			@RequestParam String jobId,
+			@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "appliedDate") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction) {
+		Pageable pageable = PageRequest.of(page, size, Sort.by("appliedDate").ascending());
+
+		return ResponseEntity.ok(ApiResponse.builder()
+				.result(applicationService.findAllByJob(jobId, pageable))
+				.code(Code.GET_JOB_SUCCESSFULL.getCode())
+				.message(Code.GET_JOB_SUCCESSFULL.getMessage())
+				.build());
 	}
 
 	@PutMapping("/{id}/status")
@@ -90,4 +101,6 @@ public class ApplicationController {
 	public void deleteApplication(@PathVariable String id) {
 		applicationService.delete(id);
 	}
+	
+	
 }
