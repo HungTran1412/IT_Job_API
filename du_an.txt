@@ -1,0 +1,292 @@
+### **PHẦN I: MỞ ĐẦU**
+*   **1.1 Tên đề tài/dự án:** Xây dựng hệ thống API cho sàn giao dịch việc làm ngành CNTT (IT Job API).
+*   **1.2 Đặt vấn đề:** Trong bối cảnh thị trường lao động ngành Công nghệ thông tin (CNTT) ngày càng sôi động, nhu cầu kết nối giữa nhà tuyển dụng và ứng viên trở nên cấp thiết. Các phương pháp tuyển dụng truyền thống như đăng tin trên các trang rao vặt tổng hợp hoặc thông qua giới thiệu cá nhân thường gặp nhiều hạn chế: thông tin không tập trung, khó khăn trong việc sàng lọc ứng viên, và tốn nhiều thời gian, chi phí. Do đó, việc xây dựng một nền tảng chuyên biệt cho ngành CNTT, giúp tối ưu hóa quy trình tuyển dụng, nâng cao hiệu quả kết nối và cung cấp các công cụ hỗ trợ mạnh mẽ cho cả nhà tuyển dụng và ứng viên là một yêu cầu tất yếu.
+*   **1.3 Mục đích và Yêu cầu:** 
+    *   **Mục đích:** Dự án hướng tới mục tiêu xây dựng một hệ thống API mạnh mẽ, linh hoạt và dễ dàng mở rộng, làm nền tảng cho một sàn giao dịch việc làm chuyên nghiệp trong lĩnh vực CNTT. Hệ thống sẽ giúp cá nhân hóa trải nghiệm tìm việc của ứng viên và tối ưu hóa quy trình tuyển dụng cho doanh nghiệp.
+    *   **Yêu cầu:**
+        *   **Về chức năng:** Cung cấp đầy đủ các API cho việc quản lý tài khoản, đăng tin tuyển dụng, tìm kiếm việc làm, nộp hồ sơ ứng tuyển, và quản trị hệ thống.
+        *   **Về kỹ thuật:** Hệ thống phải đảm bảo hiệu năng cao, độ trễ thấp, bảo mật tốt và có khả năng chịu tải lớn.
+        *   **Về vận hành:** Dễ dàng triển khai, bảo trì và nâng cấp.
+
+### **PHẦN II: TỔNG QUAN TÌNH HÌNH NGHIÊN CỨU**
+*   **2.1 Tình hình nghiên cứu trong và ngoài nước:**
+    *   **Tình hình trong nước:** Thị trường tuyển dụng CNTT tại Việt Nam đang phát triển mạnh mẽ với sự tham gia của nhiều nền tảng lớn. Nổi bật có thể kể đến TopCV, VietnamWorks, ITviec, JobStreet (hiện tại đã tích hợp vào CareerBuilder).
+        *   **TopCV:** Mạnh về công cụ tạo CV trực tuyến và kết nối ứng viên với nhà tuyển dụng qua đề xuất việc làm thông minh.
+        *   **VietnamWorks:** Nền tảng lâu đời, có uy tín, tập trung vào các vị trí cấp cao và chuyên viên.
+        *   **ITviec:** Chuyên biệt hóa hoàn toàn cho ngành CNTT, cung cấp các tin tuyển dụng chất lượng và có tính lọc cao.
+        Các nền tảng này đã đóng góp đáng kể vào việc số hóa quy trình tuyển dụng, tuy nhiên, vẫn còn những điểm hạn chế như:
+            *   **Chi phí:** Chi phí đăng tin và tiếp cận CV đối với các doanh nghiệp vừa và nhỏ còn khá cao.
+            *   **Tính chuyên biệt:** Dù ITviec đã chuyên biệt hóa, nhưng nhiều nền tảng khác vẫn còn mang tính tổng hợp, chưa thực sự tập trung sâu vào các yêu cầu đặc thù của từng mảng công nghệ.
+            *   **API mở:** Hầu hết các nền tảng chưa cung cấp các API mở cho phép các hệ thống bên thứ ba tích hợp, gây khó khăn cho việc tự động hóa hoặc xây dựng các giải pháp tuyển dụng tùy chỉnh.
+    *   **Tình hình ngoài nước:** Trên thế giới, các ông lớn như LinkedIn, Indeed, Glassdoor cung cấp các giải pháp tuyển dụng toàn diện, từ mạng xã hội chuyên nghiệp đến công cụ tìm việc và đánh giá công ty. Các nền tảng này thường có hệ sinh thái phong phú, tích hợp nhiều công cụ hỗ trợ và dữ liệu lớn, mang lại trải nghiệm người dùng rất tốt. Tuy nhiên, việc ứng dụng trực tiếp các giải pháp này vào thị trường Việt Nam đôi khi gặp rào cản về văn hóa, chi phí, và sự khác biệt trong quy trình tuyển dụng.
+*   **2.2 Tính thời sự và tầm quan trọng:** Dự án IT Job API ra đời trong bối cảnh cuộc cách mạng công nghiệp 4.0 đang diễn ra mạnh mẽ, nhu cầu nhân lực CNTT chất lượng cao tăng vọt. Việc xây dựng một nền tảng API không chỉ giải quyết bài toán kết nối việc làm mà còn mở ra khả năng tích hợp với các hệ thống khác (ví dụ: hệ thống quản lý nhân sự - HRM), tạo ra một hệ sinh thái tuyển dụng toàn diện, khẳng định giá trị thực tiễn và cấp thiết của dự án.
+
+### **PHẦN III: NỘI DUNG VÀ PHƯƠNG PHÁP NGHIÊN CỨU**
+*   **3.1 Địa điểm và thời gian:**
+    *   **Địa điểm:** Dự án được phát triển và triển khai trên môi trường điện toán đám mây.
+    *   **Thời gian:** 3 tháng.
+*   **3.2 Nội dung nghiên cứu:**
+    *   Khảo sát, phân tích các yêu cầu đặc tả cho một sàn giao dịch việc làm.
+    *   Nghiên cứu các công nghệ:
+        *   **Backend:** Java (Spring Boot), JWT, Spring Security.
+        *   **Cơ sở dữ liệu:** MySQL/PostgreSQL.
+        *   **Triển khai:** Docker, Docker Compose.
+    *   Thiết kế kiến trúc hệ thống (Microservices hoặc Monolithic).
+    *   Thiết kế và xây dựng API.
+    *   Kiểm thử và đánh giá hiệu năng API.
+*   **3.3 Phương pháp nghiên cứu:**
+    *   **Nghiên cứu lý luận:** Đọc và tổng hợp tài liệu từ sách, bài báo khoa học, và tài liệu kỹ thuật về kiến trúc hệ thống, thiết kế API, và các công nghệ liên quan.
+    *   **Phương pháp thực nghiệm:** Xây dựng một phiên bản mẫu (prototype) để kiểm chứng các giải pháp kỹ thuật, tiến hành khảo sát thực tế từ các nhà tuyển dụng và ứng viên để thu thập phản hồi.
+    *   **Phương pháp chuyên gia:** Tham vấn ý kiến từ các chuyên gia có kinh nghiệm trong lĩnh vực phát triển phần mềm và tuyển dụng nhân sự CNTT.
+
+### **PHẦN IV: KẾT QUẢ VÀ THẢO LUẬN (TRỌNG TÂM KỸ THUẬT)**
+*   **4.1 Tổng quan lý thuyết:**
+    *   **Java & Spring Boot:** Sử dụng Java làm ngôn ngữ lập trình chính và Spring Boot framework để xây dựng ứng dụng backend một cách nhanh chóng, hiệu quả nhờ kiến trúc "convention over configuration".
+    *   **ReactJS:** (Giả định cho Frontend) Thư viện JavaScript phổ biến để xây dựng giao diện người dùng tương tác và linh hoạt.
+    *   **MySQL:** Hệ quản trị cơ sở dữ liệu quan hệ được lựa chọn để lưu trữ dữ liệu có cấu trúc của hệ thống.
+    *   **Docker:** Công nghệ container hóa giúp đóng gói ứng dụng và các phụ thuộc, đảm bảo tính nhất quán trên các môi trường khác nhau.
+*   **4.2 Phân tích hệ thống:**
+    *   **Đặc tả yêu cầu chức năng:**
+        | Người dùng               | Chức năng con                                | Mô tả                                                                                                                              |
+        | :----------------------- | :------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------- |
+        | **Khách (Guest)**        | Xem danh sách việc làm                       | Hiển thị danh sách các công việc đang tuyển dụng, có thể tìm kiếm và lọc cơ bản.                                                  |
+        |                          | Xem chi tiết việc làm                        | Cung cấp thông tin đầy đủ về một tin tuyển dụng cụ thể.                                                                          |
+        |                          | Đăng ký tài khoản                            | Cho phép người dùng đăng ký tài khoản với vai trò Ứng viên hoặc Nhà tuyển dụng.                                                    |
+        | **Ứng viên (Candidate)** | Đăng nhập/Đăng xuất/Đổi mật khẩu             | Thực hiện các thao tác xác thực cơ bản cho tài khoản.                                                                            |
+        |                          | Quản lý hồ sơ cá nhân                        | Tạo, chỉnh sửa, cập nhật thông tin cá nhân, học vấn, kinh nghiệm, kỹ năng.                                                       |
+        |                          | Quản lý CV                                   | Tải lên, xem, xóa các file CV cá nhân.                                                                                             |
+        |                          | Tìm kiếm và lọc việc làm nâng cao            | Tìm kiếm công việc theo nhiều tiêu chí chi tiết hơn: mức lương, cấp bậc, loại hình công việc, v.v.                                |
+        |                          | Nộp hồ sơ ứng tuyển                          | Gửi CV đã chọn để ứng tuyển vào một vị trí công việc.                                                                             |
+        |                          | Quản lý việc làm đã lưu                      | Lưu các công việc yêu thích để xem lại sau này.                                                                                    |
+        |                          | Xem lịch sử ứng tuyển                        | Theo dõi trạng thái của các đơn ứng tuyển đã gửi.                                                                                |
+        | **Nhà tuyển dụng (Employer)** | Đăng nhập/Đăng xuất/Đổi mật khẩu             | Thực hiện các thao tác xác thực cơ bản cho tài khoản.                                                                            |
+        |                          | Quản lý thông tin công ty                    | Cập nhật thông tin công ty: tên, logo, địa chỉ, mô tả, giới thiệu.                                                                |
+        |                          | Đăng tin tuyển dụng                          | Tạo tin tuyển dụng mới với các thông tin chi tiết về vị trí, mô tả, yêu cầu, mức lương.                                            |
+        |                          | Quản lý tin tuyển dụng đã đăng              | Xem danh sách, chỉnh sửa, ẩn/hiện, xóa các tin tuyển dụng của công ty.                                                            |
+        |                          | Xem và quản lý đơn ứng tuyển                | Xem danh sách ứng viên đã nộp hồ sơ cho tin tuyển dụng, xem chi tiết hồ sơ ứng viên và CV.                                        |
+        |                          | Cập nhật trạng thái ứng tuyển               | Thay đổi trạng thái của đơn ứng tuyển (ví dụ: Đã xem, Phù hợp, Từ chối).                                                          |
+        |                          | Tìm kiếm hồ sơ ứng viên (nếu có)             | Tìm kiếm ứng viên dựa trên các tiêu chí nhất định (tùy thuộc vào chính sách quyền riêng tư và gói dịch vụ).                       |
+        |                          | Mua/gia hạn gói dịch vụ VIP                  | Xem và mua các gói dịch vụ nâng cao để mở khóa tính năng hoặc tăng cường hiển thị.                                                |
+        | **Quản trị viên (Admin)** | Đăng nhập/Đăng xuất/Đổi mật khẩu             | Thực hiện các thao tác xác thực cơ bản cho tài khoản.                                                                            |
+        |                          | Quản lý tài khoản người dùng                 | Xem, tìm kiếm, khóa/mở khóa tài khoản của Ứng viên và Nhà tuyển dụng.                                                           |
+        |                          | Quản lý tin tuyển dụng hệ thống              | Xem tất cả tin tuyển dụng, phê duyệt/từ chối tin mới, xóa tin vi phạm.                                                            |
+        |                          | Xem thống kê và Dashboard                    | Truy cập bảng điều khiển tổng quan, xem các chỉ số hoạt động của hệ thống (số lượng người dùng, tin đăng, lượt ứng tuyển, v.v.). |
+        |                          | Quản lý gói dịch vụ VIP                      | Thêm, sửa, xóa các gói dịch vụ VIP mà Nhà tuyển dụng có thể mua.                                                                  |
+    *   **Đặc tả yêu cầu phi chức năng:**
+        *   **Bảo mật (Security):** Phân quyền dựa trên vai trò (Role-Based Access Control), mã hóa mật khẩu, xác thực bằng JWT, chống lại các tấn công phổ biến (XSS, CSRF).
+        *   **Hiệu năng (Performance):** Thời gian phản hồi của API dưới 200ms với 95% các yêu cầu. Hệ thống có khả năng xử lý đồng thời 1000 yêu cầu/giây.
+        *   **Khả năng mở rộng (Scalability):** Kiến trúc cho phép dễ dàng nâng cấp, mở rộng theo chiều ngang (horizontal scaling) khi lượng truy cập tăng.
+        *   **Tính tương thích (Compatibility):** API tuân thủ theo chuẩn RESTful, dễ dàng cho các client (web, mobile) tích hợp.
+
+*   **4.3 Phân tích thiết kế hệ thống:**
+    *   **Biểu đồ Use Case:**
+    ```plantuml
+    @startuml
+    left to right direction
+    actor "Candidate" as candidate
+    actor "Employer" as employer
+    actor "Admin" as admin
+
+    rectangle "IT Job API System" {
+        usecase "Manage Profile" as UC_MANAGE_PROFILE
+        usecase "Search Jobs" as UC_SEARCH_JOBS
+        usecase "Apply for Job" as UC_APPLY
+        usecase "Manage Liked Jobs" as UC_LIKE_JOB
+
+        usecase "Manage Company Info" as UC_MANAGE_COMPANY
+        usecase "Post Job" as UC_POST_JOB
+        usecase "Search Candidates" as UC_SEARCH_CANDIDATES
+        usecase "Manage Applications" as UC_MANAGE_APPLICATIONS
+        
+        usecase "Manage Users" as UC_MANAGE_USERS
+        usecase "Approve Jobs" as UC_APPROVE_JOBS
+        usecase "View Dashboard" as UC_VIEW_DASHBOARD
+    }
+
+    candidate -- UC_MANAGE_PROFILE
+    candidate -- UC_SEARCH_JOBS
+    candidate -- UC_APPLY
+    candidate -- UC_LIKE_JOB
+
+    employer -- UC_MANAGE_COMPANY
+    employer -- UC_POST_JOB
+    employer -- UC_SEARCH_CANDIDATES
+    employer -- UC_MANAGE_APPLICATIONS
+
+    admin -- UC_MANAGE_USERS
+    admin -- UC_APPROVE_JOBS
+    admin -- UC_VIEW_DASHBOARD
+    @enduml
+    ```
+
+    *   **Biểu đồ tuần tự (Sequence Diagram):** Luồng ứng viên nộp hồ sơ cho một công việc.
+    ```plantuml
+    @startuml
+    actor Candidate
+    participant "Frontend" as FE
+    participant "API Gateway" as GW
+    participant "Application Service" as AppSvc
+    participant "Job Service" as JobSvc
+    database "Database" as DB
+
+    Candidate -> FE: 1. Click 'Apply' for a Job
+    activate FE
+    FE -> GW: 2. POST /api/applications (JWT, jobId, cv)
+    activate GW
+    GW -> AppSvc: 3. Forward request
+    activate AppSvc
+    
+    AppSvc -> JobSvc: 4. Check if Job exists and is active
+    activate JobSvc
+    JobSvc -> DB: 5. findById(jobId)
+    DB --> JobSvc: 6. Return Job details
+    JobSvc --> AppSvc: 7. Job is valid
+    deactivate JobSvc
+    
+    AppSvc -> DB: 8. Save Application (candidateId, jobId, status='PENDING')
+    activate DB
+    DB --> AppSvc: 9. Return saved Application
+    deactivate DB
+    
+    AppSvc --> GW: 10. Application created successfully
+    deactivate AppSvc
+    GW --> FE: 11. { success: true, message: "Applied successfully!" }
+    deactivate GW
+    FE --> Candidate: 12. Show success message
+    deactivate FE
+    @enduml
+    ```
+
+    *   **Thiết kế cơ sở dữ liệu:**
+    ```plantuml
+    @startuml
+    entity "User" as user {
+      + id [PK]
+      --
+      username
+      password
+      email
+      role
+    }
+
+    entity "Candidate" as candidate {
+      + id [PK]
+      --
+      # user_id [FK]
+      full_name
+      cv_url
+      --
+      ...
+    }
+
+    entity "Employer" as employer {
+      + id [PK]
+      --
+      # user_id [FK]
+      company_name
+      company_logo
+      --
+      ...
+    }
+
+    entity "Job" as job {
+      + id [PK]
+      --
+      # employer_id [FK]
+      title
+      description
+      salary
+      status
+      --
+      ...
+    }
+
+    entity "Application" as application {
+      + id [PK]
+      --
+      # candidate_id [FK]
+      # job_id [FK]
+      status
+      applied_date
+    }
+    
+    entity "VerificationToken" as token {
+        + id [PK]
+        --
+        # user_id [FK]
+        token
+        expiry_date
+    }
+    
+    entity "Order" as order {
+        + id [PK]
+        --
+        # employer_id [FK]
+        amount
+        status
+    }
+    
+    entity "VipPackage" as vip {
+        + id [PK]
+        --
+        name
+        price
+        duration
+    }
+    
+    entity "EmployerSubscription" as sub {
+        + id [PK]
+        --
+        # employer_id [FK]
+        # package_id [FK]
+        start_date
+        end_date
+    }
+
+    user ||--o{ candidate
+    user ||--o{ employer
+    user ||--o{ token
+
+    employer }o--|| job
+    employer }o--|| order
+    employer }o--o{ sub
+    
+    vip ||--o{ sub
+
+    candidate }o--o{ application
+    job }o--o{ application
+    
+    @enduml
+    ```
+
+*   **4.4 Kết quả xây dựng chương trình:**
+    *   **API Documentation (Swagger):** Hệ thống cung cấp giao diện Swagger UI, cho phép xem danh sách các endpoints, định dạng request/response và thử nghiệm API trực tiếp.
+    *   **Authentication & Authorization:** Xây dựng hoàn chỉnh module xác thực người dùng bằng JWT, phân quyền truy cập tài nguyên dựa trên các vai trò Admin, Employer, và Candidate.
+    *   **Core Job & Candidate Features:** Hoàn thiện các API cho phép nhà tuyển dụng đăng và quản lý tin tuyển dụng, ứng viên tạo hồ sơ, tìm kiếm và ứng tuyển vào các công việc.
+    *   **Admin Dashboard:** Xây dựng các API cho trang quản trị, cho phép admin quản lý người dùng, duyệt tin đăng và xem các số liệu thống kê cơ bản.
+
+### **PHẦN V: TỔNG KẾT KẾT QUẢ**
+*   **5.1 Kết luận:** Dự án đã hoàn thành mục tiêu đề ra là xây dựng thành công một bộ API backend cho sàn giao dịch việc làm CNTT. Các chức năng chính như quản lý người dùng, quản lý tin tuyển dụng, và quy trình ứng tuyển đã được xây dựng và hoạt động ổn định. Hệ thống đáp ứng được các yêu cầu cơ bản về hiệu năng và bảo mật.
+*   **5.2 Kiến thức và kỹ năng đạt được:**
+    *   **Công nghệ:** Nắm vững kỹ năng phát triển ứng dụng web với Spring Boot, bao gồm Spring Data JPA, Spring Security. Hiểu rõ về RESTful API, JWT. Có kinh nghiệm làm việc với cơ sở dữ liệu MySQL và công cụ Docker.
+    *   **Tư duy lập trình:** Cải thiện tư duy thiết kế hệ thống, chia nhỏ vấn đề, và cấu trúc code một cách khoa học, dễ bảo trì.
+    *   **Kỹ năng mềm:** Rèn luyện kỹ năng giải quyết vấn đề, quản lý thời gian và làm việc độc lập.
+*   **5.3 Hạn chế và Hướng phát triển:**
+    *   **Hạn chế:**
+        *   Dữ liệu ban đầu còn ít, chưa phản ánh đầy đủ thị trường.
+        *   Chức năng tìm kiếm và gợi ý việc làm còn ở mức cơ bản.
+        *   Hệ thống bảo mật cần được gia cố thêm (ví dụ: rate limiting, chống tấn công DoS).
+        *   Chưa có hệ thống thanh toán trực tuyến cho các gói dịch vụ của nhà tuyển dụng.
+    *   **Hướng phát triển:**
+        *   Tích hợp thanh toán trực tuyến (VnPay, Momo).
+        *   Xây dựng hệ thống gợi ý việc làm thông minh sử dụng thuật toán Machine Learning.
+        *   Phát triển tính năng thông báo real-time (qua WebSocket hoặc SSE) khi có cập nhật về trạng thái ứng tuyển.
+        *   Thêm xác thực hai yếu tố (2FA) để tăng cường bảo mật.
+        *   Tích hợp đăng nhập qua mạng xã hội (Google, Facebook, GitHub).
+
+### **PHẦN VI: TÀI LIỆU THAM KHẢO**
+*   Tài liệu chính thức của Spring Framework (spring.io).
+*   Tài liệu về RESTful API Best Practices.
+*   Baeldung - Trang blog chuyên sâu về Java và Spring.
+*   Các bài viết về thiết kế hệ thống trên Medium và InfoQ.
+*   Sách "Clean Architecture" của Robert C. Martin.

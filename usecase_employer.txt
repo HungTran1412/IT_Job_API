@@ -1,0 +1,43 @@
+@startuml
+left to right direction
+
+title "Biểu đồ Usecase cho vai trò Nhà tuyển dụng (Employer)"
+
+actor Employer as "Nhà tuyển dụng"
+actor Guest as "Khách"
+actor PaymentSystem as "Hệ thống Thanh toán"
+
+' Thể hiện sự kế thừa
+Employer --|> Guest
+
+rectangle "Hệ Thống IT Job" {
+  ' --- Usecase của Khách ---
+  usecase UC_VIEW_JOBS as "Xem danh sách việc làm"
+  usecase UC_SEARCH_JOBS as "Tìm kiếm & Lọc việc làm"
+  usecase UC_VIEW_JOB_DETAILS as "Xem chi tiết việc làm"
+  usecase UC_REGISTER as "Đăng ký tài khoản"
+
+  ' --- Usecase của Nhà tuyển dụng ---
+  usecase UC_EMP_AUTH as "Đăng nhập / Đăng xuất"
+  usecase UC_EMP_MANAGE_COMPANY as "Quản lý thông tin công ty"
+  usecase UC_EMP_POST_JOB as "Đăng và quản lý tin tuyển dụng"
+  usecase UC_EMP_MANAGE_APPS as "Quản lý hồ sơ ứng tuyển"
+  usecase UC_EMP_PURCHASE as "Mua/gia hạn gói dịch vụ"
+
+  ' --- Liên kết Actor và Usecase ---
+  Guest -- UC_VIEW_JOBS
+  Guest -- UC_SEARCH_JOBS
+  Guest -- UC_VIEW_JOB_DETAILS
+  Guest -- UC_REGISTER
+
+  Employer -- UC_EMP_AUTH
+  Employer -- UC_EMP_MANAGE_COMPANY
+  Employer -- UC_EMP_POST_JOB
+  Employer -- UC_EMP_MANAGE_APPS
+  Employer -- UC_EMP_PURCHASE
+
+  ' --- Mối quan hệ giữa các Usecase ---
+  UC_EMP_MANAGE_APPS ..> UC_EMP_POST_JOB : <<include>>
+  UC_EMP_PURCHASE ..> PaymentSystem : interacts
+}
+@enduml

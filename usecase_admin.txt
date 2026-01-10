@@ -1,0 +1,29 @@
+@startuml
+left to right direction
+
+title "Biểu đồ Usecase cho vai trò Quản trị viên (Admin)"
+
+actor Admin as "Quản trị viên"
+
+rectangle "Hệ Thống IT Job" {
+  ' Usecase của Employer mà Admin có tương tác (mở rộng)
+  usecase UC_EMP_POST_JOB as "Đăng và quản lý tin tuyển dụng" #aliceblue
+
+  ' --- Usecase của Admin ---
+  usecase UC_ADMIN_AUTH as "Đăng nhập"
+  usecase UC_ADMIN_MANAGE_USERS as "Quản lý người dùng"
+  usecase UC_ADMIN_MANAGE_JOBS as "Quản lý & Duyệt tin tuyển dụng"
+  usecase UC_ADMIN_MANAGE_VIP as "Quản lý gói VIP"
+  usecase UC_ADMIN_DASHBOARD as "Xem thống kê (Dashboard)"
+
+  ' --- Liên kết Actor và Usecase ---
+  Admin -- UC_ADMIN_AUTH
+  Admin -- UC_ADMIN_MANAGE_USERS
+  Admin -- UC_ADMIN_MANAGE_JOBS
+  Admin -- UC_ADMIN_MANAGE_VIP
+  Admin -- UC_ADMIN_DASHBOARD
+
+  ' --- Mối quan hệ mở rộng ---
+  UC_ADMIN_MANAGE_JOBS ..> UC_EMP_POST_JOB : <<extend>>
+}
+@enduml

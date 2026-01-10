@@ -5,9 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +16,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import backend.main.configuration.AppProperties;
+import backend.main.controller.AdminController;
 import backend.main.dto.request.job.JobRequest;
 import backend.main.dto.request.job.JobReviewRequest;
 import backend.main.dto.request.job.JobSearchRequest;
@@ -45,9 +44,12 @@ import backend.main.utils.SendEmailHandler;
 import backend.main.utils.SseUtils;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 @Service
 public class JobServiceImpl implements JobService {
+
+    private final AdminController adminController;
 
     @Autowired
     private JobRepository jobRepository;
@@ -76,6 +78,10 @@ public class JobServiceImpl implements JobService {
 
     @Autowired
     private SendEmailHandler sendEmailHandler;
+
+    JobServiceImpl(AdminController adminController) {
+        this.adminController = adminController;
+    }
 
     @Transactional
     @Override
@@ -344,6 +350,7 @@ public class JobServiceImpl implements JobService {
 
             jobs.forEach(job -> job.setStatus(request.getJobStatus()));
             jobRepository.saveAll(jobs);
+<<<<<<< Updated upstream
 
 
             jobs.forEach(j -> {
@@ -367,6 +374,31 @@ public class JobServiceImpl implements JobService {
             });
 
 
+=======
+            
+
+            jobs.forEach(j -> {
+            	String content = String.format(j.getStatus().getMessage(), j.getTitle());
+            	
+            	String email = j.getEmployer().getEmail();
+            	
+            	
+            	// Send email notification to employer
+            	sendEmailHandler.sendJobReviewNotification(
+            	    j.getEmployer().getEmail(), 
+            	    j.getTitle(), 
+            	    j.getEmployer().getCompanyName(), 
+            	    j.getStatus().name()
+            	);
+            	
+                Long id = notificationService.saveNotification(email, Role.ROLE_EMPLOYER, NotificationType.SYSTEM, content, appProperties.getAdmin().getEmail());
+
+            	
+            	sseUtils.sendToUser(email, content,id);
+            });
+     
+            
+>>>>>>> Stashed changes
             if (request.getJobStatus() == JobStatus.APPROVED) {
                 List<Candidate> candidates = candidateRepository.findAll();
                 for (Job job : jobs) {

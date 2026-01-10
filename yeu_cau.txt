@@ -1,0 +1,86 @@
+Dưới đây là chi tiết các yêu cầu chức năng và phi chức năng cho hệ thống IT Job API.
+
+---
+
+### **1. Yêu cầu chức năng (Functional Requirements)**
+
+Các yêu cầu được chia theo vai trò người dùng trong hệ thống.
+
+#### **1.1. Người dùng không xác thực (Guest)**
+-   **F1.1:** Xem danh sách các công việc đang tuyển dụng (có phân trang).
+-   **F1.2:** Tìm kiếm và lọc công việc theo các tiêu chí cơ bản: từ khóa, địa điểm, ngành nghề.
+-   **F1.3:** Xem chi tiết một tin tuyển dụng.
+-   **F1.4:** Đăng ký tài khoản mới với vai trò là Ứng viên (Candidate) hoặc Nhà tuyển dụng (Employer).
+
+#### **1.2. Ứng viên (Candidate)**
+-   **F2.1 (Quản lý tài khoản):**
+    -   **F2.1.1:** Đăng nhập, đăng xuất, đổi mật khẩu.
+    -   **F2.1.2:** Quản lý (thêm, sửa, xóa) thông tin hồ sơ cá nhân: thông tin liên hệ, học vấn, kinh nghiệm làm việc, kỹ năng.
+    -   **F2.1.3:** Tải lên và quản lý CV (cho phép có nhiều phiên bản CV).
+-   **F2.2 (Tương tác việc làm):**
+    -   **F2.2.1:** Thực hiện các chức năng tìm kiếm nâng cao (lọc theo mức lương, cấp bậc, loại hình công việc).
+    -   **F2.2.2:** Nộp hồ sơ ứng tuyển vào một công việc bằng cách chọn một CV đã tải lên.
+    -   **F2.2.3:** Lưu lại các công việc quan tâm (việc làm đã thích).
+    -   **F2.2.4:** Xem lại danh sách các công việc đã lưu.
+    -   **F2.2.5:** Xem lịch sử các công việc đã ứng tuyển và trạng thái của đơn ứng tuyển (chờ duyệt, đã chấp nhận, đã từ chối).
+
+#### **1.3. Nhà tuyển dụng (Employer)**
+-   **F3.1 (Quản lý tài khoản):**
+    -   **F3.1.1:** Đăng nhập, đăng xuất, đổi mật khẩu.
+    -   **F3.1.2:** Quản lý (thêm, sửa) thông tin công ty: tên, địa chỉ, logo, mô tả.
+-   **F3.2 (Quản lý tuyển dụng):**
+    -   **F3.2.1:** Đăng tin tuyển dụng mới với đầy đủ thông tin: chức danh, mô tả, yêu cầu, mức lương, hạn nộp hồ sơ.
+    -   **F3.2.2:** Quản lý các tin đã đăng: xem danh sách, chỉnh sửa, ẩn/hiện, xóa.
+    -   **F3.2.3:** Xem danh sách các ứng viên đã nộp hồ sơ cho một tin tuyển dụng.
+    -   **F3.2.4:** Xem chi tiết hồ sơ của một ứng viên (bao gồm CV đính kèm).
+    -   **F3.2.5:** Thay đổi trạng thái của một đơn ứng tuyển (ví dụ: "Đã xem", "Phù hợp", "Từ chối").
+-   **F3.3 (Quản lý dịch vụ):**
+    -   **F3.3.1:** Xem các gói dịch vụ (VIP) có sẵn.
+    -   **F3.3.2:** Thực hiện mua/gia hạn gói dịch vụ (tích hợp thanh toán).
+
+#### **1.4. Quản trị viên (Admin)**
+-   **F4.1 (Quản lý người dùng):**
+    -   **F4.1.1:** Xem danh sách tất cả người dùng (Candidates, Employers).
+    -   **F4.1.2:** Tìm kiếm, lọc người dùng theo tên, email, vai trò.
+    -   **F4.1.3:** Khóa hoặc mở khóa tài khoản người dùng.
+-   **F4.2 (Quản lý tin tuyển dụng):**
+    -   **F4.2.1:** Xem tất cả các tin tuyển dụng trên hệ thống.
+    *   **F4.2.2:** Phê duyệt hoặc từ chối các tin tuyển dụng mới do Nhà tuyển dụng đăng tải (để đảm bảo chất lượng).
+    -   **F4.2.3:** Xóa các tin tuyển dụng vi phạm chính sách.
+-   **F4.3 (Quản lý hệ thống):**
+    -   **F4.3.1:** Xem bảng điều khiển (dashboard) với các thống kê tổng quan: số lượng người dùng mới, số tin đăng mới, số lượt ứng tuyển...
+    -   **F4.3.2:** Quản lý (thêm, sửa, xóa) các gói dịch vụ VIP dành cho Nhà tuyển dụng.
+
+---
+
+### **2. Yêu cầu phi chức năng (Non-Functional Requirements)**
+
+#### **2.1. Bảo mật (Security)**
+-   **NF1.1 (Xác thực):** Mọi truy cập vào các tài nguyên yêu cầu xác thực (trừ các chức năng công khai) phải được thực hiện thông qua JSON Web Tokens (JWT). Token phải có thời gian hết hạn ngắn.
+-   **NF1.2 (Phân quyền):** Hệ thống phải triển khai cơ chế phân quyền dựa trên vai trò (Role-Based Access Control - RBAC) để đảm bảo người dùng chỉ có thể truy cập các chức năng được phép.
+-   **NF1.3 (Mã hóa):** Mật khẩu người dùng phải được mã hóa một chiều (sử dụng thuật toán bcrypt) trước khi lưu vào cơ sở dữ liệu.
+-   **NF1.4 (Bảo vệ dữ liệu):** API phải có các biện pháp ngăn chặn các cuộc tấn công phổ biến như SQL Injection, Cross-Site Scripting (XSS).
+-   **NF1.5 (Giao thức):** Toàn bộ giao tiếp giữa client và server phải được mã hóa bằng giao thức HTTPS/TLS.
+
+#### **2.2. Hiệu năng (Performance)**
+-   **NF2.1 (Thời gian phản hồi):** 95% các yêu cầu API đọc (GET) phải có thời gian phản hồi dưới 200ms. 95% các yêu cầu ghi (POST, PUT, DELETE) phải dưới 500ms.
+-   **NF2.2 (Tải đồng thời):** Hệ thống phải có khả năng xử lý ổn định ít nhất 200 yêu cầu đồng thời mỗi giây.
+-   **NF2.3 (Tối ưu CSDL):** Các câu truy vấn cơ sở dữ liệu phải được tối ưu, sử dụng chỉ mục (index) cho các cột thường xuyên được sử dụng trong các mệnh đề `WHERE` và `JOIN` để tăng tốc độ truy vấn.
+
+#### **2.3. Độ tin cậy và sẵn sàng (Reliability & Availability)**
+-   **NF3.1 (Độ sẵn sàng):** Hệ thống phải đạt thời gian hoạt động (uptime) tối thiểu là 99.5%.
+-   **NF3.2 (Xử lý lỗi):** API phải trả về các mã lỗi và thông điệp lỗi rõ ràng, nhất quán khi có sự cố xảy ra, giúp phía client dễ dàng xử lý.
+-   **NF3.3 (Sao lưu):** Dữ liệu của hệ thống phải được sao lưu tự động hàng ngày và có quy trình khôi phục khi cần.
+
+#### **2.4. Khả năng mở rộng (Scalability)**
+-   **NF4.1 (Kiến trúc):** Backend API phải được thiết kế dưới dạng stateless, không lưu trữ trạng thái phiên của người dùng trên server. Điều này cho phép triển khai nhiều phiên bản của ứng dụng phía sau một bộ cân bằng tải (load balancer) để mở rộng theo chiều ngang.
+-   **NF4.2 (Cơ sở dữ liệu):** Thiết kế CSDL phải sẵn sàng cho việc mở rộng, ví dụ như sử dụng read replicas để giảm tải cho CSDL chính đối với các tác vụ đọc.
+
+#### **2.5. Khả năng bảo trì (Maintainability)**
+-   **NF5.1 (Chất lượng code):** Mã nguồn phải tuân thủ các quy tắc lập trình (coding conventions) của ngôn ngữ Java, có cấu trúc module rõ ràng, và dễ hiểu.
+-   **NF5.2 (Tài liệu hóa):** Tất cả các endpoint của API phải được tài liệu hóa đầy đủ bằng Swagger/OpenAPI, mô tả rõ chức năng, tham số đầu vào, và các định dạng phản hồi (bao gồm cả các phản hồi lỗi).
+-   **NF5.3 (Ghi log):** Hệ thống cần ghi log chi tiết các sự kiện quan trọng và các lỗi xảy ra để phục vụ cho việc gỡ lỗi và giám sát.
+
+#### **2.6. Tính tương thích (Compatibility)**
+-   **NF6.1:** API phải tuân thủ nghiêm ngặt theo tiêu chuẩn RESTful, sử dụng các phương thức HTTP (GET, POST, PUT, DELETE) và mã trạng thái HTTP một cách hợp lý.
+-   **NF6.2:** Dữ liệu trao đổi phải ở định dạng JSON.

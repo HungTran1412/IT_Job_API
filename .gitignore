@@ -34,3 +34,5 @@ build/
 
 ### File môi trường###
 .env
+
+*.txt

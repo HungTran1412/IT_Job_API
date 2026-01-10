@@ -1,0 +1,137 @@
+Dưới đây là bảng đặc tả chi tiết cho tất cả các chức năng của hệ thống.
+
+---
+
+### **Chức năng của Khách (Guest)**
+
+| Cột tiêu đề         | Nội dung chi tiết                                                               |
+| ------------------- | ------------------------------------------------------------------------------- |
+| **Tên chức năng**   | **F1.1: Xem danh sách việc làm**                                                 |
+| **Tác nhân**        | Khách (Guest)                                                                   |
+| **Mô tả**           | Chức năng cho phép người dùng xem danh sách các công việc đang tuyển dụng trên hệ thống mà không cần đăng nhập. |
+| **Điều kiện trước** | Người dùng truy cập vào trang danh sách việc làm.                               |
+| **Dòng sự kiện chính** | 1. Người dùng truy cập trang chủ hoặc trang việc làm. <br> 2. Hệ thống truy vấn CSDL và trả về danh sách các công việc đang ở trạng thái "Đã duyệt" và còn hạn. <br> 3. Hệ thống hiển thị danh sách công việc theo dạng thẻ (card), mỗi thẻ gồm thông tin cơ bản: Tên công việc, Tên công ty, Địa điểm, Mức lương. <br> 4. Hệ thống hỗ trợ phân trang nếu danh sách quá dài. |
+| **Dòng sự kiện phụ** | - Nếu không có công việc nào, hệ thống hiển thị thông báo "Hiện chưa có tin tuyển dụng nào". |
+| **Điều kiện sau**   | Danh sách các công việc được hiển thị cho người dùng.                            |
+
+| Cột tiêu đề         | Nội dung chi tiết                                                               |
+| ------------------- | ------------------------------------------------------------------------------- |
+| **Tên chức năng**   | **F1.2: Xem chi tiết việc làm**                                                 |
+| **Tác nhân**        | Khách (Guest)                                                                   |
+| **Mô tả**           | Chức năng cho phép người dùng xem thông tin đầy đủ của một tin tuyển dụng cụ thể. |
+| **Điều kiện trước** | Người dùng đang ở trang danh sách việc làm.                                     |
+| **Dòng sự kiện chính** | 1. Người dùng nhấp vào một tin tuyển dụng từ danh sách. <br> 2. Hệ thống lấy ID của tin tuyển dụng đó và truy vấn CSDL. <br> 3. Hệ thống trả về tất cả thông tin chi tiết: Mô tả công việc, Yêu cầu ứng viên, Quyền lợi, Địa điểm làm việc, Thông tin công ty, Hạn nộp hồ sơ. <br> 4. Hệ thống hiển thị trang chi tiết việc làm. |
+| **Dòng sự kiện phụ** | - Nếu tin tuyển dụng không tồn tại hoặc đã hết hạn, hệ thống hiển thị thông báo lỗi "Tin tuyển dụng không tồn tại hoặc đã hết hạn". |
+| **Điều kiện sau**   | Trang chi tiết của tin tuyển dụng được hiển thị.                                |
+
+| Cột tiêu đề         | Nội dung chi tiết                                                               |
+| ------------------- | ------------------------------------------------------------------------------- |
+| **Tên chức năng**   | **F1.3: Đăng ký tài khoản**                                                     |
+| **Tác nhân**        | Khách (Guest)                                                                   |
+| **Mô tả**           | Chức năng cho phép người dùng mới tạo tài khoản với vai trò Ứng viên hoặc Nhà tuyển dụng. |
+| **Điều kiện trước** | Người dùng truy cập vào trang đăng ký.                                          |
+| **Dòng sự kiện chính** | 1. Người dùng chọn vai trò (Ứng viên/Nhà tuyển dụng). <br> 2. Người dùng nhập đầy đủ thông tin: email, mật khẩu, xác nhận mật khẩu, và các thông tin cá nhân/công ty cơ bản. <br> 3. Hệ thống kiểm tra tính hợp lệ của dữ liệu (email đúng định dạng, mật khẩu đủ mạnh, email chưa tồn tại trong hệ thống). <br> 4. Hệ thống lưu thông tin người dùng mới vào CSDL với trạng thái chưa kích hoạt. <br> 5. Hệ thống gửi email kích hoạt đến địa chỉ email đã đăng ký. <br> 6. Hệ thống hiển thị thông báo đăng ký thành công và yêu cầu kiểm tra email để kích hoạt. |
+| **Dòng sự kiện phụ** | - Nếu email đã tồn tại, hệ thống báo lỗi "Email này đã được sử dụng". <br> - Nếu mật khẩu không khớp, hệ thống báo lỗi "Mật khẩu xác nhận không khớp". <br> - Nếu dữ liệu nhập vào không hợp lệ, hệ thống báo lỗi tại từng trường thông tin. |
+| **Điều kiện sau**   | Tài khoản mới được tạo trong CSDL và email kích hoạt được gửi đi.               |
+
+---
+
+### **Chức năng của Ứng viên (Candidate)**
+
+| Cột tiêu đề         | Nội dung chi tiết                                                               |
+| ------------------- | ------------------------------------------------------------------------------- |
+| **Tên chức năng**   | **F2.1.1: Đăng nhập/Đăng xuất**                                                  |
+| **Tác nhân**        | Ứng viên (Candidate)                                                             |
+| **Mô tả**           | Cho phép ứng viên đăng nhập vào hệ thống để sử dụng các chức năng cá nhân và đăng xuất khi kết thúc phiên làm việc. |
+| **Điều kiện trước** | Ứng viên đã có tài khoản và đã được kích hoạt.                                  |
+| **Dòng sự kiện chính** | **Đăng nhập:** <br> 1. Ứng viên nhập email và mật khẩu. <br> 2. Hệ thống kiểm tra thông tin đăng nhập. <br> 3. Nếu hợp lệ, hệ thống tạo một phiên làm việc ( cấp token JWT) và chuyển hướng đến trang quản lý cá nhân. <br> **Đăng xuất:** <br> 1. Ứng viên nhấp vào nút "Đăng xuất". <br> 2. Hệ thống hủy phiên làm việc (hủy token) và chuyển hướng về trang chủ. |
+| **Dòng sự kiện phụ** | - Nếu thông tin đăng nhập sai, hệ thống báo lỗi "Sai email hoặc mật khẩu". <br> - Nếu tài khoản bị khóa, hệ thống báo lỗi "Tài khoản của bạn đã bị khóa". |
+| **Điều kiện sau**   | - **Đăng nhập:** Ứng viên được chuyển đến trang cá nhân. <br> - **Đăng xuất:** Ứng viên được chuyển về trang chủ. |
+
+| Cột tiêu đề         | Nội dung chi tiết                                                               |
+| ------------------- | ------------------------------------------------------------------------------- |
+| **Tên chức năng**   | **F2.1.2: Quản lý hồ sơ cá nhân**                                                |
+| **Tác nhân**        | Ứng viên (Candidate)                                                             |
+| **Mô tả**           | Cho phép ứng viên tạo, xem, chỉnh sửa thông tin hồ sơ cá nhân.                    |
+| **Điều kiện trước** | Ứng viên đã đăng nhập thành công.                                               |
+| **Dòng sự kiện chính** | 1. Ứng viên truy cập trang "Quản lý hồ sơ". <br> 2. Hệ thống hiển thị các thông tin đã có. <br> 3. Ứng viên có thể thêm, sửa, xóa các mục: Thông tin cá nhân, Học vấn, Kinh nghiệm làm việc, Kỹ năng. <br> 4. Ứng viên lưu lại thay đổi. <br> 5. Hệ thống cập nhật thông tin vào CSDL và hiển thị thông báo thành công. |
+| **Dòng sự kiện phụ** | - Nếu dữ liệu nhập vào không hợp lệ (ví dụ: ngày tháng sai định dạng), hệ thống sẽ báo lỗi. |
+| **Điều kiện sau**   | Thông tin hồ sơ của ứng viên được cập nhật trong CSDL.                          |
+
+| Cột tiêu đề         | Nội dung chi tiết                                                               |
+| ------------------- | ------------------------------------------------------------------------------- |
+| **Tên chức năng**   | **F2.2.2: Nộp hồ sơ ứng tuyển**                                                  |
+| **Tác nhân**        | Ứng viên (Candidate)                                                             |
+| **Mô tả**           | Cho phép ứng viên gửi hồ sơ của mình để ứng tuyển vào một công việc.             |
+| **Điều kiện trước** | Ứng viên đã đăng nhập và đang xem trang chi tiết của một việc làm. Ứng viên đã tải lên ít nhất một file CV. |
+| **Dòng sự kiện chính** | 1. Ứng viên nhấn nút "Ứng tuyển". <br> 2. Hệ thống hiển thị một form cho phép chọn CV muốn gửi và một lá thư giới thiệu (tùy chọn). <br> 3. Ứng viên xác nhận nộp hồ sơ. <br> 4. Hệ thống tạo một bản ghi "Application" mới trong CSDL, liên kết giữa ứng viên, công việc và CV được chọn, với trạng thái "Chờ duyệt". <br> 5. Hệ thống hiển thị thông báo "Nộp hồ sơ thành công". |
+| **Dòng sự kiện phụ** | - Nếu ứng viên chưa có CV nào, hệ thống yêu cầu tải lên CV. <br> - Nếu ứng viên đã ứng tuyển vào công việc này, hệ thống thông báo "Bạn đã ứng tuyển vào công việc này". |
+| **Điều kiện sau**   | Một đơn ứng tuyển mới được tạo. Nhà tuyển dụng có thể thấy đơn ứng tuyển này.     |
+
+---
+
+### **Chức năng của Nhà tuyển dụng (Employer)**
+
+| Cột tiêu đề         | Nội dung chi tiết                                                               |
+| ------------------- | ------------------------------------------------------------------------------- |
+| **Tên chức năng**   | **F3.2.1: Đăng tin tuyển dụng**                                                  |
+| **Tác nhân**        | Nhà tuyển dụng (Employer)                                                        |
+| **Mô tả**           | Cho phép Nhà tuyển dụng tạo và đăng một tin tuyển dụng mới lên hệ thống.        |
+| **Điều kiện trước** | Nhà tuyển dụng đã đăng nhập thành công.                                         |
+| **Dòng sự kiện chính** | 1. Nhà tuyển dụng truy cập trang "Đăng tin mới". <br> 2. Nhà tuyển dụng điền đầy đủ thông tin vào form: Chức danh, Mô tả công việc, Yêu cầu, Mức lương, Phúc lợi, Hạn nộp hồ sơ... <br> 3. Nhà tuyển dụng nhấn "Đăng tin". <br> 4. Hệ thống kiểm tra tính hợp lệ của dữ liệu. <br> 5. Hệ thống lưu tin tuyển dụng vào CSDL với trạng thái "Chờ duyệt". <br> 6. Hệ thống thông báo "Đăng tin thành công, tin của bạn đang chờ quản trị viên phê duyệt". |
+| **Dòng sự kiện phụ** | - Nếu thông tin nhập thiếu hoặc không hợp lệ, hệ thống sẽ báo lỗi tại các trường tương ứng. |
+| **Điều kiện sau**   | Một tin tuyển dụng mới được tạo trong CSDL và chờ Admin duyệt.                  |
+
+| Cột tiêu đề         | Nội dung chi tiết                                                               |
+| ------------------- | ------------------------------------------------------------------------------- |
+| **Tên chức năng**   | **F3.2.3: Xem danh sách ứng viên đã ứng tuyển**                                 |
+| **Tác nhân**        | Nhà tuyển dụng (Employer)                                                        |
+| **Mô tả**           | Cho phép Nhà tuyển dụng xem danh sách các ứng viên đã nộp hồ sơ vào một tin tuyển dụng của họ. |
+| **Điều kiện trước** | Nhà tuyển dụng đã đăng nhập và đang ở trang quản lý tin tuyển dụng.              |
+| **Dòng sự kiện chính** | 1. Nhà tuyển dụng chọn một tin tuyển dụng và nhấp vào mục "Xem danh sách ứng tuyển". <br> 2. Hệ thống truy vấn CSDL để lấy tất cả các bản ghi "Application" liên quan đến tin tuyển dụng đó. <br> 3. Hệ thống hiển thị danh sách các ứng viên, bao gồm: Tên ứng viên, Ngày ứng tuyển, Trạng thái đơn. |
+| **Dòng sự kiện phụ** | - Nếu chưa có ai ứng tuyển, hệ thống hiển thị thông báo "Chưa có ứng viên nào cho vị trí này". |
+| **Điều kiện sau**   | Danh sách ứng viên ứng tuyển được hiển thị.                                     |
+
+| Cột tiêu đề         | Nội dung chi tiết                                                               |
+| ------------------- | ------------------------------------------------------------------------------- |
+| **Tên chức năng**   | **F3.2.5: Cập nhật trạng thái ứng tuyển**                                       |
+| **Tác nhân**        | Nhà tuyển dụng (Employer)                                                        |
+| **Mô tả**           | Cho phép Nhà tuyển dụng thay đổi trạng thái của một đơn ứng tuyển (ví dụ: đã xem, phù hợp, từ chối). |
+| **Điều kiện trước** | Nhà tuyển dụng đang xem danh sách ứng viên đã ứng tuyển.                         |
+| **Dòng sự kiện chính** | 1. Nhà tuyển dụng chọn một ứng viên trong danh sách. <br> 2. Nhà tuyển dụng chọn một trạng thái mới từ danh sách thả xuống (ví dụ: "Phù hợp"). <br> 3. Hệ thống cập nhật trạng thái của bản ghi "Application" tương ứng trong CSDL. <br> 4. Hệ thống hiển thị thông báo cập nhật thành công. (Tùy chọn: gửi thông báo đến cho ứng viên). |
+| **Dòng sự kiện phụ** | - Nếu có lỗi khi cập nhật, hệ thống báo lỗi "Không thể cập nhật trạng thái".     |
+| **Điều kiện sau**   | Trạng thái của đơn ứng tuyển được thay đổi.                                     |
+
+---
+
+### **Chức năng của Quản trị viên (Admin)**
+
+| Cột tiêu đề         | Nội dung chi tiết                                                               |
+| ------------------- | ------------------------------------------------------------------------------- |
+| **Tên chức năng**   | **F4.1.2: Khóa/Mở khóa tài khoản người dùng**                                     |
+| **Tác nhân**        | Quản trị viên (Admin)                                                           |
+| **Mô tả**           | Cho phép Admin tạm thời vô hiệu hóa hoặc kích hoạt lại tài khoản của Ứng viên hoặc Nhà tuyển dụng. |
+| **Điều kiện trước** | Admin đã đăng nhập và đang ở trang quản lý người dùng.                           |
+| **Dòng sự kiện chính** | 1. Admin tìm và chọn một tài khoản người dùng từ danh sách. <br> 2. Admin nhấn nút "Khóa" hoặc "Mở khóa". <br> 3. Hệ thống hiển thị hộp thoại xác nhận. <br> 4. Admin xác nhận. <br> 5. Hệ thống cập nhật trạng thái `is_locked` của tài khoản trong CSDL. <br> 6. Hệ thống thông báo "Cập nhật trạng thái tài khoản thành công". |
+| **Dòng sự kiện phụ** | - Admin không thể khóa tài khoản của chính mình hoặc các Admin khác.            |
+| **Điều kiện sau**   | Trạng thái khóa của tài khoản người dùng được cập nhật. Nếu bị khóa, người dùng đó sẽ không thể đăng nhập. |
+
+| Cột tiêu đề         | Nội dung chi tiết                                                               |
+| ------------------- | ------------------------------------------------------------------------------- |
+| **Tên chức năng**   | **F4.2.2: Phê duyệt/Từ chối tin tuyển dụng**                                    |
+| **Tác nhân**        | Quản trị viên (Admin)                                                           |
+| **Mô tả**           | Cho phép Admin kiểm duyệt chất lượng các tin tuyển dụng do Nhà tuyển dụng đăng tải. |
+| **Điều kiện trước** | Admin đã đăng nhập và truy cập vào mục "Duyệt tin tuyển dụng".                  |
+| **Dòng sự kiện chính** | 1. Hệ thống hiển thị danh sách các tin tuyển dụng đang ở trạng thái "Chờ duyệt". <br> 2. Admin chọn một tin để xem chi tiết. <br> 3. Admin quyết định "Phê duyệt" hoặc "Từ chối". <br> 4. Hệ thống cập nhật trạng thái của tin tuyển dụng trong CSDL (thành "Đã duyệt" hoặc "Bị từ chối"). <br> 5. Hệ thống thông báo thành công. (Tùy chọn: Gửi thông báo đến cho Nhà tuyển dụng). |
+| **Dòng sự kiện phụ** | - Nếu không có tin nào cần duyệt, hệ thống hiển thị thông báo "Không có tin tuyển dụng nào chờ duyệt". |
+| **Điều kiện sau**   | Trạng thái của tin tuyển dụng được cập nhật. Nếu được duyệt, tin sẽ hiển thị công khai trên trang web. |
+
+| Cột tiêu đề         | Nội dung chi tiết                                                               |
+| ------------------- | ------------------------------------------------------------------------------- |
+| **Tên chức năng**   | **F4.3.1: Xem thống kê và Dashboard**                                           |
+| **Tác nhân**        | Quản trị viên (Admin)                                                           |
+| **Mô tả**           | Cung cấp cho Admin một cái nhìn tổng quan về hoạt động của hệ thống thông qua các số liệu và biểu đồ. |
+| **Điều kiện trước** | Admin đã đăng nhập.                                                             |
+| **Dòng sự kiện chính** | 1. Admin truy cập trang "Bảng điều khiển" (Dashboard). <br> 2. Hệ thống truy vấn CSDL để tổng hợp các dữ liệu: <br>   - Tổng số người dùng (chia theo vai trò). <br>   - Số lượng tài khoản mới trong tuần/tháng. <br>   - Tổng số tin tuyển dụng (chia theo trạng thái). <br>   - Số lượt ứng tuyển mới... <br> 3. Hệ thống hiển thị các dữ liệu này dưới dạng số liệu, biểu đồ cột, biểu đồ tròn. |
+| **Dòng sự kiện phụ** | - Nếu có lỗi trong quá trình tổng hợp dữ liệu, hệ thống có thể hiển thị thông báo lỗi hoặc dữ liệu trống cho phần bị lỗi. |
+| **Điều kiện sau**   | Trang Dashboard với các thông tin thống kê được hiển thị.                        |

@@ -1,0 +1,76 @@
+@startuml
+left to right direction
+
+' --- Định nghĩa các Actor (Tác nhân) ---
+actor Candidate as "Ứng viên"
+actor Employer as "Nhà tuyển dụng"
+actor Admin as "Quản trị viên"
+actor Guest as "Khách (Guest)"
+
+' --- Kế thừa: Ứng viên và NTD là một dạng Khách đã xác thực ---
+Candidate --|> Guest
+Employer --|> Guest
+
+' --- Boundary của hệ thống ---
+rectangle "Hệ Thống IT Job" {
+
+  ' --- Các Usecase chung cho Khách ---
+  usecase UC_VIEW_JOBS as "Xem danh sách việc làm"
+  usecase UC_SEARCH_JOBS as "Tìm kiếm & Lọc việc làm"
+  usecase UC_VIEW_JOB_DETAILS as "Xem chi tiết việc làm"
+  usecase UC_REGISTER as "Đăng ký tài khoản"
+
+  ' --- Các Usecase cho Ứng viên (Candidate) ---
+  usecase UC_CAND_AUTH as "Đăng nhập / Đăng xuất"
+  usecase UC_CAND_MANAGE_PROFILE as "Quản lý hồ sơ cá nhân"
+  usecase UC_CAND_MANAGE_CV as "Quản lý CV"
+  usecase UC_CAND_APPLY as "Ứng tuyển công việc"
+  usecase UC_CAND_HISTORY as "Xem lịch sử ứng tuyển"
+  usecase UC_CAND_FAVORITES as "Quản lý việc làm yêu thích"
+
+  ' --- Các Usecase cho Nhà tuyển dụng (Employer) ---
+  usecase UC_EMP_AUTH as "Đăng nhập / Đăng xuất"
+  usecase UC_EMP_MANAGE_COMPANY as "Quản lý thông tin công ty"
+  usecase UC_EMP_POST_JOB as "Đăng và quản lý tin tuyển dụng"
+  usecase UC_EMP_MANAGE_APPS as "Quản lý hồ sơ ứng tuyển"
+  usecase UC_EMP_PURCHASE as "Mua/gia hạn gói dịch vụ"
+
+  ' --- Các Usecase cho Quản trị viên (Admin) ---
+  usecase UC_ADMIN_AUTH as "Đăng nhập"
+  usecase UC_ADMIN_MANAGE_USERS as "Quản lý người dùng"
+  usecase UC_ADMIN_MANAGE_JOBS as "Quản lý & Duyệt tin tuyển dụng"
+  usecase UC_ADMIN_MANAGE_VIP as "Quản lý gói VIP"
+  usecase UC_ADMIN_DASHBOARD as "Xem thống kê (Dashboard)"
+
+  ' --- Gán các usecase cho Actor ---
+  Guest -down-> UC_VIEW_JOBS
+  Guest -down-> UC_SEARCH_JOBS
+  Guest -down-> UC_VIEW_JOB_DETAILS
+  Guest -down-> UC_REGISTER
+
+  Candidate -down-> UC_CAND_AUTH
+  Candidate -down-> UC_CAND_MANAGE_PROFILE
+  Candidate -down-> UC_CAND_MANAGE_CV
+  Candidate -down-> UC_CAND_APPLY
+  Candidate -down-> UC_CAND_HISTORY
+  Candidate -down-> UC_CAND_FAVORITES
+
+  Employer -down-> UC_EMP_AUTH
+  Employer -down-> UC_EMP_MANAGE_COMPANY
+  Employer -down-> UC_EMP_POST_JOB
+  Employer -down-> UC_EMP_MANAGE_APPS
+  Employer -down-> UC_EMP_PURCHASE
+
+  Admin -down-> UC_ADMIN_AUTH
+  Admin -down-> UC_ADMIN_MANAGE_USERS
+  Admin -down-> UC_ADMIN_MANAGE_JOBS
+  Admin -down-> UC_ADMIN_MANAGE_VIP
+  Admin -down-> UC_ADMIN_DASHBOARD
+
+  ' --- Mối quan hệ giữa các Usecase ---
+  UC_CAND_APPLY ..> UC_VIEW_JOB_DETAILS : <<include>>
+  UC_EMP_MANAGE_APPS ..> UC_EMP_POST_JOB : <<include>>
+  UC_ADMIN_MANAGE_JOBS ..> UC_EMP_POST_JOB : <<extend>>
+}
+
+@enduml

@@ -5,7 +5,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import backend.main.configuration.AppProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,6 +40,7 @@ public class SseController {
     	String context = appProperties.getAdmin().getEmail();
         return sseUtils.subscribe(context);
     }
+<<<<<<< Updated upstream
 
     @GetMapping("/subscribe/")
     public SseEmitter subscribe() throws InterruptedException {
@@ -48,6 +48,12 @@ public class SseController {
         if(context.equals("anonymousUser")) {
             return null;
         }
+=======
+    
+    @GetMapping("/subscribe")
+    public SseEmitter subscribe(@CookieValue(value = "jwt", required = false) String token) throws InterruptedException {
+    	String context = jwtUtils.extractEmail(token);
+>>>>>>> Stashed changes
         return sseUtils.subscribe(context);
     }
 

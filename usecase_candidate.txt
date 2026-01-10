@@ -1,0 +1,44 @@
+@startuml
+left to right direction
+
+title "Biểu đồ Usecase cho vai trò Ứng viên (Candidate)"
+
+actor Candidate as "Ứng viên"
+actor Guest as "Khách"
+
+' Thể hiện sự kế thừa
+Candidate --|> Guest
+
+rectangle "Hệ Thống IT Job" {
+  ' --- Usecase của Khách ---
+  usecase UC_VIEW_JOBS as "Xem danh sách việc làm"
+  usecase UC_SEARCH_JOBS as "Tìm kiếm & Lọc việc làm"
+  usecase UC_VIEW_JOB_DETAILS as "Xem chi tiết việc làm"
+  usecase UC_REGISTER as "Đăng ký tài khoản"
+
+  ' --- Usecase của Ứng viên ---
+  usecase UC_CAND_AUTH as "Đăng nhập / Đăng xuất"
+  usecase UC_CAND_MANAGE_PROFILE as "Quản lý hồ sơ cá nhân"
+  usecase UC_CAND_MANAGE_CV as "Quản lý CV"
+  usecase UC_CAND_APPLY as "Ứng tuyển công việc"
+  usecase UC_CAND_HISTORY as "Xem lịch sử ứng tuyển"
+  usecase UC_CAND_FAVORITES as "Quản lý việc làm yêu thích"
+
+  ' --- Liên kết Actor và Usecase ---
+  Guest -- UC_VIEW_JOBS
+  Guest -- UC_SEARCH_JOBS
+  Guest -- UC_VIEW_JOB_DETAILS
+  Guest -- UC_REGISTER
+
+  Candidate -- UC_CAND_AUTH
+  Candidate -- UC_CAND_MANAGE_PROFILE
+  Candidate -- UC_CAND_MANAGE_CV
+  Candidate -- UC_CAND_APPLY
+  Candidate -- UC_CAND_HISTORY
+  Candidate -- UC_CAND_FAVORITES
+
+  ' --- Mối quan hệ giữa các Usecase ---
+  UC_CAND_APPLY ..> UC_VIEW_JOB_DETAILS : <<include>>
+  UC_CAND_APPLY ..> UC_CAND_MANAGE_CV : <<include>>
+}
+@enduml
