@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import backend.main.configuration.AppProperties;
 import backend.main.configuration.VNPayConfig;
 import backend.main.dto.request.EmployerSubscriptionRequest;
 import backend.main.entities.Order;
@@ -34,10 +34,8 @@ public class VNPayServiceImpl implements VNPayService {
     private final VNPayConfig vnpayConfig;
     private final OrderRepository orderRepository;
     private final EmployerSubscriptionService employerSubscriptionService;
-
-    @Value("${app.front-end.fe-url}")
-    private String feUrl;
-
+    private final AppProperties appProperties;
+    
     @Override
     public String createPaymentUrl(HttpServletRequest request, Integer orderId) {
         Order order = orderRepository.findById(orderId)
@@ -115,6 +113,7 @@ public class VNPayServiceImpl implements VNPayService {
     @Override
     public Map<String, Object> processPaymentCallback(HttpServletRequest request) {
         Map<String, Object> result = new HashMap<>();
+        String feUrl = appProperties.getFrontend().getFeUrl();
         try {
             Map<String, String> fields = new HashMap<>();
             for (java.util.Enumeration<String> params = request.getParameterNames(); params.hasMoreElements();) {
