@@ -349,33 +349,7 @@ public class JobServiceImpl implements JobService {
             }
 
             jobs.forEach(job -> job.setStatus(request.getJobStatus()));
-            jobRepository.saveAll(jobs);
-<<<<<<< Updated upstream
-
-
-            jobs.forEach(j -> {
-                String content = String.format(j.getStatus().getMessage(), j.getTitle());
-
-                String email = j.getEmployer().getEmail();
-
-
-                // Send email notification to employer
-                sendEmailHandler.sendJobReviewNotification(
-                        j.getEmployer().getEmail(),
-                        j.getTitle(),
-                        j.getEmployer().getCompanyName(),
-                        j.getStatus().name()
-                );
-
-                Long id = notificationService.saveNotification(email, Role.ROLE_EMPLOYER, NotificationType.SYSTEM, content, appProperties.getAdmin().getEmail());
-
-
-                sseUtils.sendToUser(email, content,id);
-            });
-
-
-=======
-            
+            jobRepository.saveAll(jobs);  
 
             jobs.forEach(j -> {
             	String content = String.format(j.getStatus().getMessage(), j.getTitle());
@@ -398,7 +372,6 @@ public class JobServiceImpl implements JobService {
             });
      
             
->>>>>>> Stashed changes
             if (request.getJobStatus() == JobStatus.APPROVED) {
                 List<Candidate> candidates = candidateRepository.findAll();
                 for (Job job : jobs) {

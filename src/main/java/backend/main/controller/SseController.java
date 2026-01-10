@@ -3,9 +3,10 @@ package backend.main.controller;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import backend.main.configuration.AppProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import backend.main.configuration.AppProperties;
 import backend.main.utils.JwtUtils;
 import backend.main.utils.SseUtils;
 
@@ -40,21 +42,15 @@ public class SseController {
     	String context = appProperties.getAdmin().getEmail();
         return sseUtils.subscribe(context);
     }
-<<<<<<< Updated upstream
 
     @GetMapping("/subscribe/")
     public SseEmitter subscribe() throws InterruptedException {
-        String context = SecurityContextHolder.getContext().getAuthentication().getName();
-        if(context.equals("anonymousUser")) {
+        Authentication context = SecurityContextHolder.getContext().getAuthentication();
+        if(context instanceof AnonymousAuthenticationToken) {
             return null;
         }
-=======
-    
-    @GetMapping("/subscribe")
-    public SseEmitter subscribe(@CookieValue(value = "jwt", required = false) String token) throws InterruptedException {
-    	String context = jwtUtils.extractEmail(token);
->>>>>>> Stashed changes
-        return sseUtils.subscribe(context);
+ 
+        return sseUtils.subscribe(context.getName());
     }
 
 
