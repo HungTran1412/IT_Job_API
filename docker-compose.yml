@@ -7,8 +7,29 @@ services:
     ports:
       - "8080:8080"
     restart: on-failure
-    env_file:
-      - .env
+    environment:
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/itjob_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=${CONNECTION_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${CONNECTION_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      - SPRING_MAIL_USERNAME=${SPRING_MAIL_USERNAME}
+      - SPRING_MAIL_PASSWORD=${SPRING_MAIL_PASSWORD}
+      - BASE_URL=${BASE_URL}
+      - FE_URL=${FE_URL}
+      - VERIFY_TOKEN_CANDIDATE=${VERIFY_TOKEN_CANDIDATE}
+      - VERIFY_TOKEN_EMPLOYER=${VERIFY_TOKEN_EMPLOYER}
+      - VERIFIED_CANDIDATE_URL=${VERIFIED_CANDIDATE_URL}
+      - VERIFIED_EMPLOYER_URL=${VERIFIED_EMPLOYER_URL}
+      - PAY_URL=${PAY_URL}
+      - RETURN_URL=${RETURN_URL}
+      - TMN_CODE=${TMN_CODE}
+      - SECRET_KEY=${SECRET_KEY}
+      - API_URL=${API_URL}
     depends_on:
       mysql:
         condition: service_healthy
@@ -20,7 +41,7 @@ services:
     ports:
       - "3307:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=${CONNECTION_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=itjob_db
     volumes:
       - mysql-data:/var/lib/mysql
@@ -28,7 +49,7 @@ services:
       - it-job-network
     command: --bind-address=0.0.0.0
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${CONNECTION_PASSWORD}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
       interval: 10s
       timeout: 5s
       retries: 5
