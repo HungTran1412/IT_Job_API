@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import backend.main.configuration.AppProperties;
 import backend.main.entities.Application;
 import backend.main.entities.Candidate;
+import backend.main.entities.Employer;
 import backend.main.entities.Job;
 import backend.main.enums.ApplicationStatus;
 import backend.main.enums.Code;
@@ -24,6 +25,7 @@ import backend.main.repository.CandidateRepository;
 import backend.main.repository.JobRepository;
 import backend.main.repository.NotificationRepository;
 import backend.main.services.ApplicationService;
+import backend.main.services.EmployerService;
 import backend.main.services.NotificationService;
 import backend.main.utils.CloudinaryFileUpload;
 import backend.main.utils.SendEmailHandler;
@@ -50,6 +52,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     AppProperties appProperties;
     SendEmailHandler sendEmailHandler;
     NotificationService  notificationService;
+    EmployerService employerService;
 
     @Override
     @Transactional
@@ -200,9 +203,17 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
 	@Override
-	public Page<Application> findAllByJob(String jobId, Pageable pageable) {
-		Job j = jobRepository.findById(jobId).orElseThrow(() -> new AppException(Code.JOB_NOT_FOUND));
-		return applicationRepository.findByJobId(jobId, pageable);
+	public Page<Application> findAllCv(String id, Pageable pageable) {
+		Employer employer = employerService.getById(id);
+		Page<Job> j = jobRepository.findByEmployer_EmployerId(employer.getEmployerId(), pageable);
+		
+		List<String> jobIds = j
+			    .getContent()
+			    .stream()
+			    .map(Job::getJobId)
+			    .toList();
+
+			return applicationRepository.findByJob_JobIdIn(jobIds, pageable);
 				
 	}
 }

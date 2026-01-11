@@ -3,6 +3,7 @@ package backend.main.controller;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import backend.main.configuration.AppProperties;
+import backend.main.enums.Code;
+import backend.main.exception.AppException;
 import backend.main.utils.JwtUtils;
 import backend.main.utils.SseUtils;
 
@@ -26,7 +29,7 @@ public class SseController {
     private JobController jobController;
 	
 	@Autowired
-	private SseUtils sseUtils;
+	private ObjectProvider<SseUtils> objectProvider;
 	
 	@Autowired
 	private JwtUtils jwtUtils;
@@ -40,17 +43,17 @@ public class SseController {
     @GetMapping("/subscribe/admin")
     public SseEmitter subscribeAdmin() throws InterruptedException {
     	String context = appProperties.getAdmin().getEmail();
-        return sseUtils.subscribe(context);
+        return objectProvider.getObject().subscribe(context);
     }
 
     @GetMapping("/subscribe/")
     public SseEmitter subscribe() throws InterruptedException {
         Authentication context = SecurityContextHolder.getContext().getAuthentication();
-        if(context instanceof AnonymousAuthenticationToken) {
-            return null;
+        if(context == null || context instanceof AnonymousAuthenticationToken) {
+        	throw new AppException(Code.UNAUTHORIZED);
         }
  
-        return sseUtils.subscribe(context.getName());
+        return objectProvider.getObject().subscribe(context.getName());
     }
 
 

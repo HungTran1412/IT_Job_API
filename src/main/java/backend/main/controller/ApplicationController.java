@@ -78,15 +78,15 @@ public class ApplicationController {
 
 	@PostMapping("/job")
 	public ResponseEntity<ApiResponse<Object>> getApplicationsByJob(
-			@RequestParam String jobId,
+			@RequestParam String id,
 			@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "appliedDate") String sortBy,
             @RequestParam(defaultValue = "asc") String direction) {
-		Pageable pageable = PageRequest.of(page, size, Sort.by("appliedDate").ascending());
+		Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").ascending());
 
 		return ResponseEntity.ok(ApiResponse.builder()
-				.result(applicationService.findAllByJob(jobId, pageable))
+				.result(applicationService.findAllCv(id, pageable))
 				.code(Code.GET_JOB_SUCCESSFULL.getCode())
 				.message(Code.GET_JOB_SUCCESSFULL.getMessage())
 				.build());

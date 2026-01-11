@@ -27,5 +27,5 @@ public interface ApplicationService {
 
 	void delete(String applicationId);
 	
-	Page<Application> findAllByJob(String jobId, Pageable pageable);
+	Page<Application> findAllCv(String id, Pageable pageable);
 }

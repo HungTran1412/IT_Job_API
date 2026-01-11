@@ -24,4 +24,6 @@ public interface ApplicationRepository extends JpaRepository<Application, String
     		""")
     		Page<Application> findByJobId(@Param("jobId") String jobId, Pageable pageable);
 
+    Page<Application> findByJob_JobIdIn(List<String> jobIds, Pageable pageable);
+
 }
