@@ -1,16 +1,17 @@
 package backend.main.services.Impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import backend.main.configuration.AppProperties;
+import backend.main.dto.response.ApplicationJobResponse;
 import backend.main.entities.Application;
 import backend.main.entities.Candidate;
 import backend.main.entities.Employer;
@@ -203,17 +204,24 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
 	@Override
-	public Page<Application> findAllCv(String id, Pageable pageable) {
-		Employer employer = employerService.getById(id);
-		Page<Job> j = jobRepository.findByEmployer_EmployerId(employer.getEmployerId(), pageable);
+	public List<ApplicationJobResponse> findAllCv(String id, Pageable pageable) {
+		List<ApplicationJobResponse> applicationJobResponses = new ArrayList<ApplicationJobResponse>();
 		
-		List<String> jobIds = j
-			    .getContent()
-			    .stream()
-			    .map(Job::getJobId)
-			    .toList();
+		Employer employer = employerService.getById(id);
+		List<Job> jobs =  employer.getJobs();
+		for (Job job : jobs) {
+			List<Application> a = applicationRepository.findByJob(job);
 
-			return applicationRepository.findByJob_JobIdIn(jobIds, pageable);
+			ApplicationJobResponse aj = ApplicationJobResponse.builder()
+					.job(job)
+					.application(a)
+					.build();
+			
+			applicationJobResponses.add(aj);
+		}
+		
+
+			return applicationJobResponses;
 				
 	}
 }

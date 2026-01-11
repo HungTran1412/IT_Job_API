@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +30,7 @@ import backend.main.exception.AppException;
 import backend.main.repository.CandidateRepository;
 import backend.main.repository.JobRepository;
 import backend.main.services.ApplicationService;
+import backend.main.utils.JwtUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -43,11 +46,25 @@ public class ApplicationController {
 
 	@Autowired
 	private JobRepository jobRepository;
+	
+	@Autowired
+	private JwtUtils jwtUtils;
 
 	@PostMapping
 	public ResponseEntity<ApiResponse<Object>> createApplication(@RequestParam String name, @RequestParam String phone,
-			@RequestParam String email, @RequestParam MultipartFile cv, @RequestParam String jobId) {
+			@RequestParam String email, @RequestParam MultipartFile cv, @RequestParam String jobId,@CookieValue(value = "jwt", required = false) String token) {
 
+		
+		if (token == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.builder()
+					.code(Code.TOKEN_INVALID.getCode()).message("Missing token or user not logged in").build());
+		}
+
+		// Xác thực token
+		if (!jwtUtils.validateToken(token)) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.builder()
+					.code(Code.TOKEN_INVALID.getCode()).message(Code.TOKEN_INVALID.getMessage()).build());
+		}
 		var a = applicationService.save(name, phone, email, cv, jobId);
 		if (a != null) {
 			return ResponseEntity.ok(ApiResponse.builder().code(Code.APPLY_SUCCESSFUL.getCode())
