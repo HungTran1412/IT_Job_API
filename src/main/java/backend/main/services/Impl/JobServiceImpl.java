@@ -512,5 +512,10 @@ public class JobServiceImpl implements JobService {
         ));
 	}
 
+	@Override
+	public Page<Job> findJobsOfEmployerWithApplications(String employerId, Pageable pageable) {
+		return jobRepository.findJobsOfEmployerWithApplications(employerId, pageable);
+	}
+
 
 }

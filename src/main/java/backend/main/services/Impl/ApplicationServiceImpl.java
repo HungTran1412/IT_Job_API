@@ -1,20 +1,16 @@
 package backend.main.services.Impl;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import backend.main.configuration.AppProperties;
-import backend.main.dto.response.ApplicationJobResponse;
 import backend.main.entities.Application;
 import backend.main.entities.Candidate;
-import backend.main.entities.Employer;
 import backend.main.entities.Job;
 import backend.main.enums.ApplicationStatus;
 import backend.main.enums.Code;
@@ -203,25 +199,4 @@ public class ApplicationServiceImpl implements ApplicationService {
         applicationRepository.deleteById(applicationId);
     }
 
-	@Override
-	public List<ApplicationJobResponse> findAllCv(String id, Pageable pageable) {
-		List<ApplicationJobResponse> applicationJobResponses = new ArrayList<ApplicationJobResponse>();
-		
-		Employer employer = employerService.getById(id);
-		List<Job> jobs =  employer.getJobs();
-		for (Job job : jobs) {
-			List<Application> a = applicationRepository.findByJob(job);
-
-			ApplicationJobResponse aj = ApplicationJobResponse.builder()
-					.job(job)
-					.application(a)
-					.build();
-			
-			applicationJobResponses.add(aj);
-		}
-		
-
-			return applicationJobResponses;
-				
-	}
 }

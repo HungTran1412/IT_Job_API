@@ -6,7 +6,9 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import backend.main.entities.Job;
@@ -23,4 +25,20 @@ public interface JobRepository extends CrudRepository<Job,String>, JpaSpecificat
     
     // Đếm số lượng bài đăng của một employer trong khoảng thời gian
     long countByEmployer_EmployerIdAndCreatedAtBetween(String employerId, LocalDateTime start, LocalDateTime end);
+    
+    @Query("""
+    	    select j
+    	    from Job j
+    	    where j.employer.employerId = :employerId
+    	      and exists (
+    	          select 1
+    	          from Application a
+    	          where a.job = j
+    	      )
+    	""")
+    	Page<Job> findJobsOfEmployerWithApplications(
+    	        @Param("employerId") String employerId,
+    	        Pageable pageable
+    	);
+
 }

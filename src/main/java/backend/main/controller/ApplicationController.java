@@ -4,9 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -91,22 +88,6 @@ public class ApplicationController {
 		Candidate candidate = candidateRepository.findByEmail(candidateEmail)
 				.orElseThrow(() -> new AppException(Code.CANDIDATE_NOT_FOUND));
 		return applicationService.findByCandidate(candidate);
-	}
-
-	@PostMapping("/job")
-	public ResponseEntity<ApiResponse<Object>> getApplicationsByJob(
-			@RequestParam String id,
-			@RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "appliedDate") String sortBy,
-            @RequestParam(defaultValue = "asc") String direction) {
-		Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").ascending());
-
-		return ResponseEntity.ok(ApiResponse.builder()
-				.result(applicationService.findAllCv(id, pageable))
-				.code(Code.GET_JOB_SUCCESSFULL.getCode())
-				.message(Code.GET_JOB_SUCCESSFULL.getMessage())
-				.build());
 	}
 
 	@PutMapping("/{id}/status")

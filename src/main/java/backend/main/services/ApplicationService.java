@@ -3,10 +3,8 @@ package backend.main.services;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
-import backend.main.dto.response.ApplicationJobResponse;
 import backend.main.entities.Application;
 import backend.main.entities.Candidate;
 import backend.main.entities.Job;
@@ -26,6 +24,4 @@ public interface ApplicationService {
 	void updateStatus(String applicationId, ApplicationStatus status);
 
 	void delete(String applicationId);
-	
-	List<ApplicationJobResponse> findAllCv(String id, Pageable pageable);
 }
