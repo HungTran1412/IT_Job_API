@@ -274,16 +274,16 @@ public class CandidateServiceImpl implements CandidateService {
 //            System.out.println("Logo: " + imgUrl);
 //        }
 
-        //Kiểm tra người dùng có thêm cv không
-//        if(request.getCv() != null && !request.getCv().isEmpty()){
-//            System.out.println("CV: " + request.getCv().getOriginalFilename());
-//            String url = cloudinaryFileUpload.uploadCv(request.getCv());
-//            c.setCv(url);
-//        }else{
-//            String url = c.getCv();
-//            c.setCv(url);
-//            System.out.println("CV: " + url);
-//        }
+//        Kiểm tra người dùng có thêm cv không
+        if(request.getCv() != null && !request.getCv().isEmpty()){
+            System.out.println("CV: " + request.getCv().getOriginalFilename());
+            String url = cloudinaryFileUpload.uploadCv(request.getCv());
+            c.setCv(url);
+        }else{
+            String url = c.getCv();
+            c.setCv(url);
+            System.out.println("CV: " + url);
+        }
 
         return saveCandidate(c);
     }
