@@ -91,8 +91,15 @@ public class ApplicationController {
 	}
 
 	@PutMapping("/{id}/status")
-	public void updateApplicationStatus(@PathVariable String id, @RequestBody ApplicationStatus status) {
-		applicationService.updateStatus(id, status);
+	public ResponseEntity<ApiResponse<Object>> updateApplicationStatus(@PathVariable String id, @RequestBody ApplicationStatus status) {
+		try {
+			applicationService.updateStatus(id, status);
+			return ResponseEntity.ok(ApiResponse.builder().code(Code.UPDATE_INFO_SUCCEEDED.getCode())
+					.message(Code.UPDATE_INFO_SUCCEEDED.getMessage()).build());
+		} catch (AppException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.builder().code(Code.UPDATE_INFO_FAILED.getCode())
+					.message(Code.UPDATE_INFO_FAILED.getMessage()).build());
+		}
 	}
 
 	@DeleteMapping("/{id}")

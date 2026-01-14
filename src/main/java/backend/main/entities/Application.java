@@ -40,7 +40,7 @@ public class Application extends BaseModel {
 	
 	@Builder.Default
     @JsonIgnore
-	ApplicationStatus status = ApplicationStatus.REVIEWING;
+	ApplicationStatus status = ApplicationStatus.PENDING;
 	
 	String name;
 	String phone;
@@ -50,7 +50,6 @@ public class Application extends BaseModel {
 	@ManyToOne
 	@JoinColumn(name = "candicate_id")
     @JsonIgnore
-
 	Candidate candidate;
 	
 	@ManyToOne
