@@ -163,7 +163,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             } else if (status == ApplicationStatus.REJECTED) {
                 content = "Nhà tuyển dụng đã từ chối hồ sơ của bạn cho công việc " + application.getJob().getTitle();
                 type =  NotificationType.APPLICATION_REJECTED;
-            } else if (status == ApplicationStatus.APPLIED) {
+            } else if (status == ApplicationStatus.APPROVED) {
             	content = "Nhà tuyển dụng đã duyệt hồ sơ của bạn cho công việc " + application.getJob().getTitle();
                 type =  NotificationType.APPLICATION_APPROVED;
             }

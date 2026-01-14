@@ -91,7 +91,19 @@ public class ApplicationController {
 	}
 
 	@PutMapping("/{id}/status")
-	public ResponseEntity<ApiResponse<Object>> updateApplicationStatus(@PathVariable String id, @RequestBody ApplicationStatus status) {
+	public ResponseEntity<ApiResponse<Object>> updateApplicationStatus(@PathVariable String id, @RequestBody ApplicationStatus status,
+			@CookieValue(value = "jwt", required = false) String token) {
+		
+		if (token == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.builder()
+					.code(Code.TOKEN_INVALID.getCode()).message("Missing token or user not logged in").build());
+		}
+
+		// Xác thực token
+		if (!jwtUtils.validateToken(token)) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.builder()
+					.code(Code.TOKEN_INVALID.getCode()).message(Code.TOKEN_INVALID.getMessage()).build());
+		}
 		try {
 			applicationService.updateStatus(id, status);
 			return ResponseEntity.ok(ApiResponse.builder().code(Code.UPDATE_INFO_SUCCEEDED.getCode())
@@ -103,8 +115,27 @@ public class ApplicationController {
 	}
 
 	@DeleteMapping("/{id}")
-	public void deleteApplication(@PathVariable String id) {
-		applicationService.delete(id);
+	public ResponseEntity<ApiResponse<Object>> deleteApplication(@PathVariable String id,
+			@CookieValue(value = "jwt", required = false) String token) {
+		
+		if (token == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.builder()
+					.code(Code.TOKEN_INVALID.getCode()).message("Missing token or user not logged in").build());
+		}
+
+		// Xác thực token
+		if (!jwtUtils.validateToken(token)) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.builder()
+					.code(Code.TOKEN_INVALID.getCode()).message(Code.TOKEN_INVALID.getMessage()).build());
+		}
+		try {
+			applicationService.delete(id);
+			return ResponseEntity.ok(ApiResponse.builder().code(Code.DELETED_SUCCESSFULLY.getCode())
+					.message(Code.DELETED_SUCCESSFULLY.getMessage()).build());
+		}catch (AppException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.builder().code(Code.DELETED_FAILED.getCode())
+					.message(Code.DELETED_FAILED.getMessage()).build());
+		}
 	}
 	
 	

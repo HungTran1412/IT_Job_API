@@ -66,7 +66,9 @@ public enum Code {
     LIKED_JOB_ADDED(CodeEnum.error.toString(), "Thêm việc yêu thích thành công"),
     DELETED_SUCCESSFULLY(CodeEnum.success.toString(),"Xóa thành công"),
     DELETED_USER_SUCCESSFULLY(CodeEnum.success.toString(),"Xóa người dùng thành công"),
+    DELETED_FAILED(CodeEnum.error.toString(),"Xóa không thành công"),
 
+    
     INVALID_VALUE(CodeEnum.error.toString(),"Lỗi dữ liệu"),
     UNAUTHORIZED(CodeEnum.error.toString(),"Lỗi"),
 

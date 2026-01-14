@@ -1,7 +1,7 @@
 package backend.main.enums;
 
 public enum ApplicationStatus {
-	APPLIED,
+	APPROVED,
 	REVIEWING,
 	PENDING,
 	REJECTED
