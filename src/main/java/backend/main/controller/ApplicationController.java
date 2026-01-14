@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import backend.main.dto.request.application.ApplicationReviewRequest;
 import backend.main.dto.response.ApiResponse;
 import backend.main.entities.Application;
 import backend.main.entities.Candidate;
-import backend.main.enums.ApplicationStatus;
 import backend.main.enums.Code;
 import backend.main.exception.AppException;
 import backend.main.repository.CandidateRepository;
@@ -90,8 +90,8 @@ public class ApplicationController {
 		return applicationService.findByCandidate(candidate);
 	}
 
-	@PutMapping("/{id}/status")
-	public ResponseEntity<ApiResponse<Object>> updateApplicationStatus(@PathVariable String id, @RequestBody ApplicationStatus status,
+	@PutMapping("/status")
+	public ResponseEntity<ApiResponse<Object>> updateApplicationStatus(@RequestBody ApplicationReviewRequest request,
 			@CookieValue(value = "jwt", required = false) String token) {
 		
 		if (token == null) {
@@ -105,7 +105,7 @@ public class ApplicationController {
 					.code(Code.TOKEN_INVALID.getCode()).message(Code.TOKEN_INVALID.getMessage()).build());
 		}
 		try {
-			applicationService.updateStatus(id, status);
+			applicationService.updateStatus(request.getId(), request.getStatus());
 			return ResponseEntity.ok(ApiResponse.builder().code(Code.UPDATE_INFO_SUCCEEDED.getCode())
 					.message(Code.UPDATE_INFO_SUCCEEDED.getMessage()).build());
 		} catch (AppException e) {
