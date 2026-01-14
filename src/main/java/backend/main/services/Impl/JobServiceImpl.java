@@ -20,6 +20,7 @@ import backend.main.controller.AdminController;
 import backend.main.dto.request.job.JobRequest;
 import backend.main.dto.request.job.JobReviewRequest;
 import backend.main.dto.request.job.JobSearchRequest;
+import backend.main.dto.response.ApplicationJobResponse;
 import backend.main.dto.response.JobResponse;
 import backend.main.entities.Application;
 import backend.main.entities.Candidate;
@@ -32,14 +33,17 @@ import backend.main.enums.JobStatus;
 import backend.main.enums.NotificationType;
 import backend.main.enums.Role;
 import backend.main.exception.AppException;
+import backend.main.repository.ApplicationRepository;
 import backend.main.repository.CandidateRepository;
 import backend.main.repository.EmployerRepository;
 import backend.main.repository.EmployerSubscriptionRepository;
 import backend.main.repository.JobRepository;
+import backend.main.services.ApplicationService;
 import backend.main.services.JobService;
 import backend.main.services.NotificationService;
 import backend.main.specification.JobSpec;
 import backend.main.utils.JwtUtils;
+import backend.main.utils.OtherUtils;
 import backend.main.utils.SendEmailHandler;
 import backend.main.utils.SseUtils;
 import jakarta.transaction.Transactional;
@@ -55,10 +59,16 @@ public class JobServiceImpl implements JobService {
     private JobRepository jobRepository;
     
     @Autowired
+    private OtherUtils otherUtils;
+    
+    @Autowired
     private CandidateRepository candidateRepository;
 
     @Autowired
     private JwtUtils jwtUtils;
+    
+    @Autowired
+    private ApplicationRepository applicationRepository;
 
 
     @Autowired
@@ -78,9 +88,13 @@ public class JobServiceImpl implements JobService {
 
     @Autowired
     private SendEmailHandler sendEmailHandler;
+    
+    @Autowired
+    private ApplicationService applicationService;
 
-    JobServiceImpl(AdminController adminController) {
+    JobServiceImpl(AdminController adminController, ApplicationService applicationService) {
         this.adminController = adminController;
+        this.applicationService = applicationService;
     }
 
     @Transactional
@@ -513,8 +527,37 @@ public class JobServiceImpl implements JobService {
 	}
 
 	@Override
-	public Page<Job> findJobsOfEmployerWithApplications(String employerId, Pageable pageable) {
-		return jobRepository.findJobsOfEmployerWithApplications(employerId, pageable);
+	public Page<ApplicationJobResponse> findJobsOfEmployerWithApplications(String employerId, Pageable pageable) {
+		List<Job>  jobs = jobRepository.findJobsOfEmployerWithApplications(employerId);
+		List<ApplicationJobResponse> j = new ArrayList<ApplicationJobResponse>();
+		jobs.forEach(t -> {
+			t.getApplications().forEach(a -> {
+				j.add(ApplicationJobResponse.builder()
+						.jobId(t.getJobId())
+						.title(t.getTitle())
+						.description(t.getDescription())
+						.salaryMax(t.getSalaryMax())
+						.salaryMin(t.getSalaryMin())
+						.position(t.getPosition())
+						.technologies(t.getTechnologies())
+						.workingFrom(t.getWorkingFrom())
+						.location(t.getLocation())
+						.deadline(t.getDeadline())
+						.logo(t.getLogo())
+						.applicationId(a.getApplicationId())
+						.appliedDate(a.getAppliedDate())
+						.coverLetter(a.getCoverLetter())
+						.status(a.getStatus())
+						.name(a.getName())
+						.phone(a.getPhone())
+						.email(a.getEmail())
+						.cv(a.getCv())
+						.build());
+			});
+			
+		});
+		
+	return otherUtils.listToPage(j, pageable);
 	}
 
 

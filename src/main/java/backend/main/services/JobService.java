@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import backend.main.dto.request.job.JobRequest;
 import backend.main.dto.request.job.JobReviewRequest;
 import backend.main.dto.request.job.JobSearchRequest;
+import backend.main.dto.response.ApplicationJobResponse;
 import backend.main.dto.response.JobResponse;
 import backend.main.entities.Job;
 import backend.main.enums.JobStatus;
@@ -29,5 +30,5 @@ public interface JobService {
     Page<JobResponse> findJobsByEmployer(String employerId, Pageable pageable);
     Page<JobResponse> findJobsByEmployerAndStatus(String employerId, JobStatus status, Pageable pageable);
     Page<JobResponse> searchJobsByEmployer(String employerId, String keyword, Pageable pageable);
-    Page<Job> findJobsOfEmployerWithApplications(String employerId,Pageable pageable);
+    Page<ApplicationJobResponse> findJobsOfEmployerWithApplications(String employerId,Pageable pageable);
 }
