@@ -179,7 +179,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     	        		application.getJob().getEmployer().getEmail());
             	
             
-                sseUtils.sendToUser(application.getCandidate().getEmail(), content,id);
+                sseUtils.sendToUser(application.getJob().getEmployer().getEmail(), content,id);
                 
                 // Send email notification for status update
                 sendEmailHandler.sendApplicationStatusNotification(
