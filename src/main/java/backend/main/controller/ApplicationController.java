@@ -49,7 +49,9 @@ public class ApplicationController {
 
 	@PostMapping
 	public ResponseEntity<ApiResponse<Object>> createApplication(@RequestParam String name, @RequestParam String phone,
-			@RequestParam String email, @RequestParam MultipartFile cv, @RequestParam String jobId,@CookieValue(value = "jwt", required = false) String token) {
+			@RequestParam String email, @RequestParam MultipartFile cv, @RequestParam String jobId,
+			@RequestParam(defaultValue = "false") boolean isOldCv,
+			@CookieValue(value = "jwt", required = false) String token) {
 
 		
 		if (token == null) {
@@ -62,7 +64,7 @@ public class ApplicationController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.builder()
 					.code(Code.TOKEN_INVALID.getCode()).message(Code.TOKEN_INVALID.getMessage()).build());
 		}
-		var a = applicationService.save(name, phone, email, cv, jobId);
+		var a = applicationService.save(name, phone, email, cv, jobId,isOldCv);
 		if (a != null) {
 			return ResponseEntity.ok(ApiResponse.builder().code(Code.APPLY_SUCCESSFUL.getCode())
 					.message(Code.APPLY_SUCCESSFUL.getMessage()).build());

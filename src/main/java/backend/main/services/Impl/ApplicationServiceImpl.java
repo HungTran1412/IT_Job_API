@@ -53,7 +53,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     @Transactional
-    public Application save(String name, String phone, String email, MultipartFile cv, String jobId) {
+    public Application save(String name, String phone, String email, MultipartFile cv, String jobId,boolean isOldCv) {
     	
     	try {
 			Job job = jobRepository.findById(jobId).orElseThrow((() -> new AppException(Code.JOB_NOT_FOUND)));
@@ -69,6 +69,10 @@ public class ApplicationServiceImpl implements ApplicationService {
 			if(application!=null) {
 				throw new AppException(Code.APPLY_FAIL);
 			}else {
+				
+				if(isOldCv) {
+					cvString = candidate.getCv();
+				}
 				application = Application.builder()
 						.appliedDate(LocalDateTime.now())
 						.name(name)

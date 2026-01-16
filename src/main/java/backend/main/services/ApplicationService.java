@@ -11,7 +11,7 @@ import backend.main.entities.Job;
 import backend.main.enums.ApplicationStatus;
 
 public interface ApplicationService {
-	Application save(String name, String phone, String email, MultipartFile cv, String jobId);
+	Application save(String name, String phone, String email, MultipartFile cv, String jobId, boolean isOldCv);
 
 	List<Application> findAll();
 
