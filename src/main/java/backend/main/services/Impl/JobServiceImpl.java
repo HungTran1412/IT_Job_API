@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import backend.main.configuration.AdminInit;
 import backend.main.configuration.AppProperties;
 import backend.main.controller.AdminController;
 import backend.main.dto.request.job.JobRequest;
@@ -52,6 +53,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class JobServiceImpl implements JobService {
+
+    private final AdminInit adminInit;
 
     private final AdminController adminController;
 
@@ -92,9 +95,10 @@ public class JobServiceImpl implements JobService {
     @Autowired
     private ApplicationService applicationService;
 
-    JobServiceImpl(AdminController adminController, ApplicationService applicationService) {
+    JobServiceImpl(AdminController adminController, ApplicationService applicationService, AdminInit adminInit) {
         this.adminController = adminController;
         this.applicationService = applicationService;
+        this.adminInit = adminInit;
     }
 
     @Transactional
@@ -381,6 +385,7 @@ public class JobServiceImpl implements JobService {
             	
                 Long id = notificationService.saveNotification(email, Role.ROLE_EMPLOYER, NotificationType.SYSTEM, content, appProperties.getAdmin().getEmail());
 
+                System.out.println(email);
             	
             	sseUtils.sendToUser(email, content,id);
             });
