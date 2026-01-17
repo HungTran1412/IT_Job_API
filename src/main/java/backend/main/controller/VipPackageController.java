@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/vip-packages")
 @RequiredArgsConstructor
-public class VipPackageController {
+public class     VipPackageController {
 
     private final VipPackageService vipPackageService;
 
