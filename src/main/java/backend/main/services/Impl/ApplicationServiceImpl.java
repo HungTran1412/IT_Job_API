@@ -62,7 +62,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 			Candidate candidate = candidateRepository.findByEmail(context).orElseThrow(()-> new AppException(Code.USER_NOT_FOUND));
 			
-			String cvString = cloudinaryFileUpload.uploadCv(cv);
+			String cvString = "";
 			
 			Application application = applicationRepository.findByJobAndCandidate(job, candidate);
 			
@@ -73,6 +73,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 				if(isOldCv) {
 					cvString = candidate.getCv();
 				}
+				cvString = cloudinaryFileUpload.uploadCv(cv);
 				application = Application.builder()
 						.appliedDate(LocalDateTime.now())
 						.name(name)
