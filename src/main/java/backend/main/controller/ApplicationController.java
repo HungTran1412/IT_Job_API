@@ -49,7 +49,7 @@ public class ApplicationController {
 
 	@PostMapping
 	public ResponseEntity<ApiResponse<Object>> createApplication(@RequestParam String name, @RequestParam String phone,
-			@RequestParam String email, @RequestParam MultipartFile cv, @RequestParam String jobId,
+			@RequestParam String email, @RequestParam(required = false) MultipartFile cv, @RequestParam String jobId,
 			@RequestParam(defaultValue = "false") boolean isOldCv,
 			@CookieValue(value = "jwt", required = false) String token) {
 
