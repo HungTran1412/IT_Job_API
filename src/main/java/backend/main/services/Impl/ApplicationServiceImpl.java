@@ -65,15 +65,17 @@ public class ApplicationServiceImpl implements ApplicationService {
 			String cvString = "";
 			
 			Application application = applicationRepository.findByJobAndCandidate(job, candidate);
-			
 			if(application!=null) {
 				throw new AppException(Code.APPLY_FAIL);
 			}else {
 				
 				if(isOldCv) {
 					cvString = candidate.getCv();
+				}else {
+					cvString = cloudinaryFileUpload.uploadCv(cv);
 				}
-				cvString = cloudinaryFileUpload.uploadCv(cv);
+				
+				
 				application = Application.builder()
 						.appliedDate(LocalDateTime.now())
 						.name(name)
