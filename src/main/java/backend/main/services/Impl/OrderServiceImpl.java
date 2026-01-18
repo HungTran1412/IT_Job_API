@@ -127,4 +127,12 @@ public class OrderServiceImpl implements OrderService {
                 .orders(orders)
                 .build();
     }
+
+    @Override
+    public void deleteOrder(Integer id) {
+        if (!orderRepository.existsById(id)) {
+            throw new AppException(Code.ORDER_NOT_FOUND);
+        }
+        orderRepository.deleteById(id);
+    }
 }

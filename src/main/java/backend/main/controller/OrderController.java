@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -88,6 +89,16 @@ public class OrderController {
                 .code(Code.UPDATE_ORDER_STATUS_SUCCESS.getCode())
                 .message(Code.UPDATE_ORDER_STATUS_SUCCESS.getMessage())
                 .result(result)
+                .build());
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<ApiResponse<Void>> deleteOrder(@PathVariable Integer id) {
+        orderService.deleteOrder(id);
+        return ResponseEntity.ok(ApiResponse.<Void>builder()
+                .code(Code.DELETE_ORDER_SUCCESS.getCode())
+                .message(Code.DELETE_ORDER_SUCCESS.getMessage())
                 .build());
     }
 }

@@ -256,6 +256,7 @@ public class CandidateController {
 	}
 
     @PostMapping("/search")
+	@PreAuthorize("hasAnyRole('ROLE_EMPLOYER')")
     public ResponseEntity<ApiResponse<Page<CandidateResponse>>> searchCandidates(
             @CookieValue(value = "jwt", required = false) String token,
             @RequestBody CandidateSearchRequest request,

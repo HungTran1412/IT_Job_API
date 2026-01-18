@@ -18,4 +18,5 @@ public interface OrderService {
     Page<Order> getAllOrders(PageRequestDto pageRequestDto);
     Order updateOrderStatus(Integer id, String status); 
     OrderStatsResponse getOrderStats(LocalDate startDate, LocalDate endDate);
+    void deleteOrder(Integer id);
 }
