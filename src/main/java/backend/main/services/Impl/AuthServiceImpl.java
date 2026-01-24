@@ -1,7 +1,9 @@
 package backend.main.services.Impl;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +15,14 @@ import backend.main.dto.response.CandidateResponse;
 import backend.main.dto.response.EmployerResponse;
 import backend.main.entities.Employer;
 import backend.main.entities.Job;
+import backend.main.entities.Order;
+import backend.main.entities.VipPackage;
 import backend.main.enums.Code;
 import backend.main.exception.AppException;
 import backend.main.repository.AdminRepository;
 import backend.main.repository.CandidateRepository;
 import backend.main.repository.EmployerRepository;
+import backend.main.repository.OrderRepository;
 import backend.main.services.AuthService;
 import backend.main.utils.JwtUtils;
 import lombok.AccessLevel;
@@ -35,6 +40,8 @@ public class AuthServiceImpl implements AuthService {
     CandidateRepository candidateRepository;
     @Autowired
     AdminRepository adminRepository;
+    @Autowired
+    OrderRepository orderRepository;
 
     @Override
     @Transactional
@@ -59,6 +66,16 @@ public class AuthServiceImpl implements AuthService {
                 
                 int count = e.getJobs().size();
                 
+                // Lấy thông tin gói VIP mới nhất đã thanh toán thành công
+                Optional<Order> latestOrder = orderRepository.findLatestSuccessfulOrderByEmployer(e.getEmployerId());
+                VipPackage currentVipPackage = null;
+                LocalDateTime vipPurchaseDate = null;
+                
+                if (latestOrder.isPresent()) {
+                    currentVipPackage = latestOrder.get().getVipPackage();
+                    vipPurchaseDate = latestOrder.get().getCreatedAt();
+                }
+                
                 return EmployerResponse.builder()
                         .employerId(e.getEmployerId())
                         .email(e.getEmail())
@@ -74,6 +91,8 @@ public class AuthServiceImpl implements AuthService {
         			    .logo(e.getLogo())
         			    .role(e.getRole())
         			    .createdJobs(count)
+                        .currentVipPackage(currentVipPackage)
+                        .vipPurchaseDate(vipPurchaseDate)
         			    .build();
                 		     		
              

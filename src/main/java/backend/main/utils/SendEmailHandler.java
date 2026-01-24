@@ -250,4 +250,42 @@ public class SendEmailHandler {
             log.error("Failed to send job review notification email to {}", email, e);
         }
     }
+
+    public void sendVipExpirationNotification(String email, String companyName, String packageName) {
+        String subject = "Thông báo hết hạn gói dịch vụ VIP";
+        
+        String content = """
+            <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                <h2 style="color: #dc3545; text-align: center;">Thông báo hết hạn gói VIP</h2>
+                <p>Xin chào <strong>%s</strong>,</p>
+                <p>Gói dịch vụ <strong>%s</strong> của bạn đã hết hạn sử dụng.</p>
+                <p>Hệ thống đã tự động chuyển tài khoản của bạn về gói mặc định.</p>
+                <p>Để tiếp tục tận hưởng các quyền lợi cao cấp, vui lòng gia hạn hoặc đăng ký gói dịch vụ mới.</p>
+                
+                <p style="text-align: center; margin: 30px 0;">
+                    <a href="http://localhost:3000/pricing" 
+                       style="display:inline-block;background-color:#007bff;color:white;
+                              padding:12px 24px;text-decoration:none;border-radius:5px;
+                              font-weight:bold;">
+                        Gia hạn ngay
+                    </a>
+                </p>
+                
+                <p>Cảm ơn bạn đã đồng hành cùng ITJob.</p>
+                <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                <p style="font-size: 12px; color: #777; text-align: center;">&copy; 2024 ITJob. All rights reserved.</p>
+            </div>
+            """.formatted(companyName, packageName);
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setTo(email);
+            helper.setSubject(subject);
+            helper.setText(content, true);
+            mailSender.send(message);
+        } catch (Exception e) {
+            log.error("Failed to send VIP expiration email to {}", email, e);
+        }
+    }
 }

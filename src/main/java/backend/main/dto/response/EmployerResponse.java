@@ -1,8 +1,10 @@
 package backend.main.dto.response;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import backend.main.entities.Job;
+import backend.main.entities.VipPackage;
 import backend.main.enums.Role;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -30,4 +32,6 @@ public class EmployerResponse {
     Role role;
     int createdJobs;
     List<Job> jobList;
+    VipPackage currentVipPackage;
+    LocalDateTime vipPurchaseDate;
 }
