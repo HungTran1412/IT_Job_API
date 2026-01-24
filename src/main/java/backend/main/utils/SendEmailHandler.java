@@ -60,6 +60,7 @@ public class SendEmailHandler {
             helper.setText(content, true);
             mailSender.send(message);
         } catch (Exception e) {
+            log.error("Lỗi gửi email xác thực tới {}: ", email, e);
             throw new AppException(Code.SEND_EMAIL_FAILED);
         }
     }
@@ -89,6 +90,7 @@ public class SendEmailHandler {
             helper.setText(content, true);
             mailSender.send(message);
         } catch (Exception e) {
+            log.error("Lỗi gửi email OTP tới {}: ", email, e);
             throw new AppException(Code.SEND_EMAIL_FAILED);
         }
     }
@@ -286,6 +288,51 @@ public class SendEmailHandler {
             mailSender.send(message);
         } catch (Exception e) {
             log.error("Failed to send VIP expiration email to {}", email, e);
+        }
+    }
+
+    public void sendVipSubscriptionSuccessEmail(String email, String companyName, String packageName, Double price, int durationDays) {
+        String subject = "Đăng ký thành công gói dịch vụ VIP - ITJob";
+        String formattedPrice = String.format("%,.0f VNĐ", price);
+
+        String content = """
+            <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                <h2 style="color: #28a745; text-align: center;">Đăng ký gói VIP thành công!</h2>
+                <p>Xin chào <strong>%s</strong>,</p>
+                <p>Cảm ơn bạn đã tin tưởng và sử dụng dịch vụ của ITJob.</p>
+                <p>Bạn đã đăng ký thành công gói dịch vụ với thông tin chi tiết như sau:</p>
+                
+                <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                    <p><strong>Tên gói:</strong> %s</p>
+                    <p><strong>Giá:</strong> %s</p>
+                    <p><strong>Thời hạn:</strong> %d ngày</p>
+                </div>
+
+                <p>Gói dịch vụ đã được kích hoạt ngay lập tức. Bạn có thể bắt đầu sử dụng các tính năng cao cấp ngay bây giờ.</p>
+                
+                <p style="text-align: center; margin: 30px 0;">
+                    <a href="http://localhost:3000/employer/dashboard" 
+                       style="display:inline-block;background-color:#007bff;color:white;
+                              padding:12px 24px;text-decoration:none;border-radius:5px;
+                              font-weight:bold;">
+                        Truy cập Dashboard
+                    </a>
+                </p>
+                
+                <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                <p style="font-size: 12px; color: #777; text-align: center;">&copy; 2024 ITJob. All rights reserved.</p>
+            </div>
+            """.formatted(companyName, packageName, formattedPrice, durationDays);
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setTo(email);
+            helper.setSubject(subject);
+            helper.setText(content, true);
+            mailSender.send(message);
+        } catch (Exception e) {
+            log.error("Failed to send VIP subscription success email to {}", email, e);
         }
     }
 }

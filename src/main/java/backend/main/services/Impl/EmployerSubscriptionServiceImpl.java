@@ -33,6 +33,7 @@ public class EmployerSubscriptionServiceImpl implements EmployerSubscriptionServ
     private final SendEmailHandler sendEmailHandler;
 
     @Override
+    @Transactional
     public EmployerSubscription createSubscription(EmployerSubscriptionRequest request) {
         Employer employer = employerRepository.findById(request.getEmployerId())
                 .orElseThrow(() -> new AppException(Code.EMPLOYER_NOT_FOUND));
@@ -58,7 +59,21 @@ public class EmployerSubscriptionServiceImpl implements EmployerSubscriptionServ
                 .status("ACTIVE") 
                 .build();
 
-        return employerSubscriptionRepository.save(subscription);
+        EmployerSubscription savedSubscription = employerSubscriptionRepository.save(subscription);
+
+        // Gửi email thông báo đăng ký thành công
+        if (employer.getEmail() != null) {
+            sendEmailHandler.sendVipSubscriptionSuccessEmail(
+                employer.getEmail(),
+                employer.getCompanyName(),
+                vipPackage.getName(),
+                vipPackage.getPrice(),
+                vipPackage.getDurationDays()
+            );
+            log.info("Sent VIP subscription success email to employer: {}", employer.getEmail());
+        }
+
+        return savedSubscription;
     }
 
     @Override

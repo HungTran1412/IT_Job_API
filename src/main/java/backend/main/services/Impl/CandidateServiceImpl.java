@@ -106,7 +106,7 @@ public class CandidateServiceImpl implements CandidateService {
         String token = UUID.randomUUID().toString();
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
-        verificationToken.setExpirationTime(LocalDateTime.now().plusMinutes(5));
+        verificationToken.setExpirationTime(LocalDateTime.now().plusSeconds(55));
         verificationToken.setCandidate( candidate );
 
         verificationTokenRepository.save(verificationToken);
